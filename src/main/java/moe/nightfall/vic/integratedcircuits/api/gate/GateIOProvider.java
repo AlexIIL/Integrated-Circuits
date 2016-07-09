@@ -1,15 +1,16 @@
 package moe.nightfall.vic.integratedcircuits.api.gate;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 public abstract class GateIOProvider {
 	public ISocket socket;
 
-	public byte[] calculateBundledInput(int side, int rotation, int abs, BlockPos offset) {
+	public byte[] calculateBundledInput(EnumFacing side, EnumFacing rotation, EnumFacing abs, BlockPos offset) {
 		return null;
 	}
 
-	public int calculateRedstoneInput(int side, int rotation, int abs, BlockPos offset) {
+	public int calculateRedstoneInput(EnumFacing side, EnumFacing rotation, EnumFacing abs, BlockPos offset) {
 		return 0;
 	}
 }

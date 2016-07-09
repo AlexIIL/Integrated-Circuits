@@ -11,9 +11,9 @@ import net.minecraft.item.ItemStack;
 public class ContainerAssembler extends ContainerBase {
 	public TileEntityAssembler tileentity;
 
-	public ContainerAssembler(IInventory playerInventory, final TileEntityAssembler tileentity) {
+	public ContainerAssembler(EntityPlayer player, final TileEntityAssembler tileentity) {
 		this.tileentity = tileentity;
-		this.tileentity.openInventory();
+		this.tileentity.openInventory(player);
 
 		//Disk slot: 0
 		this.addSlotToContainer(new Slot(this.tileentity, 0, 8, 8) {
@@ -67,12 +67,12 @@ public class ContainerAssembler extends ContainerBase {
 
 		//Player inventory slots: 13-39
 		//Player hotbar slots: 40-48
-		addPlayerInv(playerInventory, 8, 140);
+		addPlayerInv(player.inventory, 8, 140);
 	}
 
 	@Override
 	public void onContainerClosed(EntityPlayer player) {
-		this.tileentity.closeInventory();
+		this.tileentity.closeInventory(player);
 		super.onContainerClosed(player);
 	}
 

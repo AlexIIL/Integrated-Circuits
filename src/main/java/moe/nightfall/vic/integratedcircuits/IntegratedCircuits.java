@@ -12,12 +12,9 @@ import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketProvider;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketWrapper;
-import moe.nightfall.vic.integratedcircuits.compat.BPRedstoneProvider;
-import moe.nightfall.vic.integratedcircuits.compat.gateio.GateIO;
 import moe.nightfall.vic.integratedcircuits.cp.CircuitPart;
 import moe.nightfall.vic.integratedcircuits.gate.Gate7Segment;
 import moe.nightfall.vic.integratedcircuits.gate.GateCircuit;
-import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import moe.nightfall.vic.integratedcircuits.proxy.CommonProxy;
 import moe.nightfall.vic.integratedcircuits.tile.BlockSocket;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntitySocket;
@@ -172,7 +169,7 @@ public class IntegratedCircuits {
 		// if (isBCLoaded)
 		// BCAddon.preInit();
 
-		GateIO.initialize();
+		//GateIO.initialize();
 	}
 
 	@EventHandler
@@ -239,8 +236,8 @@ public class IntegratedCircuits {
 		}
 
 		// Register provider for bluepower
-		if (isBPLoaded)
-			new BPRedstoneProvider();
+		//if (isBPLoaded)
+		//	new BPRedstoneProvider();
 
 		logger.info("Done! This is an extremely early alpha version so please report any bugs occurring to https://github.com/Victorious3/Integrated-Circuits");
 	}

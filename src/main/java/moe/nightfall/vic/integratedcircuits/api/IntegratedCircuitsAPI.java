@@ -1,5 +1,6 @@
 package moe.nightfall.vic.integratedcircuits.api;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGateRegistry;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketProvider;
@@ -43,7 +44,7 @@ public class IntegratedCircuitsAPI {
 		getInstance().registerSocketProvider(provider);
 	}
 
-	public static MCDataOutput getWriteStream(World world, BlockPos pos, EnumFacing side) {
+	public static ByteBuf getWriteStream(World world, BlockPos pos, EnumFacing side) {
 		return getInstance().getWriteStream(world, pos, side);
 	}
 

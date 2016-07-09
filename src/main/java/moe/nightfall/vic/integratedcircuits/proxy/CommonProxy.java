@@ -2,11 +2,12 @@ package moe.nightfall.vic.integratedcircuits.proxy;
 
 import static moe.nightfall.vic.integratedcircuits.IntegratedCircuits.logger;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -37,7 +38,6 @@ import moe.nightfall.vic.integratedcircuits.client.gui.IntegratedCircuitsGuiHand
 import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import moe.nightfall.vic.integratedcircuits.misc.RayTracer;
 import moe.nightfall.vic.integratedcircuits.net.AbstractPacket;
-import moe.nightfall.vic.integratedcircuits.net.MCDataOutputImpl;
 import moe.nightfall.vic.integratedcircuits.net.Packet7SegmentChangeMode;
 import moe.nightfall.vic.integratedcircuits.net.Packet7SegmentOpenGui;
 import moe.nightfall.vic.integratedcircuits.net.PacketAssemblerChangeItem;
@@ -66,18 +66,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 public class CommonProxy {
 	public static int serverTicks;
 	public static SimpleNetworkWrapper networkWrapper;
-	private static HashMap<World, HashMap<SidedBlockCoord, MCDataOutputImpl>> out = Maps.newHashMap();
+	private static HashMap<World, HashMap<SidedBlockCoord, ByteBuf>> out = Maps.newHashMap();
 
 	public void initialize() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(IntegratedCircuits.instance, new IntegratedCircuitsGuiHandler());
@@ -118,21 +116,20 @@ public class CommonProxy {
 		AbstractPacket.registerPacket(PacketDataStream.class, Side.CLIENT, 17);
 	}
 
-	public synchronized MCDataOutputImpl addStream(World world, BlockPos crd, EnumFacing side) {
+	public synchronized ByteBuf addStream(World world, BlockPos crd, EnumFacing side) {
 		if (world.isRemote)
 			throw new IllegalArgumentException("Cannot use getWriteStream on a client world");
 		SidedBlockCoord scrd = new SidedBlockCoord(crd.getX(), crd.getY(), crd.getZ(), side);
 		if (!out.containsKey(world))
-			out.put(world, new HashMap<SidedBlockCoord, MCDataOutputImpl>());
-		HashMap<SidedBlockCoord, MCDataOutputImpl> map = out.get(world);
+			out.put(world, new HashMap<SidedBlockCoord, ByteBuf>());
+		HashMap<SidedBlockCoord, ByteBuf> map = out.get(world);
 
 		if (map.containsKey(scrd))
-			CommonProxy.networkWrapper.sendToDimension(new PacketDataStream(map.remove(scrd), scrd.x, scrd.y, scrd.z,
+			CommonProxy.networkWrapper.sendToDimension(new PacketDataStream(map.remove(scrd).array(), scrd.x, scrd.y, scrd.z,
 					scrd.side), world.provider.getDimension());
 
-		MCDataOutputImpl stream = new MCDataOutputImpl(new ByteArrayOutputStream());
-		map.put(scrd, stream);
-		return stream;
+		//MCDataOutputImpl stream = new MCDataOutputImpl(new ByteArrayOutputStream());
+		return Unpooled.directBuffer();
 	}
 
 	@SubscribeEvent
@@ -141,10 +138,10 @@ public class CommonProxy {
 			serverTicks++;
 
 			for (World world : out.keySet()) {
-				HashMap<SidedBlockCoord, MCDataOutputImpl> map = out.get(world);
-				for (Entry<SidedBlockCoord, MCDataOutputImpl> entry : map.entrySet()) {
+				HashMap<SidedBlockCoord, ByteBuf> map = out.get(world);
+				for (Entry<SidedBlockCoord, ByteBuf> entry : map.entrySet()) {
 					SidedBlockCoord crd = entry.getKey();
-					CommonProxy.networkWrapper.sendToDimension(new PacketDataStream(map.get(crd), crd.x, crd.y, crd.z,
+					CommonProxy.networkWrapper.sendToDimension(new PacketDataStream(map.get(crd).array(), crd.x, crd.y, crd.z,
 							crd.side), world.provider.getDimension());
 				}
 				map.clear();

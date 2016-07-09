@@ -2,6 +2,7 @@ package moe.nightfall.vic.integratedcircuits.net;
 
 import java.io.IOException;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketBuffer;
 
 public abstract class PacketTileEntity<T extends AbstractPacket<T>> extends AbstractPacket<T> {

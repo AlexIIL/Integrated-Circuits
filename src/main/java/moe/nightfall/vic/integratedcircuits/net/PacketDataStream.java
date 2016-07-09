@@ -9,51 +9,43 @@ import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.packet.PacketCustom;
-import codechicken.lib.vec.BlockCoord;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketDataStream extends PacketTileEntity<PacketDataStream> {
-	private MCDataInput in;
-	private MCDataOutputImpl out;
 	private EnumFacing side;
+	private byte[] data;
 
 	public PacketDataStream() {
 	}
 
-	public PacketDataStream(MCDataOutputImpl out, int x, int y, int z, EnumFacing side) {
+	public PacketDataStream(byte[] data, int x, int y, int z, EnumFacing side) {
 		super(x, y, z);
-		this.out = out;
+		this.data = data;
 		this.side = side;
 	}
 
 	@Override
 	public void read(PacketBuffer buffer) throws IOException {
 		super.read(buffer);
-		side = buffer.readInt();
-		ByteBuf buf = Unpooled.buffer();
-		buffer.readBytes(buf, buffer.readableBytes());
-		in = new PacketCustom(buf);
+		side = EnumFacing.getFront(buffer.readInt());
+		data = buffer.readByteArray();
 	}
 
 	@Override
 	public void write(PacketBuffer buffer) throws IOException {
 		super.write(buffer);
-		buffer.writeInt(side);
-		PacketCustom packet = new PacketCustom("", 1);
-		packet.writeByteArray(out.toByteArray());
-		buffer.writeBytes(packet.getByteBuf());
+		buffer.writeInt(side.getIndex());
+		buffer.writeByteArray(data);
 	}
 
 	@Override
-	public void process(EntityPlayer player, EnumFacing side) {
+	public void process(EntityPlayer player, Side side) {
 		ISocket socket = IntegratedCircuitsAPI.getSocketAt(player.worldObj, new BlockPos(xCoord, yCoord, zCoord),
 				this.side);
 		if (socket == null)
 			return;
-		socket.read(in);
+		socket.read(Unpooled.wrappedBuffer(data));
 	}
 }

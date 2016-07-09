@@ -1,5 +1,6 @@
 package moe.nightfall.vic.integratedcircuits.api.gate;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket.EnumConnectionType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,7 +14,7 @@ public interface ISocketBridge {
 
 	public void markRender();
 
-	public MCDataOutput getWriteStream(int disc);
+	public ByteBuf getWriteStream(int disc);
 
 	public World getWorld();
 

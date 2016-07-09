@@ -3,6 +3,7 @@ package moe.nightfall.vic.integratedcircuits.api.gate;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketBridge.ISocketBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,7 +31,7 @@ public interface ISocket extends ISocketBase {
 
 	void readDesc(NBTTagCompound compound);
 
-	void read(MCDataInput packet);
+	void read(ByteBuf packet);
 
 	/**
 	 * Only has to be called when the orientation needs to be set automatically,

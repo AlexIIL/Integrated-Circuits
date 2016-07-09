@@ -23,9 +23,9 @@ public class IntegratedCircuitsGuiHandler implements IGuiHandler {
 						return true;
 					}
 				};*/
-				return new ContainerCAD((TileEntityCAD) world.getTileEntity(new BlockPos(x, y, z)));
+				return new ContainerCAD(player, (TileEntityCAD) world.getTileEntity(new BlockPos(x, y, z)));
 			case 1:
-				return new ContainerAssembler(player.inventory, (TileEntityAssembler) world.getTileEntity(new BlockPos(x, y, z)));
+				return new ContainerAssembler(player, (TileEntityAssembler) world.getTileEntity(new BlockPos(x, y, z)));
 		}
 		return null;
 	}
@@ -35,9 +35,9 @@ public class IntegratedCircuitsGuiHandler implements IGuiHandler {
 		switch (id) {
 			case 0:
 				// return new TestGUI();
-				return new GuiCAD(new ContainerCAD((TileEntityCAD) world.getTileEntity(new BlockPos(x, y, z))));
+				return new GuiCAD(new ContainerCAD(player, (TileEntityCAD) world.getTileEntity(new BlockPos(x, y, z))));
 			case 1:
-				return new GuiAssembler(new ContainerAssembler(player.inventory, (TileEntityAssembler) world.getTileEntity(new BlockPos(x, y, z))));
+				return new GuiAssembler(new ContainerAssembler(player, (TileEntityAssembler) world.getTileEntity(new BlockPos(x, y, z))));
 		}
 		return null;
 	}

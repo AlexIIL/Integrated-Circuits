@@ -1,7 +1,8 @@
 package moe.nightfall.vic.integratedcircuits.tile;
 
-import codechicken.lib.vec.BlockCoord;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,9 +23,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 
-public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDiskDrive {
+public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDiskDrive, ITickable {
 	private ItemStack floppyStack;
 	private CircuitData circuitData;
 	public CircuitCache cache = new CircuitCache(this);
@@ -59,7 +60,7 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 	}
 
 	public void sendSimulationState() {
-		CommonProxy.networkWrapper.sendToServer(new PacketPCBSimulation(step, pausing, xCoord, yCoord, zCoord));
+		CommonProxy.networkWrapper.sendToServer(new PacketPCBSimulation(step, pausing, getPos().getX(), getPos().getY(), getPos().getZ()));
 	}
 
 	public void setup(int size) {
@@ -68,7 +69,7 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 	}
 
 	@Override
-	public void updateEntity() {
+	public void update() {
 		// Update the matrix in case there is at least one player watching.
 		if (!worldObj.isRemote && playersUsing > 0) {
 			if (step || !pausing) {
@@ -78,14 +79,14 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 
 			if (getCircuitData().checkUpdate()) {
 				CommonProxy.networkWrapper.sendToAllAround(
-						new PacketPCBUpdate(getCircuitData(), xCoord, yCoord, zCoord), new TargetPoint(
-								worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 8));
+						new PacketPCBUpdate(getCircuitData(), getPos().getX(), getPos().getY(), getPos().getZ()), new TargetPoint(
+								worldObj.provider.getDimension(), getPos().getX(), getPos().getY(), getPos().getZ(), 8));
 			}
 			if (updateIO) {
 				updateIO = false;
 				CommonProxy.networkWrapper.sendToAllAround(new PacketPCBChangeInput(false, out, circuitData
 					.getProperties().getCon(), this), new TargetPoint(
-						worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 8));
+						worldObj.provider.getDimension(), getPos().getX(), getPos().getY(), getPos().getZ(), 8));
 			}
 			markDirty();
 		}
@@ -115,7 +116,7 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 		compound.setTag("floppyStack", stackCompound);
 	}
 
-	public final boolean getExternalInputFromSide(EnumFacing side, int frequency) {
+	public final boolean getExternalInputFromSide(EnumFacing dir, int frequency) {
 		return (in[MiscUtils.getSide(dir)] & 1 << frequency) != 0;
 	}
 
@@ -130,7 +131,7 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 
 	@SideOnly(Side.CLIENT)
 	public final void setExternalInputFromSide(EnumFacing dir, int frequency, boolean output) {
-		EnumConnectionType mode = circuitData.getProperties().getModeAtSide(MiscUtils.getSide(dir));
+		EnumConnectionType mode = circuitData.getProperties().getModeAtSide(dir);
 		if (mode != EnumConnectionType.SIMPLE || frequency == 0) {
 			int[] i = this.in.clone();
 			if (mode == EnumConnectionType.ANALOG)
@@ -170,7 +171,7 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 		if (id == 1) {
 			if (worldObj.isRemote) {
 				// Update GUI
-				printerLocation = EnumFacing.getOrientation(par);
+				printerLocation = EnumFacing.getFront(par);
 				GuiScreen gui = Minecraft.getMinecraft().currentScreen;
 				if (gui instanceof GuiCAD) {
 					((GuiCAD) gui).refreshPrinter();
@@ -183,17 +184,17 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 	}
 
 	public void onNeighborBlockChange() {
-		BlockCoord bc = new BlockCoord(this);
+		BlockPos bc = new BlockPos(this.getPos());
 		EnumFacing oldPrinterLocation = printerLocation;
-		printerLocation = EnumFacing.UNKNOWN;
-		for (EnumFacing fd : EnumFacing.VALID_DIRECTIONS) {
-			BlockCoord bcs = bc.offset(fd.ordinal());
-			if (worldObj.getBlock(bcs.x, bcs.y, bcs.z) == Content.blockPrinter) {
+		printerLocation = null;
+		for (EnumFacing fd : EnumFacing.VALUES) {
+			BlockPos bcs = bc.offset(fd);
+			if (worldObj.getBlockState(bcs) == Content.blockPrinter) {
 				printerLocation = fd;
 			}
 		}
 		if (!worldObj.isRemote && oldPrinterLocation != printerLocation) {
-			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 1, printerLocation.ordinal());
+			worldObj.addBlockEvent(getPos(), getBlockType(), 1, printerLocation.ordinal());
 		}
 	}
 
@@ -205,7 +206,7 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 	}
 
 	public boolean isPrinterConnected() {
-		return printerLocation() != EnumFacing.UNKNOWN;
+		return printerLocation() != null;
 	}
 
 	@Override
@@ -238,7 +239,7 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 	@Override
 	public AxisAlignedBB getBoundingBox() {
 		return MiscUtils.getRotatedInstance(
-				AxisAlignedBB.getBoundingBox(1 / 16F, 1 / 16F, -1 / 16F, 13 / 16F, 3 / 16F, 1 / 16F), rotation);
+				new AxisAlignedBB(1 / 16F, 1 / 16F, -1 / 16F, 13 / 16F, 3 / 16F, 1 / 16F), rotation);
 	}
 
 	@Override
@@ -250,8 +251,8 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 	public void setDisk(ItemStack stack) {
 		setInventorySlotContents(0, stack);
 		if (!worldObj.isRemote)
-			CommonProxy.networkWrapper.sendToDimension(new PacketFloppyDisk(xCoord, yCoord, zCoord, stack),
-					worldObj.provider.dimensionId);
+			CommonProxy.networkWrapper.sendToDimension(new PacketFloppyDisk(getPos().getX(), getPos().getY(), getPos().getZ(), stack),
+					worldObj.provider.getDimension());
 	}
 
 	@Override

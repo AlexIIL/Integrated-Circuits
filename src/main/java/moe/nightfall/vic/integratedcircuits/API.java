@@ -3,12 +3,14 @@ package moe.nightfall.vic.integratedcircuits;
 import java.util.List;
 import java.util.Set;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.api.IAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.GateIOProvider;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketProvider;
 import moe.nightfall.vic.integratedcircuits.gate.GateRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -43,7 +45,7 @@ public class API implements IAPI {
 	}
 
 	@Override
-	public MCDataOutput getWriteStream(World world, BlockPos pos, int side) {
+	public ByteBuf getWriteStream(World world, BlockPos pos, EnumFacing side) {
 		return IntegratedCircuits.proxy.addStream(world, pos, side);
 	}
 
@@ -62,13 +64,13 @@ public class API implements IAPI {
 
 		//Comparator input
 		if(socket.getConnectionTypeAtSide(side).isRedstone() && hasComparatorInput(socket, pos))
-			input = updateComparatorInput(socket, pos, rotation);
+			input = updateComparatorInput(socket, pos);
 		if (input != 0)
 			return input;
 
 		// Compatibility to Redstone
 		if (input < 15 && socket.getWorld().getBlockState(pos).getBlock() == Blocks.REDSTONE_WIRE)
-			input = Math.max(input, socket.getWorld().getBlockState(pos));
+			input = Math.max(input, socket.getWorld().getBlockState(pos).getValue(BlockRedstoneWire.POWER));
 		if (input != 0)
 			return input;
 

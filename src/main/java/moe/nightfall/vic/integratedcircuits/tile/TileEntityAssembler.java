@@ -324,7 +324,7 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 	@Override
 	public AxisAlignedBB getBoundingBox() {
 		return MiscUtils.getRotatedInstance(
-				new AxisAlignedBB(1 / 16F, 1 / 16F, -1 / 16F, 13 / 16F, 3 / 16F, 1 / 16F), rotation.getAxis());
+				new AxisAlignedBB(1 / 16F, 1 / 16F, -1 / 16F, 13 / 16F, 3 / 16F, 1 / 16F), rotation);
 	}
 
 	@Override

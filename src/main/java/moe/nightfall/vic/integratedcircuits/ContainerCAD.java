@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 public class ContainerCAD extends Container {
 	public TileEntityCAD tileentity;
 
-	public ContainerCAD(TileEntityCAD tileentity) {
+	public ContainerCAD(EntityPlayer player, TileEntityCAD tileentity) {
 		this.tileentity = tileentity;
-		this.tileentity.openInventory();
+		this.tileentity.openInventory(player);
 
 		this.addSlotToContainer(new Slot(tileentity, 0, 0, 0) {
 			@Override
@@ -28,7 +28,7 @@ public class ContainerCAD extends Container {
 
 	@Override
 	public void onContainerClosed(EntityPlayer player) {
-		this.tileentity.closeInventory();
+		this.tileentity.closeInventory(player);
 		super.onContainerClosed(player);
 	}
 

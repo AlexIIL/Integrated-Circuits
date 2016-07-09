@@ -1,5 +1,6 @@
 package moe.nightfall.vic.integratedcircuits.api;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGateRegistry;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketProvider;
@@ -13,7 +14,7 @@ public interface IAPI {
 
 	public void registerSocketProvider(ISocketProvider provider);
 
-	public MCDataOutput getWriteStream(World world, BlockPos pos, EnumFacing side);
+	public ByteBuf getWriteStream(World world, BlockPos pos, EnumFacing side);
 
 	public IGateRegistry getGateRegistry();
 

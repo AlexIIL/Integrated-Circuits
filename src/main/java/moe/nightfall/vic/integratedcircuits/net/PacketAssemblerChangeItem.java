@@ -2,6 +2,7 @@ package moe.nightfall.vic.integratedcircuits.net;
 
 import java.io.IOException;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntityAssembler;
 import net.minecraft.entity.player.EntityPlayer;

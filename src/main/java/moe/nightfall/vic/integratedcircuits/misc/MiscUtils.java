@@ -122,15 +122,15 @@ public class MiscUtils {
 		return I18n.translateToLocalFormatted("fdirection." + fd.name().toLowerCase() + ".name");
 	}
 
-	public static AxisAlignedBB getRotatedInstance(AxisAlignedBB def, int rotation) {
+	public static AxisAlignedBB getRotatedInstance(AxisAlignedBB def, EnumFacing rotation) {
 		//def = def.copy();
 		def.offset(-0.5, -0.5, -0.5);
-		switch (rotation) {
-			case 2:
+		switch (rotation) { // FIXME fix to be the right dirs
+			case NORTH:
 				def = new AxisAlignedBB(def.minZ, def.minY, -def.maxX, def.maxZ, def.maxY, -def.minX);
-			case 3:
+			case EAST:
 				def = new AxisAlignedBB(-def.maxX, def.minY, -def.maxZ, -def.minX, def.maxY, -def.minZ);
-			case 1:
+			case SOUTH:
 				def = new AxisAlignedBB(-def.maxZ, def.minY, def.minX, -def.minZ, def.maxY, def.maxX);
 		}
 		def.offset(0.5, 0.5, 0.5);

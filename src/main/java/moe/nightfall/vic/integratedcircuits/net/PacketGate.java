@@ -2,6 +2,7 @@ package moe.nightfall.vic.integratedcircuits.net;
 
 import java.io.IOException;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGate;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketBridge.ISocketBase;

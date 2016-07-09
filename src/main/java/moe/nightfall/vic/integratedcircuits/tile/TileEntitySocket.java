@@ -1,5 +1,6 @@
 package moe.nightfall.vic.integratedcircuits.tile;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.Content;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
@@ -9,14 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.vec.BlockCoord;
 
 public class TileEntitySocket extends TileEntity implements ISocketWrapper, ITickable {
 	public ISocket socket = IntegratedCircuitsAPI.getGateRegistry().createSocketInstance(this);
@@ -25,7 +24,7 @@ public class TileEntitySocket extends TileEntity implements ISocketWrapper, ITic
 
 	@Override
 	public void markRender() {
-		worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
+		worldObj.markBlockRangeForRenderUpdate(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override
@@ -49,7 +48,7 @@ public class TileEntitySocket extends TileEntity implements ISocketWrapper, ITic
 	public Packet getDescriptionPacket() {
 		NBTTagCompound comp = new NBTTagCompound();
 		socket.writeDesc(comp);
-		return new SPacketUpdateTileEntity(pos, blockMetadata, comp);
+		return new SPacketUpdateTileEntity(pos, getBlockMetadata(), comp);
 	}
 
 	@Override
@@ -59,7 +58,7 @@ public class TileEntitySocket extends TileEntity implements ISocketWrapper, ITic
 	}
 
 	@Override
-	public MCDataOutput getWriteStream(int disc) {
+	public ByteBuf getWriteStream(int disc) {
 		return IntegratedCircuitsAPI.getWriteStream(getWorld(), getPos(), socket.getSide()).writeByte(disc);
 	}
 
@@ -93,12 +92,12 @@ public class TileEntitySocket extends TileEntity implements ISocketWrapper, ITic
 	}
 
 	@Override
-	public byte[] updateBundledInput(int side) {
+	public byte[] updateBundledInput(EnumFacing side) {
 		return IntegratedCircuitsAPI.updateBundledInput(getSocket(), side);
 	}
 
 	@Override
-	public int updateRedstoneInput(int side) {
+	public int updateRedstoneInput(EnumFacing side) {
 		return IntegratedCircuitsAPI.updateRedstoneInput(getSocket(), side);
 	}
 
