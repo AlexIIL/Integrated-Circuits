@@ -127,7 +127,7 @@ public class GateCircuit extends Gate implements ICircuit, IGatePeripheralProvid
 	}
 
 	@Override
-	public void setOutputToSide(ForgeDirection dir, int frequency, boolean output) {
+	public void setOutputToSide(EnumFacing dir, int frequency, boolean output) {
 		int side = (MiscUtils.getSide(dir) + 2) % 4;
 		EnumConnectionType mode = getConnectionTypeAtSide(side);
 		if (mode == EnumConnectionType.SIMPLE && frequency > 0)
