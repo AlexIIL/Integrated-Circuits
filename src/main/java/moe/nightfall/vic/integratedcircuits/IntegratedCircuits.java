@@ -13,7 +13,6 @@ import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketProvider;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketWrapper;
 import moe.nightfall.vic.integratedcircuits.compat.BPRedstoneProvider;
-import moe.nightfall.vic.integratedcircuits.compat.NEIAddon;
 import moe.nightfall.vic.integratedcircuits.compat.gateio.GateIO;
 import moe.nightfall.vic.integratedcircuits.cp.CircuitPart;
 import moe.nightfall.vic.integratedcircuits.gate.Gate7Segment;
@@ -58,7 +57,7 @@ public class IntegratedCircuits {
 	public static boolean isMFRLoaded = false;
 	public static boolean isOCLoaded = false;
 	//public static boolean isCCLoaded = false;
-	public static boolean isNEILoaded = false;
+	//public static boolean isNEILoaded = false;
 	public static boolean isBCLoaded = false;
 
 	// TODO BETTER NAME?
@@ -104,7 +103,7 @@ public class IntegratedCircuits {
 		logger.info("MineFactoryReloaded: " + (isMFRLoaded = Loader.isModLoaded("MineFactoryReloaded")));
 		logger.info("Open Computers: " + (isOCLoaded = Loader.isModLoaded("OpenComputers")));
 		//logger.info("Computer Craft: " + (isCCLoaded = Loader.isModLoaded("ComputerCraft")));
-		logger.info("Not Enough Items: " + (isNEILoaded = Loader.isModLoaded("NotEnoughItems")));
+		//logger.info("Not Enough Items: " + (isNEILoaded = Loader.isModLoaded("NotEnoughItems")));
 		logger.info("BuildCraft: " + (isBCLoaded = Loader.isModLoaded("BuildCraft|Core")));
 		logger.info("Searching for compatible APIs");
 		logger.info("BuildCraft Tools API: " + (isBCToolsAPIThere = ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools")));
@@ -193,9 +192,6 @@ public class IntegratedCircuits {
 		*/
 
 		proxy.initialize();
-
-		if (isNEILoaded && !MiscUtils.isServer())
-			new NEIAddon().initialize();
 
 		FMLInterModComms.sendMessage("Waila", "register", "moe.nightfall.vic.integratedcircuits.compat.WailaAddon.registerAddon");
 	}
