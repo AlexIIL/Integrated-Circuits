@@ -43,7 +43,7 @@ public class API implements IAPI {
 	}
 
 	@Override
-	public MCDataOutput getWriteStream(World world, BlockPos pos, int side) {
+	public MCDataOutput getWriteStream(World world, BlockPos pos, EnumFacing side) {
 		return IntegratedCircuits.proxy.addStream(world, pos, side);
 	}
 
