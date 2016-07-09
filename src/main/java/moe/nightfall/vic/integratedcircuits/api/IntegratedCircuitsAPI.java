@@ -7,8 +7,6 @@ import moe.nightfall.vic.integratedcircuits.api.gate.ISocketProvider;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.vec.BlockCoord;
 
 /**
  * Integrated Circuits API.
