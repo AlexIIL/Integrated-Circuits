@@ -44,9 +44,6 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import dan200.computercraft.api.ComputerCraftAPI;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 
 @Mod(modid = "integratedcircuits", dependencies = "required-after:CodeChickenCore; after:ComputerCraft; after:ForgeMultipart@[1.1.2.332,)", guiFactory = "moe.nightfall.vic.integratedcircuits.client.gui.IntegratedCircuitsGuiFactory")
 public class IntegratedCircuits {
@@ -60,7 +57,7 @@ public class IntegratedCircuits {
 	public static boolean isRLLoaded = false;
 	public static boolean isMFRLoaded = false;
 	public static boolean isOCLoaded = false;
-	public static boolean isCCLoaded = false;
+	//public static boolean isCCLoaded = false;
 	public static boolean isNEILoaded = false;
 	public static boolean isBCLoaded = false;
 
@@ -106,7 +103,7 @@ public class IntegratedCircuits {
 		logger.info("RedLogic: " + (isRLLoaded = Loader.isModLoaded("RedLogic")));
 		logger.info("MineFactoryReloaded: " + (isMFRLoaded = Loader.isModLoaded("MineFactoryReloaded")));
 		logger.info("Open Computers: " + (isOCLoaded = Loader.isModLoaded("OpenComputers")));
-		logger.info("Computer Craft: " + (isCCLoaded = Loader.isModLoaded("ComputerCraft")));
+		//logger.info("Computer Craft: " + (isCCLoaded = Loader.isModLoaded("ComputerCraft")));
 		logger.info("Not Enough Items: " + (isNEILoaded = Loader.isModLoaded("NotEnoughItems")));
 		logger.info("BuildCraft: " + (isBCLoaded = Loader.isModLoaded("BuildCraft|Core")));
 		logger.info("Searching for compatible APIs");
@@ -188,10 +185,12 @@ public class IntegratedCircuits {
 		GameRegistry.register(Content.blockSocket);
 		GameRegistry.registerTileEntity(TileEntitySocket.class, Constants.MOD_ID + ".socket");
 
+		/*
 		if (isCCLoaded) {
 			ComputerCraftAPI.registerBundledRedstoneProvider((IBundledRedstoneProvider) Content.blockSocket);
 			ComputerCraftAPI.registerPeripheralProvider((IPeripheralProvider) Content.blockSocket);
 		}
+		*/
 
 		proxy.initialize();
 
