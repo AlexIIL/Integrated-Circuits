@@ -11,6 +11,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.ITextComponent;
 
 public abstract class TileEntityContainer extends TileEntity implements IInventory {
 	public EnumFacing rotation;
@@ -95,12 +96,12 @@ public abstract class TileEntityContainer extends TileEntity implements IInvento
 	}
 
 	@Override
-	public String getInventoryName() {
+	public ITextComponent getDisplayName() {
 		return null;
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() {
+	public boolean hasCustomName() {
 		return false;
 	}
 
