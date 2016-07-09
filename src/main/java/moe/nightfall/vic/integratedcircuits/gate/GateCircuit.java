@@ -11,8 +11,7 @@ import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-import codechicken.lib.vec.Cuboid6;
+import net.minecraft.util.EnumFacing;
 
 public class GateCircuit extends Gate implements ICircuit, IGatePeripheralProvider {
 
@@ -25,7 +24,7 @@ public class GateCircuit extends Gate implements ICircuit, IGatePeripheralProvid
 
 	@Override
 	public void preparePlacement(EntityPlayer player, ItemStack stack) {
-		NBTTagCompound comp = stack.stackTagCompound;
+		NBTTagCompound comp = stack.getTagCompound();
 		if (comp == null)
 			return;
 
@@ -62,7 +61,7 @@ public class GateCircuit extends Gate implements ICircuit, IGatePeripheralProvid
 		ItemStack stack = new ItemStack(Content.itemCircuit);
 		NBTTagCompound comp = new NBTTagCompound();
 		comp.setTag("circuit", getCircuitData().writeToNBTRaw(new NBTTagCompound()));
-		stack.stackTagCompound = comp;
+		stack.setTagCompound(comp);
 		return stack;
 	}
 
@@ -122,8 +121,8 @@ public class GateCircuit extends Gate implements ICircuit, IGatePeripheralProvid
 	}
 
 	@Override
-	public boolean getInputFromSide(ForgeDirection dir, int frequency) {
-		int side = (MiscUtils.getSide(dir) + 2) % 4;
+	public boolean getInputFromSide(EnumFacing dir, int frequency) {
+		EnumFacing side = dir.rotateYCCW();
 		if (getConnectionTypeAtSide(side) == EnumConnectionType.ANALOG)
 			return provider.getRedstoneInput(side) == frequency;
 		return provider.getBundledInput(side, frequency) != 0;
@@ -151,7 +150,7 @@ public class GateCircuit extends Gate implements ICircuit, IGatePeripheralProvid
 	}
 
 	@Override
-	public EnumConnectionType getConnectionTypeAtSide(int side) {
+	public EnumConnectionType getConnectionTypeAtSide(EnumFacing side) {
 		return circuitData.getProperties().getModeAtSide((side + 2) % 4);
 	}
 

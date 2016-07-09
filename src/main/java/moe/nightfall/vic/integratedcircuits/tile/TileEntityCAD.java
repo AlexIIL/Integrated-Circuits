@@ -1,9 +1,10 @@
 package moe.nightfall.vic.integratedcircuits.tile;
 
 import codechicken.lib.vec.BlockCoord;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import moe.nightfall.vic.integratedcircuits.Content;
 import moe.nightfall.vic.integratedcircuits.DiskDrive.IDiskDrive;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket.EnumConnectionType;
@@ -43,7 +44,7 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 	private boolean step = false;
 
 	// Shows if there is a printer connected
-	private ForgeDirection printerLocation;
+	private EnumFacing printerLocation;
 
 	public boolean isPausing() {
 		return pausing;
@@ -115,7 +116,7 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 		compound.setTag("floppyStack", stackCompound);
 	}
 
-	public final boolean getExternalInputFromSide(ForgeDirection dir, int frequency) {
+	public final boolean getExternalInputFromSide(EnumFacing side, int frequency) {
 		return (in[MiscUtils.getSide(dir)] & 1 << frequency) != 0;
 	}
 
@@ -197,7 +198,7 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 		}
 	}
 
-	public ForgeDirection printerLocation() {
+	public EnumFacing printerLocation() {
 		if (printerLocation == null) {
 			onNeighborBlockChange();
 		}

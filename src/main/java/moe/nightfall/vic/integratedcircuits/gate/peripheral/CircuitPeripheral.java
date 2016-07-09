@@ -8,12 +8,12 @@ import moe.nightfall.vic.integratedcircuits.cp.CircuitData;
 import moe.nightfall.vic.integratedcircuits.cp.CircuitPart;
 import moe.nightfall.vic.integratedcircuits.gate.GateCircuit;
 import moe.nightfall.vic.integratedcircuits.misc.PropertyStitcher.IProperty;
-import moe.nightfall.vic.integratedcircuits.misc.Vec2;
+import moe.nightfall.vic.integratedcircuits.misc.Vec2i;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import cpw.mods.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
 // TODO Test me! -- If it didn't work, it would probably be reported by now
@@ -33,7 +33,7 @@ public class CircuitPeripheral extends GatePeripheral {
 	@LuaMethod
 	public Object[] getGateAt(double x, double y) {
 		CircuitData cdata = circuit.getCircuitData();
-		Vec2 pos = getPos(x, y);
+		Vec2i pos = getPos(x, y);
 		CircuitPart cp = cdata.getPart(pos);
 		String name = cp.getName(pos, circuit);
 		int id = CircuitPart.getId(cp);
@@ -44,7 +44,7 @@ public class CircuitPeripheral extends GatePeripheral {
 	@LuaMethod
 	public Object[] getPowerTo(double x, double y) {
 		CircuitData cdata = circuit.getCircuitData();
-		Vec2 pos = getPos(x, y);
+		Vec2i pos = getPos(x, y);
 		CircuitPart cp = cdata.getPart(pos);
 
 		boolean b1 = cp.getInputFromSide(pos, circuit, ForgeDirection.NORTH);
@@ -67,7 +67,7 @@ public class CircuitPeripheral extends GatePeripheral {
 	@LuaMethod
 	public Object[] getGateProperty(double x, double y, String name) throws LuaException {
 		CircuitData cdata = circuit.getCircuitData();
-		Vec2 pos = getPos(x, y);
+		Vec2i pos = getPos(x, y);
 		CircuitPart cp = cdata.getPart(pos);
 
 		int state = cp.getState(pos, circuit);
@@ -79,7 +79,7 @@ public class CircuitPeripheral extends GatePeripheral {
 	@LuaMethod
 	public void setGateProperty(double x, double y, String name, Object obj) throws LuaException {
 		CircuitData cdata = circuit.getCircuitData();
-		Vec2 pos = getPos(x, y);
+		Vec2i pos = getPos(x, y);
 		CircuitPart cp = cdata.getPart(pos);
 
 		int state = cp.getState(pos, circuit);
@@ -128,11 +128,11 @@ public class CircuitPeripheral extends GatePeripheral {
 		return cp.toString();
 	}
 
-	private Vec2 getPos(double x, double y) {
-		return new Vec2((int) x, (int) y);
+	private Vec2i getPos(double x, double y) {
+		return new Vec2i((int) x, (int) y);
 	}
 
-	private IProperty getProperty(CircuitPart part, Vec2 pos, String name) throws LuaException {
+	private IProperty getProperty(CircuitPart part, Vec2i pos, String name) throws LuaException {
 		IProperty property = part.stitcher.getPropertyByName(name);
 		if (property == null)
 			throw new LuaException(String.format("No property by the name of '&s' found for gate %s", name, part.getName(pos, circuit)));

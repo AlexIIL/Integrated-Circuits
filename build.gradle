@@ -15,8 +15,12 @@ buildscript {
     }
 }
 
-repositories {   
+repositories {
     maven {
+        url "http://maven.amadornes.com/"
+    }
+
+    /*maven {
         name "rx14"
         url "http://mvn.rx14.co.uk/repo/"
     }
@@ -49,7 +53,7 @@ repositories {
     ivy {
         name "BuildCraft"
         artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
-    }
+    }*/
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -73,11 +77,11 @@ minecraft {
 }
 
 dependencies {
-
-    /*compile "codechicken:CodeChickenLib:${mcVersion}-${cclVersion}:dev"
-    compile "codechicken:CodeChickenCore:${mcVersion}-${cccVersion}:dev"
-    compile "codechicken:ForgeMultipart:${mcVersion}-${fmpVersion}:dev"
-    compile "codechicken:NotEnoughItems:${mcVersion}-${neiVersion}:dev"
+    compile "MCMultiPart:MCMultiPart-experimental:1.1.1_57:deobf"
+    //compile "codechicken:CodeChickenLib:${mcVersion}-${cclVersion}:dev"
+    //compile "codechicken:CodeChickenCore:${mcVersion}-${cccVersion}:dev"
+    //compile "codechicken:ForgeMultipart:${mcVersion}-${fmpVersion}:dev"
+    /*compile "codechicken:NotEnoughItems:${mcVersion}-${neiVersion}:dev"
     
     compile "mcp.mobius.waila:Waila:${wailaVersion}_${mcVersion}"
 

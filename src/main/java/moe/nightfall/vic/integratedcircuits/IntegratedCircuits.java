@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import mcmultipart.multipart.*;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketProvider;
@@ -20,7 +21,7 @@ import moe.nightfall.vic.integratedcircuits.gate.GateCircuit;
 import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import moe.nightfall.vic.integratedcircuits.proxy.CommonProxy;
 import moe.nightfall.vic.integratedcircuits.tile.BlockSocket;
-import moe.nightfall.vic.integratedcircuits.tile.FMPartSocket;
+import moe.nightfall.vic.integratedcircuits.tile.MCMPartSocket;
 import moe.nightfall.vic.integratedcircuits.tile.PartFactory;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntitySocket;
 import net.minecraft.creativetab.CreativeTabs;
@@ -28,24 +29,23 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import org.apache.logging.log4j.Logger;
 
-import codechicken.lib.vec.BlockCoord;
-import codechicken.multipart.TMultiPart;
-import codechicken.multipart.TileMultipart;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.ModAPIManager;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
@@ -58,7 +58,7 @@ public class IntegratedCircuits {
 	public static boolean isPRLoaded = false;
 	public static boolean isAWLoaded = false;
 	public static boolean isBPLoaded = false;
-	public static boolean isFMPLoaded = false;
+	public static boolean isMCMPLoaded = false;
 	public static boolean isRLLoaded = false;
 	public static boolean isMFRLoaded = false;
 	public static boolean isOCLoaded = false;
@@ -104,7 +104,7 @@ public class IntegratedCircuits {
 		logger.info("ProjRed|Transmission: " + (isPRLoaded = Loader.isModLoaded("ProjRed|Transmission")));
 		logger.info("armourersWorkshop: " + (isAWLoaded = Loader.isModLoaded("armourersWorkshop")));
 		logger.info("BluePower: " + (isBPLoaded = Loader.isModLoaded("bluepower")));
-		logger.info("ForgeMultipart: " + (isFMPLoaded = Loader.isModLoaded("ForgeMultipart")));
+		logger.info("MCMultiPart: " + (isMCMPLoaded = Loader.isModLoaded("MCMultiPart")));
 		logger.info("RedLogic: " + (isRLLoaded = Loader.isModLoaded("RedLogic")));
 		logger.info("MineFactoryReloaded: " + (isMFRLoaded = Loader.isModLoaded("MineFactoryReloaded")));
 		logger.info("Open Computers: " + (isOCLoaded = Loader.isModLoaded("OpenComputers")));
@@ -115,8 +115,8 @@ public class IntegratedCircuits {
 		logger.info("BuildCraft Tools API: " + (isBCToolsAPIThere = ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools")));
 		logger.info("BluePower API: " + (isBPAPIThere = ModAPIManager.INSTANCE.hasAPI("bluepowerAPI")));
 
-		if (isFMPLoaded)
-			logger.info("Forge Multi Part installation found! FMP Compatible gates will be added.");
+		if (isMCMPLoaded)
+			logger.info("Minecraft Multi Part installation found! MCMP Compatible gates will be added.");
 
 		proxy.preInitialize();
 
@@ -144,14 +144,15 @@ public class IntegratedCircuits {
 		Content.init();
 
 		// Register socket provider
-		if (isFMPLoaded) {
+		if (isMCMPLoaded) {
 			IntegratedCircuitsAPI.registerSocketProvider(new ISocketProvider() {
 				@Override
-				public ISocket getSocketAt(World world, BlockCoord pos, int side) {
-					TileEntity te = world.getTileEntity(pos.x, pos.y, pos.z);
-					if (te instanceof TileMultipart) {
-						TileMultipart tm = (TileMultipart) te;
-						TMultiPart multipart = tm.partMap(side);
+				public ISocket getSocketAt(World world, BlockPos pos, EnumFacing facing) {
+					//TileEntity te = world.getTileEntity(pos);
+					IMultipartContainer container = MultipartHelper.getPartContainer(world, pos);
+					if (container != null) {
+
+						ISlottedPart multipart = container.getPartInSlot(PartSlot.getFaceSlot(facing));
 						if (multipart instanceof ISocketWrapper)
 							return ((ISocketWrapper) multipart).getSocket();
 					}
@@ -162,11 +163,11 @@ public class IntegratedCircuits {
 
 		IntegratedCircuitsAPI.registerSocketProvider(new ISocketProvider() {
 			@Override
-			public ISocket getSocketAt(World world, BlockCoord pos, int side) {
-				TileEntity te = world.getTileEntity(pos.x, pos.y, pos.z);
+			public ISocket getSocketAt(World world, BlockPos pos, EnumFacing facing) {
+				TileEntity te = world.getTileEntity(pos);
 				if (te instanceof ISocketWrapper) {
 					ISocketWrapper wrapper = (ISocketWrapper) te;
-					if (wrapper.getSocket().getSide() == side)
+					if (wrapper.getSocket().getSide() == facing)
 						return wrapper.getSocket();
 				}
 				return null;
@@ -186,11 +187,11 @@ public class IntegratedCircuits {
 		// constructing this class.
 		Content.blockSocket = BlockSocket.class.newInstance();
 
-		GameRegistry.registerBlock(Content.blockSocket, Constants.MOD_ID + ".socket");
+		GameRegistry.register(Content.blockSocket);
 		GameRegistry.registerTileEntity(TileEntitySocket.class, Constants.MOD_ID + ".socket");
 
-		if (isFMPLoaded) {
-			PartFactory.register(Constants.MOD_ID + ".socket_fmp", FMPartSocket.class);
+		if (isMCMPLoaded) {
+			PartFactory.register(Constants.MOD_ID + ".socket_mcmp", MCMPartSocket.class);
 			PartFactory.initialize();
 		}
 
