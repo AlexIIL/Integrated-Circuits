@@ -6,6 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.entity.RenderEnderman;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.client.model.b3d.B3DModel;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -59,12 +66,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.culling.Frustrum;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -77,10 +78,9 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -162,28 +162,27 @@ public class ClientProxy extends CommonProxy {
 
 	@SubscribeEvent
 	public void onBlockHighlight(DrawBlockHighlightEvent event) {
-		World world = event.player.worldObj;
-		if ((event.target == null) || (event.target.typeOfHit != MovingObjectType.BLOCK))
+		World world = event.getPlayer().worldObj;
+		if ((event.getTarget() == null) || (event.getTarget().typeOfHit != RayTraceResult.Type.BLOCK))
 			return;
-		int x = event.target.blockX;
-		int y = event.target.blockY;
-		int z = event.target.blockZ;
+
+		BlockPos pos = event.getTarget().getBlockPos();
 
 		AxisAlignedBB box = null;
-		Block block = world.getBlock(x, y, z);
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		Block block = world.getBlockState(pos).getBlock();
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if (tileEntity instanceof IDiskDrive)
-			box = DiskDrive.getDiskDriveBoundingBox((IDiskDrive) tileEntity, x, y, z, event.target.hitVec);
+			box = DiskDrive.getDiskDriveBoundingBox((IDiskDrive) tileEntity, pos.getX(), pos.getY(), pos.getZ(), event.getTarget().hitVec);
 		if (tileEntity instanceof TileEntityAssembler && box == null)
-			box = getLaserBoundingBox((TileEntityAssembler) tileEntity, x, y, z, event.player, event.partialTicks)
-				.getLeft();
+			box = getLaserBoundingBox((TileEntityAssembler) tileEntity, pos.getX(), pos.getY(), pos.getZ(), event.getPlayer(), event.getPlayer().getHeldItem(EnumHand.MAIN_HAND), event.getPartialTicks())
+				.getLeft(); // TODO support both hands
 		if (box == null)
 			return;
 
-		double xOff = event.player.lastTickPosX + (event.player.posX - event.player.lastTickPosX) * event.partialTicks;
-		double yOff = event.player.lastTickPosY + (event.player.posY - event.player.lastTickPosY) * event.partialTicks;
-		double zOff = event.player.lastTickPosZ + (event.player.posZ - event.player.lastTickPosZ) * event.partialTicks;
+		double xOff = event.getPlayer().lastTickPosX + (event.getPlayer().posX - event.getPlayer().lastTickPosX) * event.getPartialTicks();
+		double yOff = event.getPlayer().lastTickPosY + (event.getPlayer().posY - event.getPlayer().lastTickPosY) * event.getPartialTicks();
+		double zOff = event.getPlayer().lastTickPosZ + (event.getPlayer().posZ - event.getPlayer().lastTickPosZ) * event.getPartialTicks();
 		box = box.offset(-xOff, -yOff, -zOff).expand(0.002, 0.002, 0.002);
 
 		GL11.glEnable(GL11.GL_BLEND);
@@ -193,7 +192,7 @@ public class ClientProxy extends CommonProxy {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glDepthMask(false);
 
-		RenderGlobal.drawOutlinedBoundingBox(box, -1);
+		RenderGlobal.drawOutlinedBoundingBox(box, 255, 255, 255, 255);
 
 		GL11.glDepthMask(true);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -219,15 +218,15 @@ public class ClientProxy extends CommonProxy {
 	public void onDrawScreen(RenderGameOverlayEvent.Post event) {
 		if (tooltip != null) {
 			Minecraft mc = Minecraft.getMinecraft();
-			int color = (int) ((Math.sin((ClientProxy.clientTicks + event.partialTicks) * 0.5) * 0.2 + 0.2) * 255 + 153);
+			int color = (int) ((Math.sin((ClientProxy.clientTicks + event.getPartialTicks()) * 0.5) * 0.2 + 0.2) * 255 + 153);
 			String[] splitted = MiscUtils.stringNewlineSplit(tooltip);
 
 			int height = splitted.length * (mc.fontRenderer.FONT_HEIGHT + 2) + 6;
 			for (int i = 0; i < splitted.length; i++) {
 				String tooltip = splitted[i];
 				int width = mc.fontRenderer.getStringWidth(tooltip);
-				int x = event.resolution.getScaledWidth() / 2 - width / 2;
-				int y = (int) (event.resolution.getScaledHeight() / 2 - height / 2 + (i / (float) splitted.length)
+				int x = event.getResolution().getScaledWidth() / 2 - width / 2;
+				int y = (int) (event.getResolution().getScaledHeight() / 2 - height / 2 + (i / (float) splitted.length)
 						* height);
 				boolean even = splitted.length % 2 > 0;
 				y += i < splitted.length / 2F ? even ? -6 : 0 : even ? 0 : 6;
@@ -241,12 +240,12 @@ public class ClientProxy extends CommonProxy {
 
 	@SubscribeEvent
 	public void onTextureStitchEvent(TextureStitchEvent event) {
-		TextureMap map = event.map;
+		TextureMap map = event.getMap();
 
 		switch (map.getTextureType()) {
 			case 0:
 				for (String iconString : icons) {
-					event.map.registerIcon(iconString);
+					event.getMap().registerIcon(iconString);
 				}
 		}
 	}
@@ -305,24 +304,26 @@ public class ClientProxy extends CommonProxy {
 		curlDisplayList = GLAllocation.generateDisplayLists(1);
 		GL11.glNewList(curlDisplayList, GL11.GL_COMPILE);
 
-		Tessellator tes = Tessellator.instance;
-		tes.startDrawing(GL11.GL_QUAD_STRIP);
-		tes.setColorRGBA_I(0xF9DE85, 255);
+		moe.nightfall.vic.integratedcircuits.misc.RenderManager rm = moe.nightfall.vic.integratedcircuits.misc.RenderManager.getInstance();
+		rm.startDraw(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+		RenderUtils.applyColorIRGBA(rm, 0xF9De85, 1.0f);
 		float x = 0, y = 0, z = 0, angle;
 		float distance = 0.4F;
 
 		GL11.glShadeModel(GL11.GL_SMOOTH);
+		VertexBuffer buffer = Tessellator.getInstance().getBuffer();
 		for (angle = 0.5F; angle <= (Math.PI * 2.16F * 2); angle += distance) {
 			float pos = 1 - (float) (angle / (Math.PI * 2.16F * 2)) * 0.7F;
 			x = (float) Math.sin(angle) * 0.1F * pos;
 			z = (float) Math.cos(angle) * 0.1F * pos;
-			Vec3 normals = Vec3.createVectorHelper(x, 0, z).normalize();
-			tes.setNormal((float) normals.xCoord, (float) normals.yCoord, (float) normals.zCoord);
-			tes.addVertex(x - 0.025, y - 0.025, z - 0.025);
-			tes.addVertex(x + 0.025, y + 0.025, z + 0.025);
+			Vec3d normals = new Vec3d(x, 0, z).normalize();
+
+			float[] color = rm.getColor();
+			buffer.normal((float) normals.xCoord, (float) normals.yCoord, (float) normals.zCoord).pos(x - 0.025, y - 0.025, z - 0.025).color(color[0], color[1], color[2], color[3]).endVertex();
+			buffer.normal((float) normals.xCoord, (float) normals.yCoord, (float) normals.zCoord).pos(x + 0.025, y + 0.025, z + 0.025).color(color[0], color[1], color[2], color[3]).endVertex();
 			y += 0.01;
 		}
-		tes.draw();
+		rm.draw();
 		GL11.glShadeModel(GL11.GL_FLAT);
 		GL11.glEndList();
 	}
@@ -350,16 +351,16 @@ public class ClientProxy extends CommonProxy {
 					fbo2.setFramebufferColor(0, 0, 0, 1);
 					fbo2.createBindFramebuffer(mc.displayWidth, mc.displayHeight);
 					fbo2.unbindFramebuffer();
-					OpenGlHelper.func_153171_g(OpenGlHelper.field_153198_e, currentFBO);
+					OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, currentFBO);
 				} else if (mc.displayWidth != fbo.framebufferWidth || mc.displayHeight != fbo.framebufferHeight) {
 					fbo.createBindFramebuffer(mc.displayWidth, mc.displayHeight);
 					fbo.unbindFramebuffer();
 					fbo2.createBindFramebuffer(mc.displayWidth, mc.displayHeight);
 					fbo2.unbindFramebuffer();
-					OpenGlHelper.func_153171_g(OpenGlHelper.field_153198_e, currentFBO);
+					OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, currentFBO);
 				}
 
-				OpenGlHelper.func_153188_a(OpenGlHelper.field_153198_e, OpenGlHelper.field_153200_g, 3553,
+				OpenGlHelper.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, 3553,
 						fbo.framebufferTexture, 0);
 
 				GL11.glClearColor(0, 0, 0, 1);
@@ -381,7 +382,7 @@ public class ClientProxy extends CommonProxy {
 			GL11.glDepthMask(false);
 
 			WorldClient world = mc.theWorld;
-			EntityLivingBase entityLiving = mc.renderViewEntity;
+			Entity entityLiving = mc.getRenderViewEntity();
 
 			double x = entityLiving.prevPosX + (entityLiving.posX - entityLiving.prevPosX) * partial;
 			double y = entityLiving.prevPosY + (entityLiving.posY - entityLiving.prevPosY) * partial;
@@ -436,18 +437,18 @@ public class ClientProxy extends CommonProxy {
 					RenderPlayer render = (RenderPlayer) RenderManager.instance.getEntityRenderObject(entity);
 					if (render != null && rm.renderEngine != null && !render.isStaticEntity()) {
 						ItemStack itemstack = player.inventory.getCurrentItem();
-						render.modelBipedMain.heldItemRight = itemstack != null ? 1 : 0;
+						render.getMainModel().heldItemRight = itemstack != null ? 1 : 0;
 
 						if (itemstack != null && player.getItemInUseCount() > 0) {
 							EnumAction enumaction = itemstack.getItemUseAction();
 
-							if (enumaction == EnumAction.block)
-								render.modelBipedMain.heldItemRight = 3;
-							else if (enumaction == EnumAction.bow)
-								render.modelBipedMain.aimedBow = true;
+							if (enumaction == EnumAction.BLOCK)
+								render.getMainModel().heldItemRight = 3;
+							else if (enumaction == EnumAction.BOW)
+								render.getMainModel().aimedBow = true;
 						}
 
-						render.modelBipedMain.isSneak = player.isSneaking();
+						render.getMainModel().isSneak = player.isSneaking();
 						if (player.isSneaking() && !(player instanceof EntityPlayerSP))
 							y2 -= 0.125D;
 
@@ -457,8 +458,8 @@ public class ClientProxy extends CommonProxy {
 								* partial;
 						float f4;
 
-						if (player.isRiding() && player.ridingEntity instanceof EntityLivingBase) {
-							EntityLivingBase entitylivingbase1 = (EntityLivingBase) player.ridingEntity;
+						if (player.isRiding() && player.getRidingEntity() instanceof EntityLivingBase) {
+							EntityLivingBase entitylivingbase1 = (EntityLivingBase) player.getRidingEntity();
 							f2 = player.prevRenderYawOffset
 									+ (entitylivingbase1.renderYawOffset - entitylivingbase1.prevRenderYawOffset)
 									* partial;
@@ -496,29 +497,29 @@ public class ClientProxy extends CommonProxy {
 						// Various hardcoded offsets to make it look a little
 						// bit more natural
 
-						render.modelBipedMain.setRotationAngles(limbSwing2, limbSwing, f4, f3 - f2, f13, tilt, entity);
+						render.getMainModel().setRotationAngles(limbSwing2, limbSwing, f4, f3 - f2, f13, tilt, entity);
 
-						render.modelBipedMain.bipedBody.render(tilt);
+						render.getMainModel().bipedBody.render(tilt);
 
-						render.modelBipedMain.bipedRightArm.offsetX = 1 / 32F;
-						render.modelBipedMain.bipedRightArm.render(tilt);
+						render.getMainModel().bipedRightArm.offsetX = 1 / 32F;
+						render.getMainModel().bipedRightArm.render(tilt);
 
-						render.modelBipedMain.bipedLeftArm.offsetX = -1 / 32F;
-						render.modelBipedMain.bipedLeftArm.render(tilt);
+						render.getMainModel().bipedLeftArm.offsetX = -1 / 32F;
+						render.getMainModel().bipedLeftArm.render(tilt);
 
-						render.modelBipedMain.bipedRightLeg.offsetY = render.modelBipedMain.bipedLeftLeg.offsetY = -1 / 32F;
+						render.getMainModel().bipedRightLeg.offsetY = render.getMainModel().bipedLeftLeg.offsetY = -1 / 32F;
 						if (player.isSneaking())
-							render.modelBipedMain.bipedRightLeg.offsetZ = render.modelBipedMain.bipedLeftLeg.offsetZ = -1 / 64F;
-						render.modelBipedMain.bipedRightLeg.render(tilt);
-						render.modelBipedMain.bipedLeftLeg.render(tilt);
+							render.getMainModel().bipedRightLeg.offsetZ = render.getMainModel().bipedLeftLeg.offsetZ = -1 / 64F;
+						render.getMainModel().bipedRightLeg.render(tilt);
+						render.getMainModel().bipedLeftLeg.render(tilt);
 
-						render.modelBipedMain.bipedHeadwear.offsetY = 1 / 16F;
-						render.modelBipedMain.bipedHeadwear.render(tilt);
+						render.getMainModel().bipedHeadwear.offsetY = 1 / 16F;
+						render.getMainModel().bipedHeadwear.render(tilt);
 
-						render.modelBipedMain.bipedRightArm.offsetX = render.modelBipedMain.bipedLeftArm.offsetX = 0;
-						render.modelBipedMain.bipedRightLeg.offsetY = render.modelBipedMain.bipedLeftLeg.offsetY = 0;
-						render.modelBipedMain.bipedRightLeg.offsetZ = render.modelBipedMain.bipedLeftLeg.offsetZ = 0;
-						render.modelBipedMain.bipedHeadwear.offsetY = 0;
+						render.getMainModel().bipedRightArm.offsetX = render.getMainModel().bipedLeftArm.offsetX = 0;
+						render.getMainModel().bipedRightLeg.offsetY = render.getMainModel().bipedLeftLeg.offsetY = 0;
+						render.getMainModel().bipedRightLeg.offsetZ = render.getMainModel().bipedLeftLeg.offsetZ = 0;
+						render.getMainModel().bipedHeadwear.offsetY = 0;
 					}
 
 					double scale = 1.2 + (Math.sin((player.ticksExisted + partial) / 20D) + 1) * 0.02;
@@ -531,7 +532,7 @@ public class ClientProxy extends CommonProxy {
 
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-			OpenGlHelper.func_153188_a(OpenGlHelper.field_153198_e, OpenGlHelper.field_153200_g, 3553, currentTexture,
+			OpenGlHelper.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, 3553, currentTexture,
 					0);
 
 			if (OpenGlHelper.isFramebufferEnabled() && shaders && ShaderHelper.SHADER_BLUR != 0 && found) {
@@ -570,7 +571,7 @@ public class ClientProxy extends CommonProxy {
 				ShaderHelper.releaseShader();
 				fbo.framebufferClear();
 
-				OpenGlHelper.func_153171_g(OpenGlHelper.field_153198_e, currentFBO);
+				OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, currentFBO);
 				fbo2.bindFramebufferTexture();
 
 				GL11.glShadeModel(GL11.GL_SMOOTH);
@@ -610,9 +611,9 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@SubscribeEvent
-	public void onPlayerRender(RenderPlayerEvent.Specials.Post event) {
+	public void onPlayerRender(RenderPlayerEvent.Post event) {
 
-		EntityPlayer player = event.entityPlayer;
+		EntityPlayer player = event.getEntityPlayer();
 		Minecraft mc = Minecraft.getMinecraft();
 
 		// Get cosplay of the player
@@ -657,7 +658,7 @@ public class ClientProxy extends CommonProxy {
 			// Nano Shinonome
 			long time = System.currentTimeMillis();
 
-			NanoProperties properties = (NanoProperties) event.entityPlayer.getExtendedProperties("nano");
+			NanoProperties properties = (NanoProperties) event.getEntityPlayer().getExtendedProperties("nano");
 			if (properties == null)
 				player.registerExtendedProperties("nano", properties = new NanoProperties());
 			boolean isJumping = player.posY - player.lastTickPosY > player.jumpMovementFactor;
@@ -679,7 +680,7 @@ public class ClientProxy extends CommonProxy {
 			GL11.glPushMatrix();
 			GL11.glScalef(0.6F, 0.6F, 0.6F);
 			GL11.glRotatef(-90, 0, 1, 0);
-			GL11.glRotatef((float) Math.toDegrees(-event.renderer.modelBipedMain.bipedBody.rotateAngleX), 0, 0, 1);
+			GL11.glRotatef((float) Math.toDegrees(-event.getRenderer().getMainModel().bipedBody.rotateAngleX), 0, 0, 1);
 			GL11.glTranslatef(3 / 16F, 0, 1 / 16F);
 			GL11.glTranslatef(0, 1 / 2F, -1 / 16F);
 			if (properties.isSpinning) {
@@ -697,12 +698,12 @@ public class ClientProxy extends CommonProxy {
 		}
 
 		float yaw = player.prevRotationYawHead + (player.rotationYawHead - player.prevRotationYawHead)
-				* event.partialRenderTick;
+				* event.getPartialRenderTick();
 		float yawOffset = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset)
-				* event.partialRenderTick;
+				* event.getPartialRenderTick();
 		float pitch = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch)
-				* event.partialRenderTick;
-		float pitchZ = (float) Math.toDegrees(event.renderer.modelBipedMain.bipedHead.rotateAngleZ);
+				* event.getPartialRenderTick();
+		float pitchZ = (float) Math.toDegrees(event.getRenderer().getMainModel().bipedHead.rotateAngleZ);
 
 		GL11.glPushMatrix();
 
@@ -841,33 +842,37 @@ public class ClientProxy extends CommonProxy {
 
 		float radius = 4 / 16F, height = 2 / 16F;
 		float res = 0.7F;
-		Tessellator tes = Tessellator.instance;
+		VertexBuffer buffer = Tessellator.getInstance().getBuffer();
 
-		tes.startDrawing(GL11.GL_TRIANGLE_FAN);
-		tes.setColorRGBA_I(0x57424F, 255);
-		tes.setNormal(0, -1, 0);
-		tes.addVertex(0, 0, 0);
+		moe.nightfall.vic.integratedcircuits.misc.RenderManager rm = moe.nightfall.vic.integratedcircuits.misc.RenderManager.getInstance();
+
+		rm.startDraw(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL); //TODO is this th right one?
+		RenderUtils.applyColorIRGBA(rm, 0x57424F, 1.0f);
+		float[] color = rm.getColor();
+
+		buffer.normal(0, -1, 0).pos(0, 0, 0).color(color[0], color[1], color[2], color[3]).endVertex();
 		for (float i = 0; i <= 2 * Math.PI; i += res)
-			tes.addVertex(radius * Math.cos(i), 0, radius * Math.sin(i));
-		tes.addVertex(radius, 0, 0);
-		tes.draw();
+			buffer.normal(0, -1, 0).pos(radius * Math.cos(i), 0, radius * Math.sin(i)).color(color[0], color[1], color[2], color[3]).endVertex();
+		buffer.normal(0, -1, 0).pos(radius, 0, 0).color(color[0], color[1], color[2], color[3]).endVertex();
+		rm.draw();
 
-		Vec3 center = Vec3.createVectorHelper(-radius, -height / 2, -radius);
-		tes.startDrawing(GL11.GL_QUAD_STRIP);
-		tes.setColorRGBA_I(0x57424F, 255);
+		Vec3d center = new Vec3d(-radius, -height / 2, -radius);
+		rm.startDraw(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+		RenderUtils.applyColorIRGBA(rm, 0x57424F, 1.0f);
+		color = rm.getColor();
+		Vec3d v2 = new Vec3d(0, -1, 0);
 		for (float i = 0; i <= 2 * Math.PI; i += res) {
 			float x = (float) (radius * Math.cos(i));
 			float z = (float) (radius * Math.sin(i));
-			Vec3 v1 = Vec3.createVectorHelper(x, 0, z).subtract(center).normalize();
-			tes.setNormal((float) v1.xCoord, (float) v1.yCoord, (float) v1.zCoord);
-			tes.addVertex(x, 0, z);
-			Vec3 v2 = Vec3.createVectorHelper(x, height, z).subtract(center).normalize();
-			tes.setNormal((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord);
-			tes.addVertex(x, height, z);
+			Vec3d v1 = new Vec3d(x, 0, z).subtract(center).normalize();
+			buffer.normal((float) v1.xCoord, (float) v1.yCoord, (float) v1.zCoord).pos(x, 0, z).color(color[0], color[1], color[2], color[3]).endVertex();
+			v2 = new Vec3d(x, height, z).subtract(center).normalize();
+			buffer.normal((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord).pos(x, height, z).color(color[0], color[1], color[2], color[3]).endVertex();
 		}
-		tes.addVertex(radius, 0, 0);
-		tes.addVertex(radius, height, 0);
-		tes.draw();
+		buffer.normal((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord).pos(radius, 0, 0).color(color[0], color[1], color[2], color[3]).endVertex();
+		buffer.normal((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord).pos(radius, height, 0).color(color[0], color[1], color[2], color[3]).endVertex();
+
+		rm.draw();
 
 		GL11.glPopMatrix();
 	}
@@ -882,55 +887,53 @@ public class ClientProxy extends CommonProxy {
 		GL11.glColor3ub((byte)128, (byte)0, (byte)0);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 
-		Tessellator tes = Tessellator.instance;
-		
+		VertexBuffer buffer = Tessellator.getInstance().getBuffer();
+
+		moe.nightfall.vic.integratedcircuits.misc.RenderManager rm = moe.nightfall.vic.integratedcircuits.misc.RenderManager.getInstance();
+
 		float height = 9;
 		float inner = 11;
 		float outer = 18;
 		int points = 12;
 		
 		//Cylinder mantle
-		tes.startDrawing(GL11.GL_QUAD_STRIP);
+		rm.startDraw(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_NORMAL);
 		for(int i = 0; i <= points; i++)
 		{
 			float angle = 2 * (float)Math.PI * (i + 0.5f)/points;
 			float cos = (float)Math.cos(angle);
 			float sin = (float)Math.sin(angle);
-			tes.setNormal(0.95f * cos, -0.31225f, 0.95f * sin);
-			tes.addVertex(inner * cos, 0, inner * sin);
-			tes.addVertex(inner * cos, height, inner * sin);
+			buffer.normal(0.95f * cos, -0.31225f, 0.95f * sin).pos(inner * cos, 0, inner * sin).endVertex();
+			buffer.normal(0.95f * cos, -0.31225f, 0.95f * sin).pos(inner * cos, height, inner * sin).endVertex();
 		}
-		tes.draw();
+		rm.draw();
 		
 		//Cylinder top
-		tes.startDrawing(GL11.GL_TRIANGLE_FAN);
-		tes.setNormal(0, -1, 0);
-		tes.addVertex(0, 0, 0);
+		rm.startDraw(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_NORMAL);
+		buffer.normal(0, -1, 0).pos(0, 0, 0).endVertex();
 		for(int i = 0; i <= points; i++) {
 			float angle = 2 * (float)Math.PI * (i + 0.5f)/points;
-			tes.addVertex(inner * Math.cos(angle), 0, inner * Math.sin(angle));
+			buffer.normal(0, -1, 0).pos(inner * Math.cos(angle), 0, inner * Math.sin(angle)).endVertex();
 		}
-		tes.draw();
+		rm.draw();
 		
 		//Outer part
-		tes.startDrawing(GL11.GL_TRIANGLE_FAN);
-		tes.setNormal(0, -1, 0);
-		tes.addVertex(0, height, 0);
+		rm.startDraw(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_NORMAL);
+		buffer.normal(0, -1, 0).pos(0, height, 0).endVertex();
 		for(int i = 0; i <= points; i++) {
 			float angle = 2 * (float)Math.PI * (i + 0.5f)/points;
-			tes.addVertex(outer * Math.cos(angle), height, outer * Math.sin(angle));
+			buffer.normal(0, -1, 0).pos(outer * Math.cos(angle), height, outer * Math.sin(angle)).endVertex();
 		}
-		tes.draw();
+		rm.draw();
 		
 		//Bottom
-		tes.startDrawing(GL11.GL_TRIANGLE_FAN);
-		tes.setNormal(0, 1, 0);
-		tes.addVertex(0, height, 0);
+		rm.startDraw(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_NORMAL);
+		buffer.normal(0, 1, 0).pos(0, height, 0).endVertex();
 		for(int i = 0; i <= points; i++) {
 			float angle = 2 * (float)Math.PI * -(i + 0.5f)/points;
-			tes.addVertex(outer * Math.cos(angle), height, outer * Math.sin(angle));
+			buffer.normal(0, 1, 0).pos((outer * Math.cos(angle), height, outer * Math.sin(angle)).endVertex();
 		}
-		tes.draw();
+		rm.draw();
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glShadeModel(GL11.GL_FLAT);

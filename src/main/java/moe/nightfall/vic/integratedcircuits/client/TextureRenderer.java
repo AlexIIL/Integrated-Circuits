@@ -72,7 +72,7 @@ public class TextureRenderer {
 			GL11.glPopMatrix();
 
 			fbo.unbindFramebuffer();
-			OpenGlHelper.func_153171_g(OpenGlHelper.field_153198_e, currentFBO);
+			OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, currentFBO);
 		}
 	}
 
@@ -102,11 +102,11 @@ public class TextureRenderer {
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, fbo.framebufferTexture);
 			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, fbo.framebufferTextureWidth,
 					fbo.framebufferTextureHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-			OpenGlHelper.func_153171_g(OpenGlHelper.field_153198_e, fbo.framebufferObject);
+			OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, fbo.framebufferObject);
 		}
 
 		fbo.framebufferTexture = entry.texture;
-		OpenGlHelper.func_153188_a(OpenGlHelper.field_153198_e, OpenGlHelper.field_153200_g, GL11.GL_TEXTURE_2D,
+		OpenGlHelper.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D,
 				fbo.framebufferTexture, 0);
 
 		GL11.glColor3f(1, 1, 1);

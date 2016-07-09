@@ -26,6 +26,10 @@ public class RenderManager {
         return instance;
     }
 
+    public float[] getColor() {
+        return setColor;
+    }
+
     public void setColor(float r, float g, float b, float a) {
         setColor[0] = r;
         setColor[1] = g;
