@@ -21,8 +21,6 @@ import moe.nightfall.vic.integratedcircuits.gate.GateCircuit;
 import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import moe.nightfall.vic.integratedcircuits.proxy.CommonProxy;
 import moe.nightfall.vic.integratedcircuits.tile.BlockSocket;
-import moe.nightfall.vic.integratedcircuits.tile.MCMPartSocket;
-import moe.nightfall.vic.integratedcircuits.tile.PartFactory;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntitySocket;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -189,11 +187,6 @@ public class IntegratedCircuits {
 
 		GameRegistry.register(Content.blockSocket);
 		GameRegistry.registerTileEntity(TileEntitySocket.class, Constants.MOD_ID + ".socket");
-
-		if (isMCMPLoaded) {
-			PartFactory.register(Constants.MOD_ID + ".socket_mcmp", MCMPartSocket.class);
-			PartFactory.initialize();
-		}
 
 		if (isCCLoaded) {
 			ComputerCraftAPI.registerBundledRedstoneProvider((IBundledRedstoneProvider) Content.blockSocket);
