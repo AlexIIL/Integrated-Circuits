@@ -1,13 +1,12 @@
 package moe.nightfall.vic.integratedcircuits.api.gate;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket.EnumConnectionType;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketBridge.ISocketBase;
+import moe.nightfall.vic.integratedcircuits.misc.Cube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MovingObjectPosition;
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.vec.Cuboid6;
 import net.minecraft.util.math.RayTraceResult;
 
 public interface IGate {
@@ -25,7 +24,7 @@ public interface IGate {
 
 	public void writeDesc(NBTTagCompound tag);
 
-	public void read(byte discr, MCDataInput packet);
+	public void read(byte discr, ByteBuf packet);
 
 	public boolean activate(EntityPlayer player, RayTraceResult hit, ItemStack item);
 
@@ -43,7 +42,7 @@ public interface IGate {
 
 	public ItemStack pickItem(RayTraceResult hit);
 
-	public Cuboid6 getDimension();
+	public Cube getDimension();
 
 	public void onNeighborChanged();
 
