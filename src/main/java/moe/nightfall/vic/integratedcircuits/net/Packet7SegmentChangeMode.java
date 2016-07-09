@@ -1,10 +1,13 @@
 package moe.nightfall.vic.integratedcircuits.net;
 
+import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.IOException;
 
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketBridge.ISocketBase;
 import moe.nightfall.vic.integratedcircuits.client.gui.Gui7Segment;
 import moe.nightfall.vic.integratedcircuits.gate.Gate7Segment;
+import moe.nightfall.vic.integratedcircuits.net.data.SerializerBuffer;
 import moe.nightfall.vic.integratedcircuits.proxy.CommonProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,20 +28,22 @@ public class Packet7SegmentChangeMode extends PacketGate<Packet7SegmentChangeMod
 		this.isSlave = isSlave;
 	}
 
+	public void serialize(SerializerBuffer buffer) throws IOException {
+		isSlave = buffer.serializeBoolean(isSlave);
+		if (!isSlave)
+			mode = buffer.serializeInt(mode);
+	}
+
 	@Override
 	public void read(PacketBuffer buffer) throws IOException {
 		super.read(buffer);
-		isSlave = buffer.readBoolean();
-		if (!isSlave)
-			mode = buffer.readInt();
+		serialize(new SerializerBuffer(buffer, false));
 	}
 
 	@Override
 	public void write(PacketBuffer buffer) throws IOException {
 		super.write(buffer);
-		buffer.writeBoolean(isSlave);
-		if (!isSlave)
-			buffer.writeInt(mode);
+		serialize(new SerializerBuffer(buffer, true));
 	}
 
 	@Override
