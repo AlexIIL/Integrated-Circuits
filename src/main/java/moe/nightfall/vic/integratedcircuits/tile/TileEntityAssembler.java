@@ -287,11 +287,6 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int id) {
-		return getStackInSlot(id);
-	}
-
-	@Override
 	public void setInventorySlotContents(int id, ItemStack stack) {
 		boolean change = !ItemStack.areItemStacksEqual(contents[id], stack);
 		contents[id] = stack;
