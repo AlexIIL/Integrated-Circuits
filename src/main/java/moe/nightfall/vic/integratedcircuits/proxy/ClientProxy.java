@@ -88,6 +88,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.IExtendedEntityProperties;
+import scala.tools.nsc.doc.model.Def;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
@@ -221,17 +222,17 @@ public class ClientProxy extends CommonProxy {
 			int color = (int) ((Math.sin((ClientProxy.clientTicks + event.getPartialTicks()) * 0.5) * 0.2 + 0.2) * 255 + 153);
 			String[] splitted = MiscUtils.stringNewlineSplit(tooltip);
 
-			int height = splitted.length * (mc.fontRenderer.FONT_HEIGHT + 2) + 6;
+			int height = splitted.length * (mc.fontRendererObj.FONT_HEIGHT + 2) + 6;
 			for (int i = 0; i < splitted.length; i++) {
 				String tooltip = splitted[i];
-				int width = mc.fontRenderer.getStringWidth(tooltip);
+				int width = mc.fontRendererObj.getStringWidth(tooltip);
 				int x = event.getResolution().getScaledWidth() / 2 - width / 2;
 				int y = (int) (event.getResolution().getScaledHeight() / 2 - height / 2 + (i / (float) splitted.length)
 						* height);
 				boolean even = splitted.length % 2 > 0;
 				y += i < splitted.length / 2F ? even ? -6 : 0 : even ? 0 : 6;
 
-				mc.fontRenderer.drawStringWithShadow(tooltip, x, y, color << 16);
+				mc.fontRendererObj.drawStringWithShadow(tooltip, x, y, color << 16);
 			}
 
 			tooltip = null;
@@ -558,13 +559,14 @@ public class ClientProxy extends CommonProxy {
 						ARBShaderObjects.glUniform2fARB(
 								ARBShaderObjects.glGetUniformLocationARB(ShaderHelper.SHADER_BLUR, "uShift"), 0,
 								2F / fbo.framebufferHeight);
-					Tessellator tes = Tessellator.instance;
-					tes.startDrawingQuads();
-					tes.addVertexWithUV(-1, -1, 0, 0, 0);
-					tes.addVertexWithUV(1, -1, 0, 1, 0);
-					tes.addVertexWithUV(1, 1, 0, 1, 1);
-					tes.addVertexWithUV(-1, 1, 0, 0, 1);
-					tes.draw();
+					moe.nightfall.vic.integratedcircuits.misc.RenderManager rm = moe.nightfall.vic.integratedcircuits.misc.RenderManager.getInstance();
+					rm.startDrawQuads(DefaultVertexFormats.POSITION_TEX);
+					VertexBuffer buffer = Tessellator.getInstance().getBuffer();
+					buffer.pos(-1, -1, 0).tex(0, 0).endVertex();
+					buffer.pos(1, -1, 0).tex(1, 0).endVertex();
+					buffer.pos(1, 1, 0).tex(1, 1).endVertex();
+					buffer.pos(-1, 1, 0).tex(0, 1).endVertex();
+					rm.draw();
 				}
 
 				// ShaderHelper.printErrorLog(ShaderHelper.SHADER_BLUR);
@@ -578,13 +580,14 @@ public class ClientProxy extends CommonProxy {
 				GL11.glEnable(GL11.GL_BLEND);
 				GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
-				Tessellator tes = Tessellator.instance;
-				tes.startDrawingQuads();
-				tes.addVertexWithUV(-1, -1, 0, 0, 0);
-				tes.addVertexWithUV(1, -1, 0, 1, 0);
-				tes.addVertexWithUV(1, 1, 0, 1, 1);
-				tes.addVertexWithUV(-1, 1, 0, 0, 1);
-				tes.draw();
+				moe.nightfall.vic.integratedcircuits.misc.RenderManager rm = moe.nightfall.vic.integratedcircuits.misc.RenderManager.getInstance();
+				rm.startDrawQuads(DefaultVertexFormats.POSITION_TEX);
+				VertexBuffer buffer = Tessellator.getInstance().getBuffer();
+				buffer.pos(-1, -1, 0).tex(0, 0).endVertex();
+				buffer.pos(1, -1, 0).tex(1, 0).endVertex();
+				buffer.pos(1, 1, 0).tex(1, 1).endVertex();
+				buffer.pos(-1, 1, 0).tex(0, 1).endVertex();
+				rm.draw();
 
 				int error = GL11.glGetError();
 				if (error != 0) {
@@ -714,7 +717,7 @@ public class ClientProxy extends CommonProxy {
 		GL11.glRotatef(pitch, 0, 0, 1);
 
 		GL11.glTranslated(0, (player.isSneaking() ? 0.0625 : 0), 0);
-		Tessellator tes = Tessellator.instance;
+		moe.nightfall.vic.integratedcircuits.misc.RenderManager rm = moe.nightfall.vic.integratedcircuits.misc.RenderManager.getInstance();
 
 		switch (cosplay) {
 			case JIBRIL:
@@ -731,14 +734,15 @@ public class ClientProxy extends CommonProxy {
 
 				GL11.glRotated(30, 1, 0, -1);
 				GL11.glTranslatef(-0.1F, -0.62F, -0.1F);
-				GL11.glRotatef(player.ticksExisted + event.partialRenderTick, 0, 1, 0);
+				GL11.glRotatef(player.ticksExisted + event.getPartialRenderTick(), 0, 1, 0);
 
-				tes.startDrawingQuads();
-				tes.addVertexWithUV(-0.5, 0, -0.5, 0, 0);
-				tes.addVertexWithUV(-0.5, 0, 0.5, 0, 1);
-				tes.addVertexWithUV(0.5, 0, 0.5, 1, 1);
-				tes.addVertexWithUV(0.5, 0, -0.5, 1, 0);
-				tes.draw();
+				rm.startDrawQuads(DefaultVertexFormats.POSITION_TEX);
+				VertexBuffer buffer = Tessellator.getInstance().getBuffer();
+				buffer.pos(-0.5, 0, -0.5).tex(0, 0).endVertex();
+				buffer.pos(-0.5, 0, 0.5).tex(0, 1).endVertex();
+				buffer.pos(0.5, 0, 0.5).tex(1, 1).endVertex();
+				buffer.pos(0.5, 0, -0.5).tex(1, 0).endVertex();
+				rm.draw();
 
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glShadeModel(GL11.GL_FLAT);
@@ -766,7 +770,7 @@ public class ClientProxy extends CommonProxy {
 				// Stephanie Dola
 				mc.renderEngine.bindTexture(Resources.RESOURCE_MISC_EARS);
 				ModelDogEars.instance.render(pitch, player.rotationYawHead - player.prevRotationYawHead);
-				GameData.getBlockRegistry().getObject(player.getCommandSenderName());
+				//GameData.getBlockRegistry().getObject(player.getCommandSenderName());
 				break;
 			case MAMI:
 				// Mami Tomoe
@@ -784,12 +788,14 @@ public class ClientProxy extends CommonProxy {
 				GL11.glTranslatef(2 / 16F, 0, -3.3F / 16F);
 				GL11.glRotatef(85, 1, 0, 0);
 				GL11.glRotatef(30, 0, 0, 1);
-				tes.startDrawingQuads();
-				tes.addVertexWithUV(-2 / 16F, 0, -2 / 16F, 0, 0);
-				tes.addVertexWithUV(-2 / 16F, 0, 2 / 16F, 0, 1);
-				tes.addVertexWithUV(2 / 16F, 0, 2 / 16F, 1, 1);
-				tes.addVertexWithUV(2 / 16F, 0, -2 / 16F, 1, 0);
-				tes.draw();
+
+				rm.startDrawQuads(DefaultVertexFormats.POSITION_TEX);
+				VertexBuffer vBuffer = Tessellator.getInstance().getBuffer();
+				vBuffer.pos(-2 / 16F, 0, -2 / 16F).tex(0, 0).endVertex();
+				vBuffer.pos(-2 / 16F, 0, 2 / 16F).tex(0, 1).endVertex();
+				vBuffer.pos(2 / 16F, 0, 2 / 16F).tex(1, 1).endVertex();
+				vBuffer.pos(2 / 16F, 0, -2 / 16F).tex(1, 0).endVertex();
+				rm.draw();
 				GL11.glPopMatrix();
 
 				mc.renderEngine.bindTexture(Resources.RESOURCE_MISC_FLUFF);
@@ -797,12 +803,13 @@ public class ClientProxy extends CommonProxy {
 				GL11.glPushMatrix();
 				GL11.glTranslatef(-1 / 16F, -8 / 16F, -5F / 16F);
 				GL11.glRotatef(0, 1, 0, 0);
-				tes.startDrawingQuads();
-				tes.addVertexWithUV(0, -3 / 16F, -3 / 16F, 0, 0);
-				tes.addVertexWithUV(0, 3 / 16F, -3 / 16F, 0, 1);
-				tes.addVertexWithUV(0, 3 / 16F, 3 / 16F, 1, 1);
-				tes.addVertexWithUV(0, -3 / 16F, 3 / 16F, 1, 0);
-				tes.draw();
+				rm.startDrawQuads(DefaultVertexFormats.POSITION_TEX);
+				vBuffer.pos(0, -3 / 16F, -3 / 16F).tex(0, 0).endVertex();
+				vBuffer.pos(0, 3 / 16F, -3 / 16F).tex(0, 1).endVertex();
+				vBuffer.pos(0, 3 / 16F, 3 / 16F).tex(1, 1).endVertex();
+				vBuffer.pos(0, -3 / 16F, 3 / 16F).tex(
+						1, 0).endVertex();
+				rm.draw();
 				GL11.glPopMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
 				break;
@@ -931,7 +938,7 @@ public class ClientProxy extends CommonProxy {
 		buffer.normal(0, 1, 0).pos(0, height, 0).endVertex();
 		for(int i = 0; i <= points; i++) {
 			float angle = 2 * (float)Math.PI * -(i + 0.5f)/points;
-			buffer.normal(0, 1, 0).pos((outer * Math.cos(angle), height, outer * Math.sin(angle)).endVertex();
+			buffer.normal(0, 1, 0).pos(outer * Math.cos(angle), height, outer * Math.sin(angle)).endVertex();
 		}
 		rm.draw();
 
