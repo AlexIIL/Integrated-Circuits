@@ -1,6 +1,7 @@
 package moe.nightfall.vic.integratedcircuits;
 
 import moe.nightfall.vic.integratedcircuits.item.*;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import moe.nightfall.vic.integratedcircuits.tile.BlockAssembler;
 import moe.nightfall.vic.integratedcircuits.tile.BlockCAD;
@@ -68,6 +69,10 @@ public final class Content {
 		GameRegistry.register(Content.blockPCBLayout.setRegistryName("pcblayout"));
 		GameRegistry.register(Content.blockAssembler.setRegistryName("assembler"));
 		GameRegistry.register(Content.blockPrinter.setRegistryName("pcbprinter"));
+
+		GameRegistry.register(new ItemBlock(Content.blockPCBLayout), Content.blockPCBLayout.getRegistryName());
+		GameRegistry.register(new ItemBlock(Content.blockAssembler), Content.blockAssembler.getRegistryName());
+		GameRegistry.register(new ItemBlock(Content.blockPrinter), Content.blockPrinter.getRegistryName());
 
 		GameRegistry.registerTileEntity(TileEntityCAD.class, Constants.MOD_ID + ".pcblayoutcad");
 		GameRegistry.registerTileEntity(TileEntityAssembler.class, Constants.MOD_ID + ".assembler");

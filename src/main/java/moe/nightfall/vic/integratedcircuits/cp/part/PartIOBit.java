@@ -48,11 +48,11 @@ public class PartIOBit extends CircuitPart {
 	}
 
 	public final EnumFacing getRotation(Vec2i pos, ICircuit parent) {
-		return EnumFacing.getFront(getProperty(pos, parent, PROP_ROTATION));
+		return EnumFacing.getHorizontal(getProperty(pos, parent, PROP_ROTATION));
 	}
 
 	public final void setRotation(Vec2i pos, ICircuit parent, EnumFacing rotation) {
-		setProperty(pos, parent, PROP_ROTATION, rotation.getIndex());
+		setProperty(pos, parent, PROP_ROTATION, rotation.getHorizontalIndex());
 	}
 
 	public final int getFrequency(Vec2i pos, ICircuit parent) {

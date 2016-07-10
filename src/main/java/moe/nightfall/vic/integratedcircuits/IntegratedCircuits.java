@@ -190,7 +190,7 @@ public class IntegratedCircuits {
 
 		proxy.initialize();
 
-		FMLInterModComms.sendMessage("Waila", "register", "moe.nightfall.vic.integratedcircuits.compat.WailaAddon.registerAddon");
+		//FMLInterModComms.sendMessage("Waila", "register", "moe.nightfall.vic.integratedcircuits.compat.WailaAddon.registerAddon");
 	}
 
 	@EventHandler

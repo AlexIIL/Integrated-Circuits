@@ -84,7 +84,7 @@ public class BlockAssembler extends Block {
 		int rotation = MathHelper.floor_double((double) (entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		TileEntityAssembler te = (TileEntityAssembler) world.getTileEntity(pos);
 		if (te != null)
-			te.rotation.rotateAround(EnumFacing.Axis.Y);
+			te.rotation = EnumFacing.NORTH;
 	}
 
 	@Override

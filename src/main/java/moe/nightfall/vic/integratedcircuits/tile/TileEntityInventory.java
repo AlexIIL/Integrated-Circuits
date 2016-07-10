@@ -50,6 +50,11 @@ public abstract class TileEntityInventory extends TileEntityContainer {
         };
     }
 
+    public TileEntityInventory() {
+        rotation = EnumFacing.NORTH;
+        createStackHandler();
+    }
+
     public abstract int getSlots();
 
     protected ItemStackHandler inventory;
