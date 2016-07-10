@@ -3,6 +3,7 @@ package moe.nightfall.vic.integratedcircuits.cp.part.cell;
 import moe.nightfall.vic.integratedcircuits.cp.CircuitPartRenderer;
 import moe.nightfall.vic.integratedcircuits.cp.ICircuit;
 import moe.nightfall.vic.integratedcircuits.cp.part.PartSimpleGate;
+import moe.nightfall.vic.integratedcircuits.misc.RenderManager;
 import moe.nightfall.vic.integratedcircuits.misc.Vec2i;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,7 +37,7 @@ public class PartBufferCell extends PartSimpleGate {
 		CircuitPartRenderer.renderPartCell(pos, parent, this, x, y, type);
 
 		Vec2i textureOffset = getTextureOffset(pos, parent, x, y, type);
-		CircuitPartRenderer.addQuad(x, y, textureOffset.x * 16, textureOffset.y * 16, 16, 16,  this.getRotation(pos, parent));
+		RenderManager.getInstance().addQuad(x, y, textureOffset.x * 16, textureOffset.y * 16, 16, 16,  this.getRotation(pos, parent));
 	}
 
 	@Override

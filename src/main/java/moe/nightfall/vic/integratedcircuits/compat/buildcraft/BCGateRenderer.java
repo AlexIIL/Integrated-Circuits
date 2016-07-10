@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat.buildcraft;
-
+/*
 import moe.nightfall.vic.integratedcircuits.api.IPartRenderer;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGate;
@@ -49,3 +49,4 @@ public class BCGateRenderer implements IPipePluggableRenderer, IPipePluggableDyn
 		renderer.renderStatic(getTransformation(gate, side, x, y, z));
 	}
 }
+*/

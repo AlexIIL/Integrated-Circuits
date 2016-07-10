@@ -1,6 +1,6 @@
 package moe.nightfall.vic.integratedcircuits.client;
 
-import moe.nightfall.vic.integratedcircuits.client.model.ModelSegment;
+//import moe.nightfall.vic.integratedcircuits.client.model.ModelSegment;
 import moe.nightfall.vic.integratedcircuits.gate.Gate7Segment;
 import moe.nightfall.vic.integratedcircuits.misc.RenderUtils;
 import net.minecraft.block.material.MapColor;
@@ -9,10 +9,10 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.vec.Transformation;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
+/*
 @SideOnly(Side.CLIENT)
 public class Gate7SegmentRenderer extends PartRenderer<Gate7Segment> {
 	private int display;
@@ -30,7 +30,7 @@ public class Gate7SegmentRenderer extends PartRenderer<Gate7Segment> {
 		 * 13; if(part.mode > 1) { prepareBundled(i1); prepareRedstone(0, 0); }
 		 * else { prepareBundled(0); prepareRedstone(i1, part.io); } }
 		 */
-	}
+/*	}
 
 	@Override
 	public void prepareInv(ItemStack stack) {
@@ -100,3 +100,4 @@ public class Gate7SegmentRenderer extends PartRenderer<Gate7Segment> {
 			RenderUtils.resetBrightness();
 	}
 }
+*/

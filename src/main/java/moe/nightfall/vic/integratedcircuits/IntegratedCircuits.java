@@ -7,7 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import mcmultipart.multipart.*;
+//import mcmultipart.multipart.*;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketProvider;
@@ -41,7 +41,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = "integratedcircuits", dependencies = "required-after:CodeChickenCore; after:ComputerCraft; after:ForgeMultipart@[1.1.2.332,)", guiFactory = "moe.nightfall.vic.integratedcircuits.client.gui.IntegratedCircuitsGuiFactory")
+@Mod(modid = "integratedcircuits", guiFactory = "moe.nightfall.vic.integratedcircuits.client.gui.IntegratedCircuitsGuiFactory")
 public class IntegratedCircuits {
 
 	// TODO Some of those might be obsolete
@@ -135,7 +135,7 @@ public class IntegratedCircuits {
 		Content.init();
 
 		// Register socket provider
-		if (isMCMPLoaded) {
+		/*if (isMCMPLoaded) {
 			IntegratedCircuitsAPI.registerSocketProvider(new ISocketProvider() {
 				@Override
 				public ISocket getSocketAt(World world, BlockPos pos, EnumFacing facing) {
@@ -150,7 +150,7 @@ public class IntegratedCircuits {
 					return null;
 				}
 			});
-		}
+		}*/
 
 		IntegratedCircuitsAPI.registerSocketProvider(new ISocketProvider() {
 			@Override

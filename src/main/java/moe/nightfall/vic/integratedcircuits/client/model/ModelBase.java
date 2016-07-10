@@ -2,14 +2,7 @@ package moe.nightfall.vic.integratedcircuits.client.model;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.IIcon;
-import codechicken.lib.lighting.LightModel;
-import codechicken.lib.render.CCModel;
-import codechicken.lib.render.uv.IconTransformation;
-import codechicken.lib.vec.Scale;
-import codechicken.lib.vec.Transformation;
-import codechicken.lib.vec.Vector3;
-
+/*
 public class ModelBase implements IComponentModel {
 	public static CCModel model = generateModel();
 
@@ -35,4 +28,4 @@ public class ModelBase implements IComponentModel {
 		m1.computeNormals();
 		return m1;
 	}
-}
+}*/

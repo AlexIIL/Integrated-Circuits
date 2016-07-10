@@ -1,6 +1,8 @@
 package moe.nightfall.vic.integratedcircuits.client.gui.cad;
 
+import moe.nightfall.vic.integratedcircuits.misc.RenderManager;
 import moe.nightfall.vic.integratedcircuits.misc.Vec2i;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
 
 import moe.nightfall.vic.integratedcircuits.cp.CircuitData;
@@ -22,13 +24,14 @@ public class EditHandler extends CADHandler {
 			GL11.glColor4f(0F, 0F, 1F, 1F);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-			Tessellator.instance.startDrawingQuads();
+			RenderManager rm = RenderManager.getInstance();
+			//rm.startDrawQuads(DefaultVertexFormats.POSITION); FIXME is this needed? addline calls it
 			if (cdata.getPart(new Vec2i(parent.endX, parent.endY)) instanceof PartTunnel) {
 				RenderUtils.addLine(parent.startX + 0.5, parent.startY + 0.5, parent.endX + 0.5, parent.endY + 0.5, 0.25);
 			} else {
 				RenderUtils.addLine(parent.startX + 0.5, parent.startY + 0.5, mouseX, mouseY, 0.25);
 			}
-			Tessellator.instance.draw();
+			rm.draw();
 
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			GL11.glColor4f(0.6F, 0.6F, 0.6F, 0.7F);
@@ -54,8 +57,8 @@ public class EditHandler extends CADHandler {
 				parent.startY = gridY;
 				parent.drag = true;
 			} else {
-				CommonProxy.networkWrapper.sendToServer(new PacketPCBChangePart(gridX, gridY, button, parent.isCtrlKeyDown(), parent.tileentity.xCoord,
-						parent.tileentity.yCoord, parent.tileentity.zCoord));
+				CommonProxy.networkWrapper.sendToServer(new PacketPCBChangePart(gridX, gridY, button, parent.isCtrlKeyDown(), parent.tileentity.getPos().getX(),
+						parent.tileentity.getPos().getY(), parent.tileentity.getPos().getZ()));
 			}
 		}
 	}
@@ -73,7 +76,7 @@ public class EditHandler extends CADHandler {
 				if (parent.getCircuitData().getPart(second) instanceof PartTunnel && !first.equals(second)) {
 
 					PartTunnel pt = CircuitPart.getPart(PartTunnel.class);
-					PacketPCBChangePart packet = new PacketPCBChangePart(true, parent.tileentity.xCoord, parent.tileentity.yCoord, parent.tileentity.zCoord);
+					PacketPCBChangePart packet = new PacketPCBChangePart(true, parent.tileentity.getPos().getX(), parent.tileentity.getPos().getY(), parent.tileentity.getPos().getZ());
 					
 					if (pt.isConnected(pt.getConnectedPos(first, parent.tileentity))) {	
 						Vec2i part = pt.getConnectedPos(first, parent.tileentity);

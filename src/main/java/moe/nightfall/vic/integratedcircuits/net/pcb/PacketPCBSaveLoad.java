@@ -13,6 +13,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class PacketPCBSaveLoad extends PacketTileEntity<PacketPCBSaveLoad> {
 	private boolean write;
@@ -42,7 +44,7 @@ public class PacketPCBSaveLoad extends PacketTileEntity<PacketPCBSaveLoad> {
 		TileEntityCAD te = (TileEntityCAD) player.worldObj.getTileEntity(new BlockPos(xCoord, yCoord, zCoord));
 		if (te != null) {
 			if (write) {
-				ItemStack floppy = te.getStackInSlot(0);
+				ItemStack floppy = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(0);
 				if (floppy != null) {
 					NBTTagCompound comp = floppy.getTagCompound();
 					if (comp == null)
@@ -50,10 +52,10 @@ public class PacketPCBSaveLoad extends PacketTileEntity<PacketPCBSaveLoad> {
 					te.getCircuitData().getProperties().setAuthor(player.getCommandSenderEntity().getName());
 					comp.setTag("circuit", te.getCircuitData().writeToNBT(new NBTTagCompound()));
 					floppy.setTagCompound(comp);
-					te.setInventorySlotContents(0, floppy);
+					((IItemHandlerModifiable)te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)).setStackInSlot(0, floppy);
 				}
 			} else {
-				ItemStack floppy = te.getStackInSlot(0);
+				ItemStack floppy = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(0);
 				if (floppy != null) {
 					NBTTagCompound comp = floppy.getTagCompound();
 					if (comp == null)

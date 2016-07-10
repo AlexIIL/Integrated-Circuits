@@ -4,16 +4,17 @@ import moe.nightfall.vic.integratedcircuits.Content;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket.EnumConnectionType;
 import moe.nightfall.vic.integratedcircuits.cp.CircuitData;
 import moe.nightfall.vic.integratedcircuits.cp.ICircuit;
-import moe.nightfall.vic.integratedcircuits.gate.peripheral.GatePeripheral;
+//import moe.nightfall.vic.integratedcircuits.gate.peripheral.GatePeripheral;
+import moe.nightfall.vic.integratedcircuits.misc.Cube;
 import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
-public class GateCircuit extends Gate implements ICircuit, IGatePeripheralProvider {
+public class GateCircuit extends Gate implements ICircuit/*, IGatePeripheralProvider*/ {
 
-	public static final Cuboid6 dimensions = new Cuboid6(2, 0, 2, 14, 2, 14);
+	public static final Cube dimensions = new Cube(2, 0, 2, 12, 2, 12);
 
 	public CircuitData circuitData;
 
@@ -127,7 +128,7 @@ public class GateCircuit extends Gate implements ICircuit, IGatePeripheralProvid
 
 	@Override
 	public void setOutputToSide(EnumFacing dir, int frequency, boolean output) {
-		int side = (MiscUtils.getSide(dir) + 2) % 4;
+		EnumFacing side = dir.getOpposite();
 		EnumConnectionType mode = getConnectionTypeAtSide(side);
 		if (mode == EnumConnectionType.SIMPLE && frequency > 0)
 			return;
@@ -135,29 +136,29 @@ public class GateCircuit extends Gate implements ICircuit, IGatePeripheralProvid
 		provider.setOutput(side, frequency, (byte) (output ? (mode == EnumConnectionType.BUNDLED ? -1 : 15) : 0));
 		provider.notifyBlocksAndChanges();
 	}
-
+/*
 	@Override
-	public boolean hasPeripheral(int side) {
+	public boolean hasPeripheral(EnumFacing side) {
 		return true;
 	}
 
 	@Override
 	public GatePeripheral getPeripheral() {
 		return peripheral;
-	}
+	}*/
 
 	@Override
 	public EnumConnectionType getConnectionTypeAtSide(EnumFacing side) {
-		return circuitData.getProperties().getModeAtSide((side + 2) % 4);
+		return circuitData.getProperties().getModeAtSide(side.getOpposite());
 	}
 
 	@Override
-	public boolean hasComparatorInputAtSide(int side) {
+	public boolean hasComparatorInputAtSide(EnumFacing side) {
 		return getConnectionTypeAtSide(side) == EnumConnectionType.ANALOG;
 	}
 
 	@Override
-	public Cuboid6 getDimension() {
+	public Cube getDimension() {
 		return dimensions;
 	}
 }

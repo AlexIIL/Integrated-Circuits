@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat;
-
+/*
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -10,7 +10,7 @@ import com.bluepowermod.api.connect.ConnectionType;
 import com.bluepowermod.api.connect.IConnectionCache;
 import com.bluepowermod.api.wire.redstone.IBundledDevice;
 import com.bluepowermod.api.wire.redstone.IRedstoneDevice;
-
+/*
 public class BPDevice implements IBundledDevice, IRedstoneDevice {
 	private final ISocket socket;
 
@@ -112,3 +112,4 @@ public class BPDevice implements IBundledDevice, IRedstoneDevice {
 		socket.updateInputPost();
 	}
 }
+*/

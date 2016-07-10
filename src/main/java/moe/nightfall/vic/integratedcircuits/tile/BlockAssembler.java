@@ -24,7 +24,7 @@ public class BlockAssembler extends Block {
 	public BlockAssembler() {
 		super(Material.IRON);
 		setUnlocalizedName(Constants.MOD_ID + ".assembler");
-		setRegistryName("assembler");
+		//setRegistryName("assembler");
 		setCreativeTab(IntegratedCircuits.creativeTab);
 		setHardness(2F);
 	}

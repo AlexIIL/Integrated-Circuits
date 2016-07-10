@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 public class BlockCAD extends Block {
 	public BlockCAD() {
 		super(Material.IRON);
-		setRegistryName("pcblayoutcad");
+		//setRegistryName("pcblayoutcad");
 		setUnlocalizedName(Constants.MOD_ID + ".pcblayoutcad");
 		setCreativeTab(IntegratedCircuits.creativeTab);
 		setHardness(2F);

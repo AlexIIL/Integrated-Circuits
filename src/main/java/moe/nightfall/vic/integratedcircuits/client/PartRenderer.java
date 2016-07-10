@@ -2,20 +2,15 @@ package moe.nightfall.vic.integratedcircuits.client;
 
 import java.util.List;
 
-import moe.nightfall.vic.integratedcircuits.api.IPartRenderer;
-import moe.nightfall.vic.integratedcircuits.client.model.IComponentModel;
+//import moe.nightfall.vic.integratedcircuits.api.IPartRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.model.IComponentModel;
 import net.minecraft.item.ItemStack;
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.TextureUtils;
-import codechicken.lib.vec.Scale;
-import codechicken.lib.vec.Transformation;
-import codechicken.lib.vec.Translation;
 
 import com.google.common.collect.Lists;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
+/*
 @SideOnly(Side.CLIENT)
 public abstract class PartRenderer<T> implements IPartRenderer<T> {
 	protected List<IComponentModel> models = Lists.newLinkedList();
@@ -90,3 +85,4 @@ public abstract class PartRenderer<T> implements IPartRenderer<T> {
 		renderDynamic(new Scale(scale).with(new Translation(x, y, z)));
 	}
 }
+*/

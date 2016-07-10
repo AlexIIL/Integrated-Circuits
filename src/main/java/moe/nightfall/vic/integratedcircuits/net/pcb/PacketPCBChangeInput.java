@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
@@ -34,7 +35,7 @@ public class PacketPCBChangeInput extends PacketTileEntity<PacketPCBChangeInput>
 		CircuitData data = tileEntityCAD.getCircuitData();
 		boolean widthOK = true;
 		for(int ioSide = 0; ioSide <= 3; ioSide++) {
-			widthOK = widthOK && data.maximumIOSize() >= CircuitProperties.getModeAtSide(con, ioSide).size;
+			widthOK = widthOK && data.maximumIOSize() >= CircuitProperties.getModeAtSide(con, EnumFacing.getHorizontal(ioSide)).size;
 		}
 		// Now crash people who try to send an "invalid" packet... Doing it here gives us a decent stacktrace.
 		if (!widthOK) Minecraft.getMinecraft().displayCrashReport(new CrashReport("PCB IO mode selected for at least one side is too long.\nContact mod authors to report this error.",
@@ -81,8 +82,7 @@ public class PacketPCBChangeInput extends PacketTileEntity<PacketPCBChangeInput>
 		
 		if (input && side == Side.SERVER) {
 			te.getCircuitData().updateInput();
-			CommonProxy.networkWrapper.sendToAllAround(this, new TargetPoint(te.getWorld().getWorldInfo()
-				.getVanillaDimension(), xCoord, yCoord, zCoord, 8));
+			CommonProxy.networkWrapper.sendToAllAround(this, new TargetPoint(0, xCoord, yCoord, zCoord, 8)); // FIXMe fix dimension id
 		}
 		if (side == Side.CLIENT && Minecraft.getMinecraft().currentScreen instanceof GuiCAD)
 			((GuiCAD) Minecraft.getMinecraft().currentScreen).refreshIO();

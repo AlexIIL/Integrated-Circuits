@@ -1,6 +1,6 @@
 package moe.nightfall.vic.integratedcircuits.client;
 
-import moe.nightfall.vic.integratedcircuits.client.model.ModelChip;
+//import moe.nightfall.vic.integratedcircuits.client.model.ModelChip;
 import moe.nightfall.vic.integratedcircuits.gate.GateCircuit;
 import moe.nightfall.vic.integratedcircuits.proxy.ClientProxy;
 import net.minecraft.client.gui.FontRenderer;
@@ -10,12 +10,9 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.vec.Transformation;
-import codechicken.lib.vec.Translation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
+/*
 @SideOnly(Side.CLIENT)
 public class GateCircuitRenderer extends PartRenderer<GateCircuit> {
 	private byte tier;
@@ -91,3 +88,4 @@ public class GateCircuitRenderer extends PartRenderer<GateCircuit> {
 		GL11.glEnable(GL11.GL_LIGHTING);
 	}
 }
+*/

@@ -5,7 +5,7 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 import moe.nightfall.vic.integratedcircuits.DiskDrive;
-import moe.nightfall.vic.integratedcircuits.DiskDrive.ModelFloppy;
+//import moe.nightfall.vic.integratedcircuits.DiskDrive.ModelFloppy;
 import moe.nightfall.vic.integratedcircuits.LaserHelper;
 import moe.nightfall.vic.integratedcircuits.LaserHelper.Laser;
 import moe.nightfall.vic.integratedcircuits.client.TextureRenderer.Entry;
@@ -17,7 +17,7 @@ import moe.nightfall.vic.integratedcircuits.proxy.ClientProxy;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntityAssembler;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
-
+/*
 public class TileEntityAssemblerRenderer extends TileEntitySemiTransparentRenderer {
 	private static ModelFloppy model = new ModelFloppy(-7, -7, -9, 12, 2, 1);
 
@@ -209,3 +209,4 @@ public class TileEntityAssemblerRenderer extends TileEntitySemiTransparentRender
 		ClientProxy.textureRenderer.schedule(te.texture);
 	}
 }
+*/

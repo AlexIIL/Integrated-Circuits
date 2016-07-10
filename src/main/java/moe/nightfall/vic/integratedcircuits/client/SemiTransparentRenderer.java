@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -18,9 +18,10 @@ import org.lwjgl.opengl.GL11;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
+/*
 @SideOnly(Side.CLIENT)
 /** Used by the assembler to get a second render pass **/
+/*
 public class SemiTransparentRenderer {
 	private LinkedList<Vec3> queued = new LinkedList<Vec3>();
 
@@ -82,3 +83,4 @@ public class SemiTransparentRenderer {
 		queued.add(Vec3.createVectorHelper(x, y, z));
 	}
 }
+*/

@@ -1,5 +1,6 @@
 package moe.nightfall.vic.integratedcircuits.cp.part.cell;
 
+import moe.nightfall.vic.integratedcircuits.misc.RenderManager;
 import moe.nightfall.vic.integratedcircuits.misc.Vec2i;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,7 +19,7 @@ public class PartInvertCell extends PartBufferCell {
 		CircuitPartRenderer.renderPartCell(pos, parent, this, x, y, type);
 
 		Vec2i textureOffset = getTextureOffset(pos, parent, x, y, type);
-		CircuitPartRenderer.addQuad(x, y, textureOffset.x * 16, textureOffset.y * 16, 16, 16,  this.getRotation(pos, parent));
+		RenderManager.getInstance().addQuad(x, y, textureOffset.x * 16, textureOffset.y * 16, 16, 16,  this.getRotation(pos, parent));
 	}
 
 	@Override

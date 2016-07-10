@@ -7,6 +7,7 @@ import moe.nightfall.vic.integratedcircuits.misc.Cube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.RayTraceResult;
 
 public interface IGate {
@@ -54,7 +55,7 @@ public interface IGate {
 
 	public void updateInputPost();
 
-	public EnumConnectionType getConnectionTypeAtSide(int side);
+	public EnumConnectionType getConnectionTypeAtSide(EnumFacing side);
 
-	public boolean hasComparatorInputAtSide(int side);
+	public boolean hasComparatorInputAtSide(EnumFacing side);
 }

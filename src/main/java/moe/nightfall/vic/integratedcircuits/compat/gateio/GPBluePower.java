@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat.gateio;
-
+/*
 import moe.nightfall.vic.integratedcircuits.api.gate.GateIOProvider;
 import moe.nightfall.vic.integratedcircuits.compat.BPDevice;
 import codechicken.lib.vec.BlockCoord;
@@ -40,3 +40,4 @@ public class GPBluePower extends GateIOProvider implements IBundledDeviceWrapper
 		return device;
 	}
 }
+*/

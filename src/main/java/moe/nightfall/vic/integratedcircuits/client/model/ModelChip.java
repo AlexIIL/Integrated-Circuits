@@ -1,10 +1,7 @@
 package moe.nightfall.vic.integratedcircuits.client.model;
 
 import moe.nightfall.vic.integratedcircuits.client.Resources;
-import codechicken.lib.lighting.LightModel;
-import codechicken.lib.render.CCModel;
-import codechicken.lib.render.uv.IconTransformation;
-import codechicken.lib.vec.Transformation;
+/*
 
 public class ModelChip implements IComponentModel {
 	private static CCModel model = generateModel();
@@ -22,4 +19,4 @@ public class ModelChip implements IComponentModel {
 		m1.computeNormals();
 		return m1;
 	}
-}
+}*/

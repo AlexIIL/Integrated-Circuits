@@ -4,7 +4,7 @@ import moe.nightfall.vic.integratedcircuits.proxy.ClientProxy;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
+/*
 @SideOnly(Side.CLIENT)
 public abstract class TileEntitySemiTransparentRenderer extends TileEntitySpecialRenderer {
 	protected int renderPass;
@@ -17,3 +17,4 @@ public abstract class TileEntitySemiTransparentRenderer extends TileEntitySpecia
 		ClientProxy.stRenderer.addToRenderQueue(x, y, z);
 	}
 }
+*/

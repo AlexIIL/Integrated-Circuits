@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.Content;
 import moe.nightfall.vic.integratedcircuits.IntegratedCircuits;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
@@ -12,6 +13,7 @@ import moe.nightfall.vic.integratedcircuits.api.gate.IGate;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGateItem;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketWrapper;
+import moe.nightfall.vic.integratedcircuits.misc.Cube;
 import moe.nightfall.vic.integratedcircuits.misc.InventoryUtils;
 import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,24 +21,20 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.EnumFacing;
+
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.vec.BlockCoord;
-import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.Transformation;
-import codechicken.lib.vec.Vector3;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Socket implements ISocket {
 	// Collision box
-	public static Cuboid6 box = new Cuboid6(0, 0, 0, 1, 2 / 16D, 1);
+	public static Cube box = new Cube(0, 0, 0, 1, 2 / 16D, 1);
 
 	protected final ISocketWrapper provider;
 	protected final Map<String, Object> extendedProperties;
@@ -47,7 +45,7 @@ public class Socket implements ISocket {
 	protected byte[][] output = new byte[4][16];
 	protected byte[][] input = new byte[4][16];
 
-	protected byte orientation;
+	protected EnumFacing orientation;
 
 	public Socket(ISocketWrapper provider) {
 		this.provider = provider;
@@ -94,7 +92,7 @@ public class Socket implements ISocket {
 	}
 
 	@Override
-	public MCDataOutput getWriteStream(int disc) {
+	public ByteBuf getWriteStream(int disc) {
 		return provider.getWriteStream(disc);
 	}
 
@@ -117,7 +115,7 @@ public class Socket implements ISocket {
 	}
 
 	@Override
-	public BlockCoord getPos() {
+	public BlockPos getPos() {
 		return provider.getPos();
 	}
 
@@ -129,19 +127,19 @@ public class Socket implements ISocket {
 	@Override
 	public void destroy() {
 		if (gate != null) {
-			BlockCoord pos = getPos();
-			MiscUtils.dropItem(getWorld(), gate.getItemStack(), pos.x, pos.y, pos.z);
+			BlockPos pos = getPos();
+			MiscUtils.dropItem(getWorld(), gate.getItemStack(), pos.getX(), pos.getY(), pos.getZ());
 		}
 		provider.destroy();
 	}
 
 	@Override
-	public int updateRedstoneInput(int side) {
+	public int updateRedstoneInput(EnumFacing side) {
 		return provider.updateRedstoneInput(side);
 	}
 
 	@Override
-	public byte[] updateBundledInput(int side) {
+	public byte[] updateBundledInput(EnumFacing side) {
 		return provider.updateBundledInput(side);
 	}
 
@@ -167,7 +165,7 @@ public class Socket implements ISocket {
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		// Read orientation and IO
-		orientation = compound.getByte("orientation");
+		orientation = EnumFacing.getFront(compound.getInteger("orientation"));
 		io = compound.getByte("io");
 
 		byte[] input = compound.getByteArray("input");
@@ -190,7 +188,7 @@ public class Socket implements ISocket {
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
 		// Write orientation and IO
-		compound.setByte("orientation", orientation);
+		compound.setInteger("orientation", orientation.getIndex());
 		compound.setByte("io", io);
 
 		byte[] input = null;
@@ -215,7 +213,7 @@ public class Socket implements ISocket {
 
 	@Override
 	public void writeDesc(NBTTagCompound compound) {
-		compound.setByte("orientation", orientation);
+		compound.setInteger("orientation", orientation.getIndex());
 		compound.setByte("io", io);
 
 		if (gate != null) {
@@ -226,7 +224,7 @@ public class Socket implements ISocket {
 
 	@Override
 	public void readDesc(NBTTagCompound compound) {
-		orientation = compound.getByte("orientation");
+		orientation = EnumFacing.getFront(compound.getInteger("orientation"));
 		io = compound.getByte("io");
 
 		if (compound.hasKey("gate_id")) {
@@ -240,11 +238,11 @@ public class Socket implements ISocket {
 	}
 
 	@Override
-	public void read(MCDataInput packet) {
+	public void read(ByteBuf packet) {
 		byte discr = packet.readByte();
 		switch (discr) {
 			case 0:
-				orientation = packet.readByte();
+				orientation = EnumFacing.getFront(packet.readInt());
 				markRender();
 				return;
 			case 1:
@@ -259,43 +257,43 @@ public class Socket implements ISocket {
 	// Rotation
 
 	@Override
-	public byte getOrientation() {
+	public EnumFacing getOrientation() {
 		return orientation;
 	}
 
 	@Override
-	public int getSide() {
-		return orientation >> 2;
+	public EnumFacing getSide() {
+		return orientation;
 	}
 
 	@Override
-	public int getSideRel(int side) {
-		return getRotationRel(Rotation.rotationTo(getSide(), side));
+	public EnumFacing getSideRel(EnumFacing side) {
+		return getRotationRel(side);
 	}
 
 	@Override
-	public void setSide(int s) {
-		orientation = (byte) (orientation & 3 | s << 2);
+	public void setSide(EnumFacing s) {
+		orientation = s;
 	}
 
 	@Override
-	public int getRotation() {
-		return orientation & 3;
+	public EnumFacing getRotation() {
+		return orientation;
 	}
 
 	@Override
-	public int getRotationAbs(int rel) {
-		return (rel + getRotation() + 2) % 4;
+	public EnumFacing getRotationAbs(EnumFacing rel) {
+		return orientation.rotateAround(rel.getAxis());
 	}
 
 	@Override
-	public int getRotationRel(int abs) {
-		return (abs + 6 - getRotation()) % 4;
+	public EnumFacing getRotationRel(EnumFacing abs) {
+		return orientation;
 	}
 
 	@Override
-	public void setRotation(int r) {
-		orientation = (byte) (orientation & 252 | r);
+	public void setRotation(EnumFacing s) {
+		orientation = s;
 	}
 
 	// Redstone IO
@@ -311,29 +309,29 @@ public class Socket implements ISocket {
 	}
 
 	@Override
-	public byte getRedstoneInput(int side) {
+	public byte getRedstoneInput(EnumFacing side) {
 		return getBundledInput(side, 0);
 	}
 
 	@Override
-	public byte getBundledInput(int side, int frequency) {
-		byte i = input[side][frequency];
+	public byte getBundledInput(EnumFacing side, int frequency) {
+		byte i = input[side.getHorizontalIndex()][frequency];
 		if (getConnectionTypeAtSide(side) == EnumConnectionType.ANALOG) {
 			if (i <= getRedstoneOutput(side))
 				return 0;
 		} else {
-			if (output[side][frequency] != 0)
+			if (output[side.getHorizontalIndex()][frequency] != 0)
 				return 0;
 		}
 		return i;
 	}
 
 	@Override
-	public byte getRedstoneOutput(int side) {
+	public byte getRedstoneOutput(EnumFacing side) {
 		EnumConnectionType conType = getConnectionTypeAtSide(side);
 		if (conType == EnumConnectionType.ANALOG) {
 			// Convert digital to analog, take highest output
-			byte[] out = getOutput()[side];
+			byte[] out = getOutput()[side.getHorizontalIndex()];
 			for (byte i = 15; i >= 0; i--) {
 				if (out[i] != 0)
 					return i;
@@ -346,8 +344,8 @@ public class Socket implements ISocket {
 	}
 
 	@Override
-	public byte getBundledOutput(int side, int frequency) {
-		return output[side][frequency];
+	public byte getBundledOutput(EnumFacing side, int frequency) {
+		return output[side.getHorizontalIndex()][frequency];
 	}
 
 	@Override
@@ -365,13 +363,13 @@ public class Socket implements ISocket {
 	}
 
 	@Override
-	public void setInput(int side, int frequency, byte input) {
-		this.input[side][frequency] = input;
+	public void setInput(EnumFacing side, int frequency, byte input) {
+		this.input[side.getHorizontalIndex()][frequency] = input;
 	}
 
 	@Override
-	public void setOutput(int side, int frequency, byte output) {
-		this.output[side][frequency] = output;
+	public void setOutput(EnumFacing side, int frequency, byte output) {
+		this.output[side.getHorizontalIndex()][frequency] = output;
 	}
 
 	@Override
@@ -390,11 +388,11 @@ public class Socket implements ISocket {
 			return;
 		updateInputPre();
 		for (int i = 0; i < 4; i++) {
-			EnumConnectionType type = getConnectionTypeAtSide(i);
+			EnumConnectionType type = getConnectionTypeAtSide(EnumFacing.getHorizontal(i));
 			if (type.isRedstone())
-				input[i][0] = (byte) updateRedstoneInput(i);
+				input[i][0] = (byte) updateRedstoneInput(EnumFacing.getHorizontal(i));
 			else if (type.isBundled())
-				input[i] = updateBundledInput(i);
+				input[i] = updateBundledInput(EnumFacing.getHorizontal(i));
 		}
 		updateInputPost();
 	}
@@ -414,7 +412,7 @@ public class Socket implements ISocket {
 	}
 
 	@Override
-	public EnumConnectionType getConnectionTypeAtSide(int side) {
+	public EnumConnectionType getConnectionTypeAtSide(EnumFacing side) {
 		return gate != null ? gate.getConnectionTypeAtSide(side) : EnumConnectionType.NONE;
 	}
 
@@ -422,7 +420,7 @@ public class Socket implements ISocket {
 		byte oio = io;
 		io = 0;
 		for (int i = 0; i < 4; i++)
-			io |= (getRedstoneInput(i) != 0 || getRedstoneOutput(i) != 0) ? 1 << i : 0;
+			io |= (getRedstoneInput(EnumFacing.getHorizontal(i)) != 0 || getRedstoneOutput(EnumFacing.getHorizontal(i)) != 0) ? 1 << i : 0;
 
 		if (oio != io)
 			provider.getWriteStream(1).writeByte(io);
@@ -431,9 +429,9 @@ public class Socket implements ISocket {
 	// Interaction
 
 	@Override
-	public void preparePlacement(EntityPlayer player, BlockCoord pos, int side, ItemStack stack) {
-		setSide(side ^ 1);
-		setRotation(Rotation.getSidedRotation(player, side));
+	public void preparePlacement(EntityPlayer player, BlockPos pos, EnumFacing side, ItemStack stack) {
+		setSide(side.getOpposite());
+		//setRotation(Rotation.getSidedRotation(player, side));
 	}
 
 	@Override
@@ -450,7 +448,7 @@ public class Socket implements ISocket {
 	}
 
 	@Override
-	public boolean activate(EntityPlayer player, MovingObjectPosition hit, ItemStack stack) {
+	public boolean activate(EntityPlayer player, RayTraceResult hit, ItemStack stack) {
 		if (stack != null) {
 			if (!getWorld().isRemote) {
 				if (gate == null && stack.getItem() instanceof IGateItem) {
@@ -467,7 +465,7 @@ public class Socket implements ISocket {
 					}
 
 					// Set the rotation of the socket based on where the player is facing
-					int rotation = Rotation.getSidedRotation(player, getSide() ^ 1);
+					EnumFacing rotation = getSide();
 					setRotation(rotation);
 					// Put the gate in the socket
 					setGate(stack, player);
@@ -478,7 +476,7 @@ public class Socket implements ISocket {
 						stack.stackSize--;
 					}
 					
-					MiscUtils.playPlaceSound(getWorld(), getPos());
+					MiscUtils.playPlaceSound(player, getWorld(), getPos());
 					return true;
 				} else if (gate != null && stack.getItem() == Content.itemSolderingIron) {
 					stack.damageItem(1, player);
@@ -490,8 +488,8 @@ public class Socket implements ISocket {
 					if (!player.capabilities.isCreativeMode
 							&& ((IGateItem) gate.getItemStack().getItem()).usedUpOnPlace(player)
 							&& this.usesUpPlacedGate()) {
-						BlockCoord pos = getPos();
-						MiscUtils.dropItem(getWorld(), gate.getItemStack(), pos.x, pos.y, pos.z);
+						BlockPos pos = getPos();
+						MiscUtils.dropItem(getWorld(), gate.getItemStack(), pos.getX(), pos.getY(), pos.getZ());
 					}
 					
 					gate = null;
@@ -522,19 +520,19 @@ public class Socket implements ISocket {
 	}
 
 	public static boolean checkItemIsTool(Item item) {
-		if (item != null) {
-			return (IntegratedCircuits.isPRLoaded && item instanceof mrtjp.projectred.api.IScrewdriver)
+		/*if (item != null) {*/
+	/*		return (IntegratedCircuits.isPRLoaded && item instanceof mrtjp.projectred.api.IScrewdriver)
 			        || item == Content.itemScrewdriver || item.getUnlocalizedName().equals("item.redlogic.screwdriver")
 					|| (IntegratedCircuits.isBPAPIThere && item instanceof com.bluepowermod.api.misc.IScrewdriver)
-					|| (IntegratedCircuits.isBCToolsAPIThere && item instanceof buildcraft.api.tools.IToolWrench);
-		} else return false;
+					|| (IntegratedCircuits.isBCToolsAPIThere && item instanceof buildcraft.api.tools.IToolWrench);*/
+		/*} else*/ return false;
 	}
 
 	@Override
 	public boolean rotate() {
-		setRotation((getRotation() + 1) % 4);
+		setRotation(MiscUtils.rotn(getRotation(), 1));
 		if (!getWorld().isRemote)
-			getWriteStream(0).writeByte(orientation);
+			getWriteStream(0).writeInt(orientation.getHorizontalIndex());
 		notifyBlocksAndChanges();
 		if (gate != null && !getWorld().isRemote) {
 			gate.onRotated();
@@ -546,8 +544,8 @@ public class Socket implements ISocket {
 	@Override
 	public void onNeighborChanged() {
 		if (!getWorld().isRemote) {
-			BlockCoord pos = getPos().offset(getSide());
-			if (!MiscUtils.canPlaceGateOnSide(getWorld(), pos.x, pos.y, pos.z, getSide() ^ 1)) {
+			BlockPos pos = getPos().offset(getSide());
+			if (!MiscUtils.canPlaceGateOnSide(getWorld(), pos, getSide().getOpposite())) {
 				destroy();
 			} else
 				updateInput();
@@ -568,15 +566,15 @@ public class Socket implements ISocket {
 	}
 	
 	@Override
-	public ItemStack pickItem(MovingObjectPosition mop) {
+	public ItemStack pickItem(RayTraceResult mop) {
 		if (gate != null)
 			return gate.pickItem(mop);
 		return null;
 	}
-
+/*
 	public static Transformation getRotationTransformation(ISocket socket) {
 		return Rotation.sideOrientation(socket.getSide(), socket.getRotation()).at(Vector3.center);
-	}
+	}*/
 
 	@Override
 	public ISocketWrapper getWrapper() {

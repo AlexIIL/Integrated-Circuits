@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat.gateio;
-
+/*
 import mods.immibis.redlogic.api.wiring.IBundledEmitter;
 import mods.immibis.redlogic.api.wiring.IBundledUpdatable;
 import mods.immibis.redlogic.api.wiring.IBundledWire;
@@ -12,7 +12,7 @@ import codechicken.lib.vec.BlockCoord;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
-
+/*
 @InterfaceList({ @Interface(iface = "mods.immibis.redlogic.api.wiring.IBundledUpdatable", modid = "RedLogic"),
 		@Interface(iface = "mods.immibis.redlogic.api.wiring.IBundledEmitter", modid = "RedLogic"),
 		@Interface(iface = "mods.immibis.redlogic.api.wiring.IConnectable", modid = "RedLogic") })
@@ -64,4 +64,4 @@ public class GPRedLogic extends GateIOProvider implements IBundledUpdatable, IBu
 		// TODO I could do something about this.
 		return false;
 	}
-}
+}*/

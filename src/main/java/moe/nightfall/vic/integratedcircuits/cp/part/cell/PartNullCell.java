@@ -1,5 +1,6 @@
 package moe.nightfall.vic.integratedcircuits.cp.part.cell;
 
+import moe.nightfall.vic.integratedcircuits.misc.RenderManager;
 import moe.nightfall.vic.integratedcircuits.misc.Vec2i;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +25,7 @@ public class PartNullCell extends CircuitPart {
 	public void renderPart(Vec2i pos, ICircuit parent, double x, double y, CircuitPartRenderer.EnumRenderType type) {
 		CircuitPartRenderer.renderPartCell(pos, parent, this, x, y, type);
 
-		CircuitPartRenderer.addQuad(x, y, 16, 2 * 16, 16, 16, 0);
+		RenderManager.getInstance().addQuad(x, y, 16, 2 * 16, 16, 16, 0);
 	}
 
 	@Override

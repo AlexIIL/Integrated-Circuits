@@ -2,6 +2,7 @@ package moe.nightfall.vic.integratedcircuits.cp.part;
 
 import moe.nightfall.vic.integratedcircuits.misc.RenderManager;
 import moe.nightfall.vic.integratedcircuits.misc.Vec2i;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -23,25 +24,25 @@ public class PartIOBit extends CircuitPart {
 	@Override
 	public void renderPart(Vec2i pos, ICircuit parent, double x, double y, CircuitPartRenderer.EnumRenderType type) {
 		int freq = this.getFrequency(pos, parent);
-		int rot = this.getRotation(pos, parent);
-		RenderManager rm = new RenderManager();
+		EnumFacing rot = this.getRotation(pos, parent);
+		RenderManager rm = RenderManager.getInstance();
 
 		if (type == CircuitPartRenderer.EnumRenderType.WORLD_16x) {
 			rm.setColor(188, 167, 60, 255);
-			rm.addQuad(x, y, 6 * 16, 3 * 16, 16, 16, rot);
+			rm.addQuad(x, y, 6 * 16, 3 * 16, 16, 16, rot.getHorizontalIndex());
 		} else {
 			rm.setColor(1F, 1F, 1F, 1F);
-			rm.addQuad(x, y, 2 * 16, 2 * 16, 16, 16, rot);
+			rm.addQuad(x, y, 2 * 16, 2 * 16, 16, 16, rot.getHorizontalIndex());
 			if (this.isPowered(pos, parent) && type == CircuitPartRenderer.EnumRenderType.GUI)
 				RenderUtils.applyColorIRGBA(rm, Config.colorGreen);
 			else
 				RenderUtils.applyColorIRGBA(rm, Config.colorGreen, 0.4F);
-			rm.addQuad(x, y, 4 * 16, 2 * 16, 16, 16, rot);
+			rm.addQuad(x, y, 4 * 16, 2 * 16, 16, 16, rot.getHorizontalIndex());
 			if (type == CircuitPartRenderer.EnumRenderType.GUI) {
 				if (parent.getCircuitData().getProperties().getModeAtSide(getRotation(pos, parent)).isAnalog())
-					rm.setColorRGBA_I((getFrequency(pos, parent) * 17) << 20, 255);
-				else rm.setColorRGBA_I(MapColor.getMapColorForBlockColored(freq).colorValue, 255);
-				rm.addQuad(x, y, 3 * 16, 2 * 16, 16, 16, rot);
+					RenderUtils.applyColorIRGBA(rm, (getFrequency(pos, parent) * 17) << 20, 255);
+				else RenderUtils.applyColorIRGBA(rm, MapColor.COLORS[freq].colorValue, 255);
+				rm.addQuad(x, y, 3 * 16, 2 * 16, 16, 16, rot.getHorizontalIndex());
 			}
 		}
 	}

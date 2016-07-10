@@ -3,7 +3,7 @@ package moe.nightfall.vic.integratedcircuits.net;
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
-import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntityAssembler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -39,7 +39,7 @@ public class PacketAssemblerChangeItem extends PacketTileEntity<PacketAssemblerC
 		if (te == null)
 			return;
 		te.excMatrix = null;
-		TileEntityAssemblerRenderer.scheduleFramebuffer(te);
+		//TileEntityAssemblerRenderer.scheduleFramebuffer(te);
 		te.isOccupied = occupied;
 	}
 }

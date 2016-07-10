@@ -40,8 +40,8 @@ public final class Content {
 	public static void init() {
 
 		itemSocket = new ItemSocket();
-		if (IntegratedCircuits.isMCMPLoaded)
-			Content.itemSocketFMP = new ItemSocketMCMP();
+		//if (IntegratedCircuits.isMCMPLoaded)
+			//Content.itemSocketFMP = new ItemSocketMCMP();
 
 		itemCircuit = new ItemCircuit();
 		item7Segment = new Item7Segment();

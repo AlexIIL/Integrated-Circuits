@@ -3,7 +3,7 @@ package moe.nightfall.vic.integratedcircuits.compat.buildcraft;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;
-
+/*
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketWrapper;
@@ -199,3 +199,4 @@ public class GatePipePluggable extends PipePluggable implements ISocketWrapper {
 		return socket;
 	}
 }
+*/

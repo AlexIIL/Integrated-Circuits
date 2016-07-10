@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ItemAmount {
 	public double amount;
@@ -21,14 +22,14 @@ public class ItemAmount {
 	}
 
 	public static ItemAmount readFromNBT(NBTTagCompound compound) {
-		Item item = GameData.getItemRegistry().getRaw(compound.getString("id"));
+		Item item = Item.getByNameOrId(compound.getString("id"));
 		int damage = compound.getInteger("damage");
 		double amount = compound.getDouble("amount");
 		return new ItemAmount(item, amount, damage);
 	}
 
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		compound.setString("id", GameData.getItemRegistry().getNameForObject(item));
+		compound.setString("id", item.getRegistryName().getResourcePath());
 		compound.setInteger("damage", damageValue);
 		compound.setDouble("amount", amount);
 		return compound;

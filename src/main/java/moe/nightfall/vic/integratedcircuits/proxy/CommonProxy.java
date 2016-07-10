@@ -279,16 +279,16 @@ public class CommonProxy {
 
 		Laser l1 = te.laserHelper.getLaser(te.rotation);
 		if (l1 != null && holdsEmpty || holdsLaser && l1 == null)
-			box1 = MiscUtils.getRotatedInstance(boxBase, 2).offset(x, y, z);
+			box1 = MiscUtils.getRotatedInstance(boxBase, EnumFacing.WEST).offset(x, y, z);
 		Laser l2 = te.laserHelper.getLaser(MiscUtils.rot(te.rotation));
 		if (l2 != null && holdsEmpty || holdsLaser && l2 == null)
-			box2 = MiscUtils.getRotatedInstance(boxBase, 1).offset(x, y, z);
+			box2 = MiscUtils.getRotatedInstance(boxBase, EnumFacing.SOUTH).offset(x, y, z);
 		Laser l3 = te.laserHelper.getLaser(MiscUtils.rotn(te.rotation, 2));
 		if (l3 != null && holdsEmpty || holdsLaser && l3 == null)
-			box3 = MiscUtils.getRotatedInstance(boxBase, 0).offset(x, y, z);
+			box3 = MiscUtils.getRotatedInstance(boxBase, EnumFacing.NORTH).offset(x, y, z);
 		Laser l4 = te.laserHelper.getLaser(MiscUtils.rotn(te.rotation, 3));
 		if (l4 != null && holdsEmpty || holdsLaser && l4 == null)
-			box4 = MiscUtils.getRotatedInstance(boxBase, 3).offset(x, y, z);
+			box4 = MiscUtils.getRotatedInstance(boxBase, EnumFacing.EAST).offset(x, y, z);
 
 		RayTraceResult mop = RayTracer.rayTraceAABB(player, partialTicks, base, box1, box2, box3, box4);
 		if (mop == null || mop.hitInfo == base)

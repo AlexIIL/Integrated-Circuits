@@ -7,16 +7,19 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerAssembler extends ContainerBase {
 	public TileEntityAssembler tileentity;
 
 	public ContainerAssembler(EntityPlayer player, final TileEntityAssembler tileentity) {
 		this.tileentity = tileentity;
-		this.tileentity.openInventory(player);
-
+        IItemHandler handler = tileentity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		//this.tileentity.openInventory(player);
 		//Disk slot: 0
-		this.addSlotToContainer(new Slot(this.tileentity, 0, 8, 8) {
+		this.addSlotToContainer(new SlotItemHandler(handler, 0, 8, 8) {
 			@Override
 			public boolean isItemValid(ItemStack stack) {
 				return false;
@@ -29,7 +32,7 @@ public class ContainerAssembler extends ContainerBase {
 		});
 		
 		//PCB slot: 1
-		this.addSlotToContainer(new Slot(this.tileentity, 1, 8, 113) {
+		this.addSlotToContainer(new SlotItemHandler(handler, 1, 8, 113) {
 			@Override
 			public boolean isItemValid(ItemStack stack) {
 				return stack.getItem() == Content.itemPCB && stack.getItemDamage() == 0
@@ -44,11 +47,11 @@ public class ContainerAssembler extends ContainerBase {
 
 		//Material input slots: 2-8
 		for (int i = 0; i < 7; i++)
-			this.addSlotToContainer(new Slot(this.tileentity, i + 2, 40 + i * 18, 113));
+			this.addSlotToContainer(new SlotItemHandler(handler, i + 2, 40 + i * 18, 113));
 
 		//Laser slots: 9-12
 		for (int i = 0; i < 4; i++)
-			this.addSlotToContainer(new Slot(this.tileentity, i + 9, 148, 12 + i * 18) {
+			this.addSlotToContainer(new SlotItemHandler(handler, i + 9, 148, 12 + i * 18) {
 				@Override
 				public boolean isItemValid(ItemStack stack) {
 					return stack.getItem() == Content.itemLaser;
@@ -72,13 +75,13 @@ public class ContainerAssembler extends ContainerBase {
 
 	@Override
 	public void onContainerClosed(EntityPlayer player) {
-		this.tileentity.closeInventory(player);
+		//this.tileentity.closeInventory(player);
 		super.onContainerClosed(player);
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		return this.tileentity.isUseableByPlayer(player);
+		return true;
 	}
 
 	@Override

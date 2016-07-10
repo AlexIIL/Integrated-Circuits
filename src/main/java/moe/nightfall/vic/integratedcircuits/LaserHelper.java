@@ -20,6 +20,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class LaserHelper {
 	private Laser[] lasers = new Laser[4];
@@ -65,7 +67,7 @@ public class LaserHelper {
 			lasers[id] = null;
 		else
 			lasers[id] = new Laser(te, id);
-		te.contents[offset + id] = laser;
+		((ItemStackHandler)te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)).setStackInSlot(offset + id, laser);
 		if (MiscUtils.isServer() && te.hasWorldObj())
 			CommonProxy.networkWrapper.sendToDimension(new PacketAssemblerChangeLaser(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ(),
 					id, laser), te.getWorld().provider.getDimension());
@@ -90,7 +92,7 @@ public class LaserHelper {
 			NBTTagCompound comp = lasers.getCompoundTagAt(i);
 			if (comp.hasNoTags())
 				continue;
-			ItemStack stack = te.contents[i + offset];
+			ItemStack stack = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(i + offset);
 			createLaser(i, stack);
 			getLaser(EnumFacing.getFront(2+i)).readFromNBT(comp);
 		}

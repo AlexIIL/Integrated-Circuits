@@ -1,6 +1,8 @@
 package moe.nightfall.vic.integratedcircuits.client.gui.cad;
 
+import moe.nightfall.vic.integratedcircuits.misc.RenderManager;
 import moe.nightfall.vic.integratedcircuits.misc.Vec2i;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -32,9 +34,10 @@ public class PlaceHandler extends CADHandler {
 			if (selectedPart.getPart() instanceof PartNull) {
 				RenderUtils.applyColorIRGB(Config.colorGreen, 0.4F);
 				GL11.glDisable(GL11.GL_TEXTURE_2D);
-				Tessellator.instance.startDrawingQuads();
-				CircuitPartRenderer.addQuad(gridX, gridY, 0, 0, 1, 1);
-				Tessellator.instance.draw();
+				RenderManager rm = RenderManager.getInstance();
+				rm.startDrawQuads(DefaultVertexFormats.POSITION_TEX_COLOR);
+				rm.addQuad(gridX, gridY, 0, 0, 1, 1);
+				rm.draw();
 				GL11.glEnable(GL11.GL_TEXTURE_2D);
 			} else {
 				if (mouseDown) {
@@ -85,16 +88,17 @@ public class PlaceHandler extends CADHandler {
 		int x = parent.startX;
 		int y = parent.startY;
 
-		Tessellator.instance.startDrawingQuads();
-		CircuitPartRenderer.addQuad(x, y, 0, 0, 1, 1, 1, 1, 16, 16, 0);
+		RenderManager rm = RenderManager.getInstance();
+		rm.startDrawQuads(DefaultVertexFormats.POSITION_TEX_COLOR);
+		rm.addQuad(x, y, 0, 0, 1, 1, 1, 1, 16, 16, 0);
 		if (parent.endY > parent.startY)
-			CircuitPartRenderer.addQuad(x, y, 4, 0, 1, 1, 1, 1, 16, 16, 0);
+			rm.addQuad(x, y, 4, 0, 1, 1, 1, 1, 16, 16, 0);
 		else if (parent.endY < parent.startY)
-			CircuitPartRenderer.addQuad(x, y, 2, 0, 1, 1, 1, 1, 16, 16, 0);
+			rm.addQuad(x, y, 2, 0, 1, 1, 1, 1, 16, 16, 0);
 		else if (parent.endX > parent.startX)
-			CircuitPartRenderer.addQuad(x, y, 3, 0, 1, 1, 1, 1, 16, 16, 0);
+			rm.addQuad(x, y, 3, 0, 1, 1, 1, 1, 16, 16, 0);
 		else if (parent.endX < parent.startX)
-			CircuitPartRenderer.addQuad(x, y, 1, 0, 1, 1, 1, 1, 16, 16, 0);
+			rm.addQuad(x, y, 1, 0, 1, 1, 1, 1, 16, 16, 0);
 
 		while (x != parent.endX || y != parent.endY) {
 			if (y < parent.endY)
@@ -107,28 +111,28 @@ public class PlaceHandler extends CADHandler {
 				x--;
 
 			if (y != parent.endY)
-				CircuitPartRenderer.addQuad(x, y, 6, 0, 1, 1, 1, 1, 16, 16, 0);
+				rm.addQuad(x, y, 6, 0, 1, 1, 1, 1, 16, 16, 0);
 			else if (y == parent.endY && x == parent.startX) {
-				CircuitPartRenderer.addQuad(x, y, 0, 0, 1, 1, 1, 1, 16, 16, 0);
+				rm.addQuad(x, y, 0, 0, 1, 1, 1, 1, 16, 16, 0);
 				if (parent.endY > parent.startY)
-					CircuitPartRenderer.addQuad(x, y, 2, 0, 1, 1, 1, 1, 16, 16, 0);
+					rm.addQuad(x, y, 2, 0, 1, 1, 1, 1, 16, 16, 0);
 				else if (parent.endY < parent.startY)
-					CircuitPartRenderer.addQuad(x, y, 4, 0, 1, 1, 1, 1, 16, 16, 0);
+					rm.addQuad(x, y, 4, 0, 1, 1, 1, 1, 16, 16, 0);
 				if (parent.endX > parent.startX)
-					CircuitPartRenderer.addQuad(x, y, 3, 0, 1, 1, 1, 1, 16, 16, 0);
+					rm.addQuad(x, y, 3, 0, 1, 1, 1, 1, 16, 16, 0);
 				else if (parent.endX < parent.startX)
-					CircuitPartRenderer.addQuad(x, y, 1, 0, 1, 1, 1, 1, 16, 16, 0);
+					rm.addQuad(x, y, 1, 0, 1, 1, 1, 1, 16, 16, 0);
 			} else if (x != parent.endX)
-				CircuitPartRenderer.addQuad(x, y, 5, 0, 1, 1, 1, 1, 16, 16, 0);
+				rm.addQuad(x, y, 5, 0, 1, 1, 1, 1, 16, 16, 0);
 			else if (x == parent.endX) {
-				CircuitPartRenderer.addQuad(x, y, 0, 0, 1, 1, 1, 1, 16, 16, 0);
+				rm.addQuad(x, y, 0, 0, 1, 1, 1, 1, 16, 16, 0);
 				if (parent.endX > parent.startX)
-					CircuitPartRenderer.addQuad(x, y, 1, 0, 1, 1, 1, 1, 16, 16, 0);
+					rm.addQuad(x, y, 1, 0, 1, 1, 1, 1, 16, 16, 0);
 				else if (parent.endX < parent.startX)
-					CircuitPartRenderer.addQuad(x, y, 3, 0, 1, 1, 1, 1, 16, 16, 0);
+					rm.addQuad(x, y, 3, 0, 1, 1, 1, 1, 16, 16, 0);
 			}
 		}
-		Tessellator.instance.draw();
+		rm.draw();
 	}
 
 	@Override
@@ -156,7 +160,7 @@ public class PlaceHandler extends CADHandler {
 
 		if (selectedPart.getPart() instanceof PartNull) {
 			// Send cache update for erasing
-			CommonProxy.networkWrapper.sendToServer(new PacketPCBCache(PacketPCBCache.SNAPSHOT, parent.tileentity.xCoord, parent.tileentity.yCoord, parent.tileentity.zCoord));
+			CommonProxy.networkWrapper.sendToServer(new PacketPCBCache(PacketPCBCache.SNAPSHOT, parent.tileentity.getPos().getX(), parent.tileentity.getPos().getY(), parent.tileentity.getPos().getZ()));
 		}
 
 		if (parent.drag) {
@@ -164,7 +168,7 @@ public class PlaceHandler extends CADHandler {
 				int id = CircuitPart.getId(selectedPart.getPart());
 				int state = selectedPart.getState();
 
-				PacketPCBChangePart packet = new PacketPCBChangePart(true, parent.tileentity.xCoord, parent.tileentity.yCoord, parent.tileentity.zCoord);
+				PacketPCBChangePart packet = new PacketPCBChangePart(true, parent.tileentity.getPos().getX(), parent.tileentity.getPos().getY(), parent.tileentity.getPos().getZ());
 				packet.add(new Vec2i(parent.startX, parent.startY), id, state);
 				while (parent.startX != parent.endX || parent.startY != parent.endY) {
 					if (parent.startY < parent.endY)
@@ -191,7 +195,7 @@ public class PlaceHandler extends CADHandler {
 
 					Vec2i pos = new Vec2i(parent.startX, parent.startY);
 					if (newID != parent.getCircuitData().getID(pos)) {
-						CommonProxy.networkWrapper.sendToServer(new PacketPCBChangePart(!(selectedPart.getPart() instanceof PartNull), parent.tileentity.xCoord, parent.tileentity.yCoord, parent.tileentity.zCoord).add(pos, newID, selectedPart.getState()));
+						CommonProxy.networkWrapper.sendToServer(new PacketPCBChangePart(!(selectedPart.getPart() instanceof PartNull), parent.tileentity.getPos().getX(), parent.tileentity.getPos().getY(), parent.tileentity.getPos().getZ()).add(pos, newID, selectedPart.getState()));
 					}
 				}
 			}
@@ -210,7 +214,7 @@ public class PlaceHandler extends CADHandler {
 				Vec2i pos = new Vec2i(boardX, boardY);
 				if (!(parent.tileentity.getCircuitData().getPart(pos) instanceof PartNull)) {
 					CommonProxy.networkWrapper.sendToServer(new PacketPCBChangePart(false,
-							parent.tileentity.xCoord, parent.tileentity.yCoord, parent.tileentity.zCoord)
+							parent.tileentity.getPos().getX(), parent.tileentity.getPos().getY(), parent.tileentity.getPos().getZ())
 						.add(pos, 0, 0));
 				}
 			}

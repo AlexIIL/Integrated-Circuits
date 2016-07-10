@@ -13,7 +13,7 @@ import moe.nightfall.vic.integratedcircuits.Content;
 import moe.nightfall.vic.integratedcircuits.DiskDrive.IDiskDrive;
 import moe.nightfall.vic.integratedcircuits.LaserHelper;
 import moe.nightfall.vic.integratedcircuits.client.TextureRenderer;
-import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
 import moe.nightfall.vic.integratedcircuits.client.gui.GuiAssembler;
 import moe.nightfall.vic.integratedcircuits.client.gui.cad.GuiCAD;
 import moe.nightfall.vic.integratedcircuits.cp.CircuitData;
@@ -70,8 +70,8 @@ public class TileEntityAssembler extends TileEntityInventory implements IDiskDri
 
 	@Override
 	public void update() {
-		if (worldObj.isRemote && texture != null)
-			TileEntityAssemblerRenderer.scheduleFramebuffer(this);
+		//if (worldObj.isRemote && texture != null)
+			//TileEntityAssemblerRenderer.scheduleFramebuffer(this);
 		if (worldObj.isRemote)
 			return;
 
@@ -324,7 +324,7 @@ public class TileEntityAssembler extends TileEntityInventory implements IDiskDri
 
 		if (MiscUtils.isClient() && (inventory.getStackInSlot(1) != null || laserHelper.isRunning)) {
 			isOccupied = true;
-			TileEntityAssemblerRenderer.scheduleFramebuffer(this);
+			//TileEntityAssemblerRenderer.scheduleFramebuffer(this);
 		}
 	}
 

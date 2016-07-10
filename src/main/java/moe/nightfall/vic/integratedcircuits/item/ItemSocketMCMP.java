@@ -1,7 +1,7 @@
 package moe.nightfall.vic.integratedcircuits.item;
 
-import mcmultipart.item.ItemMultiPart;
-import mcmultipart.multipart.IMultipart;
+//import mcmultipart.item.ItemMultiPart;
+//import mcmultipart.multipart.IMultipart;
 import moe.nightfall.vic.integratedcircuits.Constants;
 import moe.nightfall.vic.integratedcircuits.IntegratedCircuits;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-
+/*
 public class ItemSocketMCMP extends ItemMultiPart {
     public ItemSocketMCMP() {
         setRegistryName("socket_mcmp");
@@ -25,3 +25,4 @@ public class ItemSocketMCMP extends ItemMultiPart {
         return null; //TODO implement
     }
 }
+*/

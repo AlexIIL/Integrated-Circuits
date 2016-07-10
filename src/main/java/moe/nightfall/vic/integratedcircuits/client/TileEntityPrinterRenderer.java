@@ -2,15 +2,6 @@ package moe.nightfall.vic.integratedcircuits.client;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.lighting.LightModel;
-import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.uv.IconTransformation;
-import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.TransformationList;
-import codechicken.lib.vec.Translation;
-import codechicken.lib.vec.Vector3;
-import net.minecraftforge.fml.client.registry.ISimpleBlockRenderingHandler;
 import moe.nightfall.vic.integratedcircuits.Constants;
 import moe.nightfall.vic.integratedcircuits.misc.RenderUtils;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntityPrinter;
@@ -18,16 +9,15 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderBlocks;
+
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Items;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
 
+import net.minecraft.world.IBlockAccess;
+/*
 public class TileEntityPrinterRenderer extends TileEntitySpecialRenderer implements ISimpleBlockRenderingHandler {
 
 	@Override
@@ -130,3 +120,4 @@ public class TileEntityPrinterRenderer extends TileEntitySpecialRenderer impleme
 	}
 
 }
+*/

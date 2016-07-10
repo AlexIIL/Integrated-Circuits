@@ -5,12 +5,14 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.Config;
 import moe.nightfall.vic.integratedcircuits.Content;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGate;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket.EnumConnectionType;
+import moe.nightfall.vic.integratedcircuits.misc.Cube;
 import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import moe.nightfall.vic.integratedcircuits.net.Packet7SegmentOpenGui;
 import moe.nightfall.vic.integratedcircuits.proxy.CommonProxy;
@@ -27,14 +29,11 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 import org.apache.commons.lang3.StringUtils;
 
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-
 import com.google.common.collect.Lists;
 
 public class Gate7Segment extends Gate {
 	
-	private final Cuboid6 dimensions = new Cuboid6(2, 0, 1, 14, 3, 15);
+	private final Cube dimensions = new Cube(2, 0, 1, 14, 3, 15);
 	
 	public int digit = NUMBERS[0];
 	public int color;
@@ -328,7 +327,7 @@ public class Gate7Segment extends Gate {
 	private void sendChangesToClient() {
 		provider.notifyPartChange();
 		hasSlaves = slaves.size() > 0;
-		MCDataOutput out = provider.getWriteStream(11);
+		ByteBuf out = provider.getWriteStream(11);
 		out.writeBoolean(isSlave);
 		out.writeBoolean(hasSlaves);
 	}
@@ -397,7 +396,7 @@ public class Gate7Segment extends Gate {
 	}
 
 	@Override
-	public void read(byte discr, MCDataInput packet) {
+	public void read(byte discr, ByteBuf packet) {
 		if (discr == 10)
 			digit = packet.readInt();
 		else if (discr == 11) {
@@ -414,12 +413,12 @@ public class Gate7Segment extends Gate {
 	}
 
 	@Override
-	public EnumConnectionType getConnectionTypeAtSide(int side) {
-		return isSlave || (hasSlaves && side == 1) ? EnumConnectionType.NONE : mode == MODE_SIMPLE ? EnumConnectionType.SIMPLE : mode == MODE_ANALOG ? EnumConnectionType.ANALOG : EnumConnectionType.BUNDLED;
+	public EnumConnectionType getConnectionTypeAtSide(EnumFacing side) {
+		return isSlave || (hasSlaves && side == EnumFacing.EAST) ? EnumConnectionType.NONE : mode == MODE_SIMPLE ? EnumConnectionType.SIMPLE : mode == MODE_ANALOG ? EnumConnectionType.ANALOG : EnumConnectionType.BUNDLED;
 	}
 
 	@Override
-	public Cuboid6 getDimension() {
+	public Cube getDimension() {
 		return dimensions;
 	}
 }

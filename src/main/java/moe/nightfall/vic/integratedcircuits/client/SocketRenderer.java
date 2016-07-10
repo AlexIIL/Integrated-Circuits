@@ -2,38 +2,24 @@ package moe.nightfall.vic.integratedcircuits.client;
 
 import moe.nightfall.vic.integratedcircuits.Config;
 import moe.nightfall.vic.integratedcircuits.Content;
-import moe.nightfall.vic.integratedcircuits.api.IPartRenderer;
+//import moe.nightfall.vic.integratedcircuits.api.IPartRenderer;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGate;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGateItem;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket.EnumConnectionType;
-import moe.nightfall.vic.integratedcircuits.client.model.ModelBase;
+//import moe.nightfall.vic.integratedcircuits.client.model.ModelBase;
 import moe.nightfall.vic.integratedcircuits.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.lighting.LightModel;
-import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.TextureUtils;
-import codechicken.lib.render.uv.IconTransformation;
-import codechicken.lib.vec.BlockCoord;
-import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.Transformation;
-import codechicken.lib.vec.Translation;
-import codechicken.lib.vec.Vector3;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
+/*
 @SideOnly(Side.CLIENT)
 public class SocketRenderer extends PartRenderer<ISocket> {
 	private ISocket socket;
@@ -202,3 +188,4 @@ public class SocketRenderer extends PartRenderer<ISocket> {
 		}
 	}
 }
+*/

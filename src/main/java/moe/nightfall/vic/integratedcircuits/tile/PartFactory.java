@@ -1,7 +1,7 @@
 package moe.nightfall.vic.integratedcircuits.tile;
 
 import java.util.HashMap;
-
+/*
 import com.google.common.collect.Maps;
 import mcmultipart.multipart.IPartFactory;
 import mcmultipart.multipart.IMultipart;
@@ -37,3 +37,4 @@ public class PartFactory implements IPartFactory {
 		MultipartRegistry.registerPartFactory(instance, keys);
 	}
 }
+*/

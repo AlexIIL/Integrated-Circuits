@@ -1,11 +1,12 @@
 package moe.nightfall.vic.integratedcircuits.gate;
 
+import io.netty.buffer.ByteBuf;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGate;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketBridge.ISocketBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import codechicken.lib.data.MCDataInput;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.RayTraceResult;
 
 public abstract class Gate implements IGate {
@@ -42,7 +43,7 @@ public abstract class Gate implements IGate {
 	}
 
 	@Override
-	public void read(byte discr, MCDataInput packet) {
+	public void read(byte discr, ByteBuf packet) {
 	}
 
 	@Override
@@ -105,7 +106,7 @@ public abstract class Gate implements IGate {
 	}
 
 	@Override
-	public boolean hasComparatorInputAtSide(int side) {
+	public boolean hasComparatorInputAtSide(EnumFacing side) {
 		return false;
 	}
 }

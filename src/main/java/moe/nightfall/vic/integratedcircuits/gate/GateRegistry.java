@@ -5,14 +5,13 @@ import java.util.Map;
 import java.util.Set;
 
 import moe.nightfall.vic.integratedcircuits.IntegratedCircuits;
-import moe.nightfall.vic.integratedcircuits.api.IPartRenderer;
+//import moe.nightfall.vic.integratedcircuits.api.IPartRenderer;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI.Type;
 import moe.nightfall.vic.integratedcircuits.api.gate.GateIOProvider;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGate;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGateRegistry;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocketWrapper;
-import moe.nightfall.vic.integratedcircuits.client.SocketRenderer;
 import moe.nightfall.vic.integratedcircuits.proxy.ClientProxy;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntitySocket;
 
@@ -97,7 +96,7 @@ public class GateRegistry implements IGateRegistry {
 	public void registerGate(String name, Class<? extends IGate> clazz) {
 		registry.put(name, clazz);
 	}
-
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public <T extends IGate> void registerGateRenderer(Class<T> clazz, IPartRenderer<T> renderer) {
@@ -114,7 +113,7 @@ public class GateRegistry implements IGateRegistry {
 	@SideOnly(Side.CLIENT)
 	public IPartRenderer<IGate> getRenderer(String gateID) {
 		return getRenderer(registry.get(gateID));
-	}
+	}*/
 
 	@Override
 	public String getName(Class<? extends IGate> gate) {
@@ -129,13 +128,13 @@ public class GateRegistry implements IGateRegistry {
 			throw new RuntimeException("Coundn't instance gate \"" + name + "\", need an empty constructor!");
 		}
 	}
-
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IPartRenderer<ISocket> createDefaultSocketRenderer(String iconName) {
 		ClientProxy.icons.add(iconName);
-		return new SocketRenderer(iconName);
-	}
+		//return new SocketRenderer(iconName);
+	}*/
 
 	@Override
 	public void registerGateIOProvider(GateIOProvider provider, Type... elements) {

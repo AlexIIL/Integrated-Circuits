@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat;
-
+/*
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import net.minecraft.util.EnumFacing;
@@ -31,3 +31,4 @@ public class BPRedstoneProvider implements IRedstoneProvider {
 		return null;
 	}
 }
+*/

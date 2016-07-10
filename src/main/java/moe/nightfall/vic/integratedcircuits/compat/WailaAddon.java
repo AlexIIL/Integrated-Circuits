@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat;
-
+/*
 import java.util.List;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -108,3 +108,4 @@ public class WailaAddon implements IWailaDataProvider, IWailaFMPProvider {
 		return currenttip;
 	}
 }
+*/

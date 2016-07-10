@@ -146,7 +146,7 @@ public class CircuitData implements Cloneable {
 				mode = EnumConnectionType.getSupportedList(maxIOSize).get(0);
 			}
 			// Set the mode
-			prop.setCon(prop.setModeAtSide(side, mode));
+			prop.setCon(prop.setModeAtSide(EnumFacing.getHorizontal(side), mode));
 			// Store the mode
 			modes[side] = mode;
 		}
@@ -180,7 +180,7 @@ public class CircuitData implements Cloneable {
 			Vec2i pos3 = new Vec2i(i + o, size - 1);
 			Vec2i pos4 = new Vec2i(0, i + o);
 			
-			if (prop.getModeAtSide(EnumFacing.NORTH) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.NORTH) == EnumConnectionType.SIMPLE && i >= 1)) {
+			if (prop.getModeAtSide(EnumFacing.SOUTH) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.SOUTH) == EnumConnectionType.SIMPLE && i >= 1)) {
 				// Set the part at the position to be a IOBit
 				setID(pos1, cid);
 				// Get the IOBit at that position
@@ -188,28 +188,28 @@ public class CircuitData implements Cloneable {
 				// Set the number of the IOBit (colour / redstone strength)
 				io1.setFrequency(pos1, parent, i);
 				// The rotation is what side the IOBit is on
-				io1.setRotation(pos1, parent, 0);
-			}
-			
-			if (prop.getModeAtSide(EnumFacing.SOUTH) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.SOUTH) == EnumConnectionType.SIMPLE && i >= 1)) {
-				setID(pos2, cid);
-				PartIOBit io2 = (PartIOBit) getPart(pos2);
-				io2.setFrequency(pos2, parent, i);
-				io2.setRotation(pos2, parent, 1);
+				io1.setRotation(pos1, parent, EnumFacing.SOUTH);
 			}
 			
 			if (prop.getModeAtSide(EnumFacing.WEST) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.WEST) == EnumConnectionType.SIMPLE && i >= 1)) {
+				setID(pos2, cid);
+				PartIOBit io2 = (PartIOBit) getPart(pos2);
+				io2.setFrequency(pos2, parent, i);
+				io2.setRotation(pos2, parent, EnumFacing.WEST);
+			}
+			
+			if (prop.getModeAtSide(EnumFacing.NORTH) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.NORTH) == EnumConnectionType.SIMPLE && i >= 1)) {
 				setID(pos3, cid);
 				PartIOBit io3 = (PartIOBit) getPart(pos3);
 				io3.setFrequency(pos3, parent, i);
-				io3.setRotation(pos3, parent, 2);
+				io3.setRotation(pos3, parent, EnumFacing.NORTH);
 			}
 			
 			if (prop.getModeAtSide(EnumFacing.EAST) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.EAST) == EnumConnectionType.SIMPLE && i >= 1)) {
 				setID(pos4, cid);
 				PartIOBit io4 = (PartIOBit) getPart(pos4);
 				io4.setFrequency(pos4, parent, i);
-				io4.setRotation(pos4, parent, 3);
+				io4.setRotation(pos4, parent, EnumFacing.EAST);
 			}
 		}
 	}

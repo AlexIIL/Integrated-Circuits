@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat.gateio;
-
+/*
 import moe.nightfall.vic.integratedcircuits.api.gate.GateIOProvider;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGatePeripheralProvider;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
@@ -67,3 +67,4 @@ public class GPComputerCraft extends GateIOProvider implements IBundledRedstoneP
 		return null;
 	}
 }
+*/

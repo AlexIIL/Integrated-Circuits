@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat.gateio;
-
+/*
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI.Type;
 import moe.nightfall.vic.integratedcircuits.api.gate.IGateRegistry;
@@ -35,3 +35,4 @@ public final class GateIO {
 
 	public static final int[] vanillaSideMap = { 1, 2, 5, 3, 4 };
 }
+*/

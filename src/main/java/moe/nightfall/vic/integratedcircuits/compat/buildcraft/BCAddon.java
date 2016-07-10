@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat.buildcraft;
-
+/*
 import moe.nightfall.vic.integratedcircuits.Constants;
 import moe.nightfall.vic.integratedcircuits.Content;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
@@ -74,3 +74,4 @@ public class BCAddon {
 		return (IPipeTile) (te instanceof IPipeTile ? te : null);
 	}
 }
+*/

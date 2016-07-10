@@ -14,6 +14,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,6 +27,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 
+import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,7 +35,7 @@ public class BlockSocket extends Block {
 	public BlockSocket() {
 		super(Material.CIRCUITS);
 		setUnlocalizedName(Constants.MOD_ID + ".gate");
-		setRegistryName("gate");
+		//setRegistryName("gate");
 		setHardness(1);
 
 		//Socket.box.setBlockBounds(this);
@@ -51,6 +53,11 @@ public class BlockSocket extends Block {
 			return null;
 		ItemStack stack = te.getSocket().pickItem(target);
 		return stack != null ? stack : new ItemStack(Content.itemSocket);
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+		return super.getActualState(state, worldIn, pos);
 	}
 
 

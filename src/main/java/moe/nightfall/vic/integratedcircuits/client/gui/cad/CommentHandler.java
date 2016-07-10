@@ -64,7 +64,7 @@ public class CommentHandler extends CADHandler {
 	}
 
 	private Vec2i calculateSize(Comment comment) {
-		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+		FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
 		String[] text = MiscUtils.stringNewlineSplit(comment.text);
 		int width = 10;
 		int height = Math.max(fr.FONT_HEIGHT, text.length * fr.FONT_HEIGHT) + 10;
@@ -124,7 +124,7 @@ public class CommentHandler extends CADHandler {
 				dragRelY = gridY - selectedComment.yPos;
 			} else if (mode == Mode.DELETE) {
 				parent.getCircuitData().getProperties().removeComment(selectedComment);
-				CommonProxy.networkWrapper.sendToServer(new PacketPCBDeleteComment(parent.tileentity.xCoord, parent.tileentity.yCoord, parent.tileentity.zCoord, selectedComment));
+				CommonProxy.networkWrapper.sendToServer(new PacketPCBDeleteComment(parent.tileentity.getPos().getX(), parent.tileentity.getPos().getY(), parent.tileentity.getPos().getZ(), selectedComment));
 				selectedComment = null;
 			} else if (mode == Mode.EDIT) {
 				if (selectedComment != unselectedComment)
@@ -157,14 +157,14 @@ public class CommentHandler extends CADHandler {
 			return;
 		comment.setText(textArea.getText());
 		sizeCache.remove(comment);
-		CommonProxy.networkWrapper.sendToServer(new PacketPCBComment(parent.tileentity.xCoord, parent.tileentity.yCoord, parent.tileentity.zCoord, comment));
+		CommonProxy.networkWrapper.sendToServer(new PacketPCBComment(parent.tileentity.getPos().getX(), parent.tileentity.getPos().getY(), parent.tileentity.getPos().getZ(), comment));
 	}
 
 	@Override
 	public void onMouseUp(GuiCAD parent, int mx, int my, int button) {
 		if (mode == Mode.MOVE) {
 			if (selectedComment != null) {
-				CommonProxy.networkWrapper.sendToServer(new PacketPCBComment(parent.tileentity.xCoord, parent.tileentity.yCoord, parent.tileentity.zCoord, selectedComment));
+				CommonProxy.networkWrapper.sendToServer(new PacketPCBComment(parent.tileentity.getPos().getX(), parent.tileentity.getPos().getY(), parent.tileentity.getPos().getZ(), selectedComment));
 			}
 			selectedComment = null;
 		}
@@ -234,7 +234,7 @@ public class CommentHandler extends CADHandler {
 	}
 
 	public void renderComment(Comment comment, boolean hovered) {
-		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+		FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
 		int x = (int) (comment.xPos * 32D);
 		int y = (int) (comment.yPos * 32D);
 

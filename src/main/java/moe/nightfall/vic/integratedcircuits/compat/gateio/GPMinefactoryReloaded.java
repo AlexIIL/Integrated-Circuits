@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat.gateio;
-
+/*
 import moe.nightfall.vic.integratedcircuits.api.gate.GateIOProvider;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket.EnumConnectionType;
@@ -122,3 +122,4 @@ public class GPMinefactoryReloaded extends GateIOProvider implements IRedNetOmni
 		return socket.getRedstoneOutput(rel);
 	}
 }
+*/

@@ -24,11 +24,11 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.RenderItemFrame;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
+//import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
 import net.minecraftforge.common.MinecraftForge;
 
-public class ItemPCBPrintRenderer implements IItemRenderer {
+/*public class ItemPCBPrintRenderer implements IItemRenderer {
 
 	public ItemPCBPrintRenderer() {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -170,4 +170,4 @@ public class ItemPCBPrintRenderer implements IItemRenderer {
 			event.setCanceled(true);
 		}
 	}
-}
+}*/

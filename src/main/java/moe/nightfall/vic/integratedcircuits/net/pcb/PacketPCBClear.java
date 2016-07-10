@@ -10,6 +10,7 @@ import moe.nightfall.vic.integratedcircuits.tile.TileEntityCAD;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
@@ -56,15 +57,14 @@ public class PacketPCBClear extends PacketTileEntity<PacketPCBClear> {
 			te.out = new int[4];
 
 			for (int i = 0; i < 4; i++)
-				if (te.getCircuitData().getProperties().getModeAtSide(i) == EnumConnectionType.ANALOG)
+				if (te.getCircuitData().getProperties().getModeAtSide(EnumFacing.getHorizontal(i)) == EnumConnectionType.ANALOG)
 					te.in[i] = 1;
 
 			if (side == side.SERVER) {
 				if (changed)
 					te.cache.capture(player.getGameProfile().getId());
 
-				CommonProxy.networkWrapper.sendToAllAround(this, new TargetPoint(te.getWorld().getWorldInfo()
-					.getVanillaDimension(), xCoord, yCoord, zCoord, 8));
+				CommonProxy.networkWrapper.sendToAllAround(this, new TargetPoint(0, xCoord, yCoord, zCoord, 8)); // FIXME fix dimension id
 			} else if (Minecraft.getMinecraft().currentScreen instanceof GuiCAD)
 				((GuiCAD) Minecraft.getMinecraft().currentScreen).refreshUI();
 		}

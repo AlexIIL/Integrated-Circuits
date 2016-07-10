@@ -1,11 +1,11 @@
 package moe.nightfall.vic.integratedcircuits.client;
 
 import moe.nightfall.vic.integratedcircuits.DiskDrive;
-import moe.nightfall.vic.integratedcircuits.DiskDrive.ModelFloppy;
+//import moe.nightfall.vic.integratedcircuits.DiskDrive.ModelFloppy;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntityCAD;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-
+/*
 public class TileEntityPCBLayoutRenderer extends TileEntitySpecialRenderer {
 	// TODO Might want to get these magic numbers from the floppy's AABB.
 	private static ModelFloppy model = new ModelFloppy(-7, -7, -9, 12, 2, 1);
@@ -19,3 +19,4 @@ public class TileEntityPCBLayoutRenderer extends TileEntitySpecialRenderer {
 		renderTileEntityAt((TileEntityCAD) te, x, y, z, partialTicks);
 	}
 }
+*/

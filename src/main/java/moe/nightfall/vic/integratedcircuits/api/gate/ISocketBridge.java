@@ -46,7 +46,7 @@ public interface ISocketBridge {
 
 		public ISocketWrapper getWrapper();
 
-		public byte getOrientation();
+		public EnumFacing getOrientation();
 
 		public EnumFacing getSide();
 

@@ -2,10 +2,10 @@ package moe.nightfall.vic.integratedcircuits.client;
 
 import moe.nightfall.vic.integratedcircuits.client.model.ModelLaser;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
+//import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
-
+/*
 public class ItemLaserRenderer implements IItemRenderer {
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -43,3 +43,4 @@ public class ItemLaserRenderer implements IItemRenderer {
 		GL11.glPopMatrix();
 	}
 }
+*/

@@ -3,7 +3,7 @@ package moe.nightfall.vic.integratedcircuits.net;
 import java.io.IOException;
 
 import moe.nightfall.vic.integratedcircuits.LaserHelper.Laser;
-import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntityAssembler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -55,7 +55,7 @@ public class PacketAssemblerUpdate extends PacketTileEntity<PacketAssemblerUpdat
 			return;
 		if (te.excMatrix != null && laser.isRunning)
 			te.excMatrix[laser.x][laser.y] = true;
-		TileEntityAssemblerRenderer.scheduleFramebuffer(te);
+		//TileEntityAssemblerRenderer.scheduleFramebuffer(te);
 		laser.isRunning = isRunning;
 		te.laserHelper.updateStatus();
 		if (!te.laserHelper.isRunning)

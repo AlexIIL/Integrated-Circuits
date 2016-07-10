@@ -13,7 +13,7 @@ public class BlockCircuitStorage extends Block {
 	protected BlockCircuitStorage() {
 		super(Material.IRON);
 		setUnlocalizedName(Constants.MOD_ID + ".circuitstorage");
-		setRegistryName("circuitstorage");
+		//setRegistryName("circuitstorage");
 		setCreativeTab(IntegratedCircuits.creativeTab);
 		setHardness(2F);
 	}

@@ -1,5 +1,5 @@
 package moe.nightfall.vic.integratedcircuits.compat.gateio;
-
+/*
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedPeripheral;
@@ -64,3 +64,4 @@ public class GPOpenComputers extends GateIOProvider implements SimpleComponent, 
 		return null;
 	}
 }
+*/

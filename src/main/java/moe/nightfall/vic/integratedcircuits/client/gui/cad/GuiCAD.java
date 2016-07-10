@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sun.org.apache.regexp.internal.RE;
+import moe.nightfall.vic.integratedcircuits.misc.RenderManager;
 import moe.nightfall.vic.integratedcircuits.misc.Vec2i;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -187,7 +190,7 @@ public class GuiCAD extends GuiContainer implements IGuiCallback, IHoverableHand
 		this.buttonList.add(buttonSize);
 
 		// Circuit Name text box
-		nameField = new GuiTextField(fontRendererObj, guiRight - 95, guiTop + 11, 50, 10);
+		nameField = new GuiTextField(1, fontRendererObj, guiRight - 95, guiTop + 11, 50, 10);
 		nameField.setText(getCircuitData().getProperties().getName());
 		nameField.setMaxStringLength(7);
 		nameField.setCanLoseFocus(true);
@@ -214,10 +217,10 @@ public class GuiCAD extends GuiContainer implements IGuiCallback, IHoverableHand
 		int bottomEditorOffset = editorBottom + 1;
 
 		// Input Mode buttons
-		checkN = new GuiIOMode(65, xOffsetCentre, topEditorOffset - 1, this, 0);
-		checkE = new GuiIOMode(66, rightEditorOffset, yOffsetCentre, this, 1);
-		checkS = new GuiIOMode(67, xOffsetCentre, bottomEditorOffset, this, 2);
-		checkW = new GuiIOMode(68, leftEditorOffset - 1, yOffsetCentre, this, 3);
+		checkN = new GuiIOMode(65, xOffsetCentre, topEditorOffset - 1, this, EnumFacing.NORTH);
+		checkE = new GuiIOMode(66, rightEditorOffset, yOffsetCentre, this, EnumFacing.EAST);
+		checkS = new GuiIOMode(67, xOffsetCentre, bottomEditorOffset, this, EnumFacing.SOUTH);
+		checkW = new GuiIOMode(68, leftEditorOffset - 1, yOffsetCentre, this, EnumFacing.WEST);
 
 		this.buttonList.add(checkN);
 		this.buttonList.add(checkE);
@@ -229,16 +232,16 @@ public class GuiCAD extends GuiContainer implements IGuiCallback, IHoverableHand
 		yOffsetCentre += 13;
 		// North / Top Input buttons
 		for (int i = 0; i < 16; i++)
-			this.buttonList.add(new GuiIO(i + 13, xOffsetCentre + i * 9, topEditorOffset, 15 - i, 0, this, tileentity));
+			this.buttonList.add(new GuiIO(i + 13, xOffsetCentre + i * 9, topEditorOffset, 15 - i, EnumFacing.NORTH, this, tileentity));
 		// East / Right Input buttons
 		for (int i = 0; i < 16; i++)
-			this.buttonList.add(new GuiIO(i + 13 + 16, rightEditorOffset + 2, yOffsetCentre + i * 9, 15 - i, 1, this, tileentity));
+			this.buttonList.add(new GuiIO(i + 13 + 16, rightEditorOffset + 2, yOffsetCentre + i * 9, 15 - i, EnumFacing.EAST, this, tileentity));
 		// West / Left Input buttons
 		for (int i = 0; i < 16; i++)
-			this.buttonList.add(new GuiIO(i + 13 + 32, leftEditorOffset, yOffsetCentre + i * 9, i, 3, this, tileentity));
+			this.buttonList.add(new GuiIO(i + 13 + 32, leftEditorOffset, yOffsetCentre + i * 9, i, EnumFacing.WEST, this, tileentity));
 		// South / Bottom Input buttons
 		for (int i = 0; i < 16; i++)
-			this.buttonList.add(new GuiIO(i + 13 + 48, xOffsetCentre + i * 9, bottomEditorOffset + 2, i, 2, this, tileentity));
+			this.buttonList.add(new GuiIO(i + 13 + 48, xOffsetCentre + i * 9, bottomEditorOffset + 2, i, EnumFacing.SOUTH, this, tileentity));
 
 		int toolsXPosition = guiRight - 27;
 
@@ -675,10 +678,12 @@ public class GuiCAD extends GuiContainer implements IGuiCallback, IHoverableHand
 		PartTunnel pt = (PartTunnel) part;
 		Vec2i pos2 = pt.getConnectedPos(pos, tileentity);
 
+		RenderManager rm = RenderManager.getInstance();
+
 		if (pt.getInput(pos, tileentity) || pt.getProperty(pos, tileentity, pt.PROP_IN)) {
-			Tessellator.instance.setColorRGBA_F(1F, 0F, 0F, 1F);
+			rm.setColor(1F, 0F, 0F, 1F);
 		} else {
-			Tessellator.instance.setColorRGBA_F(0F, 0F, 1F, 1F);
+			rm.setColor(0F, 0F, 1F, 1F);
 		}
 
 		if (pt.isConnected(pos2)) {
@@ -686,9 +691,9 @@ public class GuiCAD extends GuiContainer implements IGuiCallback, IHoverableHand
 			double secondY = pos2.y;
 
 			RenderUtils.addLine(firstX + 0.5, firstY + 0.5, secondX + 0.5, secondY + 0.5, 0.25);
-			CircuitPartRenderer.addQuad(secondX, secondY, 0, 0, 1, 1);
+			rm.addQuad(secondX, secondY, 0, 0, 1, 1);
 		}
-		CircuitPartRenderer.addQuad(firstX, firstY, 0, 0, 1, 1);
+		rm.addQuad(firstX, firstY, 0, 0, 1, 1);
 	}
 
 	private void renderCadCursor(double mouseX, double mouseY, CircuitData cdata, int size) {
@@ -778,8 +783,8 @@ public class GuiCAD extends GuiContainer implements IGuiCallback, IHoverableHand
 
 
 	@Override
-	protected void mouseMovedOrUp(int mx, int my, int button) {
-		super.mouseMovedOrUp(mx, my, button);
+	protected void mouseReleased(int mx, int my, int button) {
+		super.mouseReleased(mx, my, button);
 		if (this.selectedChooser != null && button == 0) {
 			this.selectedChooser.mouseReleased(mx, my);
 			this.selectedChooser = null;

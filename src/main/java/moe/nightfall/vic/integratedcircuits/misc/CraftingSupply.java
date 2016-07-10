@@ -1,6 +1,7 @@
 package moe.nightfall.vic.integratedcircuits.misc;
 
 import moe.nightfall.vic.integratedcircuits.tile.TileEntityContainer;
+import moe.nightfall.vic.integratedcircuits.tile.TileEntityInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -8,11 +9,11 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class CraftingSupply {
 	private CraftingAmount cache;
-	private TileEntityContainer provider;
+	private TileEntityInventory provider;
 	private int from, to;
 	private ItemAmount insufficient;
 
-	public CraftingSupply(TileEntityContainer provider, int from, int to) {
+	public CraftingSupply(TileEntityInventory provider, int from, int to) {
 		this.cache = new CraftingAmount();
 		this.provider = provider;
 		this.from = from;
@@ -62,7 +63,7 @@ public class CraftingSupply {
 		return false;
 	}
 
-	public static CraftingSupply readFromNBT(NBTTagCompound compound, TileEntityContainer provider, int from, int to) {
+	public static CraftingSupply readFromNBT(NBTTagCompound compound, TileEntityInventory provider, int from, int to) {
 		CraftingSupply supply = new CraftingSupply(provider, from, to);
 		NBTTagList list = compound.getTagList("supply", NBT.TAG_COMPOUND);
 		for (int i = 0; i < list.tagCount(); i++) {

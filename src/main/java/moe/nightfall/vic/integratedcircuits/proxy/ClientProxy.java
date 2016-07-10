@@ -34,21 +34,21 @@ import moe.nightfall.vic.integratedcircuits.Content;
 import moe.nightfall.vic.integratedcircuits.DiskDrive;
 import moe.nightfall.vic.integratedcircuits.DiskDrive.IDiskDrive;
 import moe.nightfall.vic.integratedcircuits.IntegratedCircuits;
-import moe.nightfall.vic.integratedcircuits.api.IPartRenderer;
+//import moe.nightfall.vic.integratedcircuits.api.IPartRenderer;
 import moe.nightfall.vic.integratedcircuits.api.IntegratedCircuitsAPI;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
-import moe.nightfall.vic.integratedcircuits.client.Gate7SegmentRenderer;
-import moe.nightfall.vic.integratedcircuits.client.GateCircuitRenderer;
-import moe.nightfall.vic.integratedcircuits.client.ItemLaserRenderer;
-import moe.nightfall.vic.integratedcircuits.client.ItemPCBPrintRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.Gate7SegmentRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.GateCircuitRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.ItemLaserRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.ItemPCBPrintRenderer;
 import moe.nightfall.vic.integratedcircuits.client.Resources;
-import moe.nightfall.vic.integratedcircuits.client.SemiTransparentRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.SemiTransparentRenderer;
 import moe.nightfall.vic.integratedcircuits.client.ShaderHelper;
 import moe.nightfall.vic.integratedcircuits.client.TextureRenderer;
-import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
-import moe.nightfall.vic.integratedcircuits.client.TileEntityGateRenderer;
-import moe.nightfall.vic.integratedcircuits.client.TileEntityPCBLayoutRenderer;
-import moe.nightfall.vic.integratedcircuits.client.TileEntityPrinterRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.TileEntityGateRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.TileEntityPCBLayoutRenderer;
+//import moe.nightfall.vic.integratedcircuits.client.TileEntityPrinterRenderer;
 import moe.nightfall.vic.integratedcircuits.client.gui.Gui7Segment;
 import moe.nightfall.vic.integratedcircuits.gate.Gate7Segment;
 import moe.nightfall.vic.integratedcircuits.gate.GateCircuit;
@@ -87,24 +87,23 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.IExtendedEntityProperties;
 import scala.tools.nsc.doc.model.Def;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-	public static SemiTransparentRenderer stRenderer;
+	//public static SemiTransparentRenderer stRenderer;
 	public static Resources resources;
 
 	public static int clientTicks;
-	public static GateCircuitRenderer circuitRenderer;
+	/*public static GateCircuitRenderer circuitRenderer;
 	public static Gate7SegmentRenderer segmentRenderer;
 	public static ItemPCBPrintRenderer pcbPrintRenderer;
 
 	public static IPartRenderer<ISocket> socketRenderer;
-	public static IPartRenderer<ISocket> socketRendererFMP;
+	public static IPartRenderer<ISocket> socketRendererFMP;*/
 
 	private static String tooltip;
-	public static Map<Class<?>, IPartRenderer<?>> rendererRegistry = Maps.newHashMap();
+	//public static Map<Class<?>, IPartRenderer<?>> rendererRegistry = Maps.newHashMap();
 	public static List<String> icons = Lists.newArrayList();
 
 	public static TextureRenderer textureRenderer;
@@ -112,19 +111,19 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void initialize() {
 		super.initialize();
-		stRenderer = new SemiTransparentRenderer();
+		//stRenderer = new SemiTransparentRenderer();
 		ShaderHelper.loadShaders();
 
-		Constants.GATE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-		Constants.PRINTER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+		//Constants.GATE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+		//Constants.PRINTER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
-		TileEntityGateRenderer gateRenderer = new TileEntityGateRenderer();
-		TileEntityPrinterRenderer printerRenderer = new TileEntityPrinterRenderer();
+		//TileEntityGateRenderer gateRenderer = new TileEntityGateRenderer();
+		//TileEntityPrinterRenderer printerRenderer = new TileEntityPrinterRenderer();
 
-		RenderingRegistry.registerBlockHandler(Constants.GATE_RENDER_ID, gateRenderer);
-		RenderingRegistry.registerBlockHandler(Constants.PRINTER_RENDER_ID, printerRenderer);
+		//RenderingRegistry.registerBlockHandler(Constants.GATE_RENDER_ID, gateRenderer);
+		//RenderingRegistry.registerBlockHandler(Constants.PRINTER_RENDER_ID, printerRenderer);
 
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCAD.class, new TileEntityPCBLayoutRenderer());
+		/*ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCAD.class, new TileEntityPCBLayoutRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAssembler.class, new TileEntityAssemblerRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySocket.class, gateRenderer);
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, printerRenderer);
@@ -137,8 +136,8 @@ public class ClientProxy extends CommonProxy {
 		IntegratedCircuitsAPI.getGateRegistry().registerGateRenderer(Gate7Segment.class, segmentRenderer);
 
 		socketRenderer = IntegratedCircuitsAPI.getGateRegistry().createDefaultSocketRenderer(Constants.MOD_ID + ":ic_base");
-		socketRendererFMP = IntegratedCircuitsAPI.getGateRegistry().createDefaultSocketRenderer(Constants.MOD_ID + ":ic_base_fmp");
-
+		socketRendererFMP = IntegratedCircuitsAPI.getGateRegistry().createDefaultSocketRenderer(Constants.MOD_ID + ":ic_base_fmp");*/
+/*
 		MinecraftForgeClient.registerItemRenderer(Content.itemCircuit, circuitRenderer);
 		MinecraftForgeClient.registerItemRenderer(Content.item7Segment, segmentRenderer);
 		MinecraftForgeClient.registerItemRenderer(Content.itemPCBPrint, pcbPrintRenderer);
@@ -147,7 +146,7 @@ public class ClientProxy extends CommonProxy {
 		if (IntegratedCircuits.isFMPLoaded)
 			MinecraftForgeClient.registerItemRenderer(Content.itemSocketFMP, socketRendererFMP);
 
-		MinecraftForgeClient.registerItemRenderer(Content.itemLaser, new ItemLaserRenderer());
+		MinecraftForgeClient.registerItemRenderer(Content.itemLaser, new ItemLaserRenderer());*/
 
 		textureRenderer = new TextureRenderer();
 
@@ -241,6 +240,7 @@ public class ClientProxy extends CommonProxy {
 
 	@SubscribeEvent
 	public void onTextureStitchEvent(TextureStitchEvent event) {
+		/*
 		TextureMap map = event.getMap();
 
 		switch (map.getTextureType()) {
@@ -248,7 +248,7 @@ public class ClientProxy extends CommonProxy {
 				for (String iconString : icons) {
 					event.getMap().registerIcon(iconString);
 				}
-		}
+		}*/
 	}
 
 	/** Needed because of reflection. */
@@ -335,7 +335,7 @@ public class ClientProxy extends CommonProxy {
 
 	// TODO This is rendering off on the server, find out why.
 	public void renderPlayer(float partial, RenderGlobal context) {
-		// Cirno
+		/*// Cirno
 		try {
 			Minecraft mc = Minecraft.getMinecraft();
 			int currentFBO = GL11.glGetInteger(GL30.GL_FRAMEBUFFER_BINDING);
@@ -610,12 +610,12 @@ public class ClientProxy extends CommonProxy {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	@SubscribeEvent
 	public void onPlayerRender(RenderPlayerEvent.Post event) {
-
+/*
 		EntityPlayer player = event.getEntityPlayer();
 		Minecraft mc = Minecraft.getMinecraft();
 
@@ -832,7 +832,7 @@ public class ClientProxy extends CommonProxy {
 		}
 		GL11.glPopMatrix();
 
-		GL11.glColor3f(1, 1, 1);
+		GL11.glColor3f(1, 1, 1);*/
 	}
 
 	private void renderCurl() {
@@ -1029,7 +1029,7 @@ public class ClientProxy extends CommonProxy {
 			GL11.glPopMatrix();
 		}
 	}
-
+/*
 	private static class NanoProperties implements IExtendedEntityProperties {
 
 		private boolean isJumping;
@@ -1049,5 +1049,5 @@ public class ClientProxy extends CommonProxy {
 		@Override
 		public void init(Entity entity, World world) {
 		}
-	}
+	}*/
 }

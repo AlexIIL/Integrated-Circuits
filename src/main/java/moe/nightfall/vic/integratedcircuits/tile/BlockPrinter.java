@@ -21,7 +21,7 @@ public class BlockPrinter extends Block {
 	public BlockPrinter() {
 		super(Material.IRON);
 		setUnlocalizedName(Constants.MOD_ID + ".pcbprinter");
-		setRegistryName("pcbprinter");
+		//setRegistryName("pcbprinter");
 		setCreativeTab(IntegratedCircuits.creativeTab);
 		setHardness(2F);
 		//setBlockBounds(0, 0, 0, 1F, 0.5F, 1F);
