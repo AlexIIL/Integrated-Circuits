@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import moe.nightfall.vic.integratedcircuits.Content;
@@ -33,10 +34,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.items.ItemStackHandler;
 
 @InterfaceList({ @Interface(iface = "buildcraft.api.tiles.IControllable", modid = "BuildCraft|Core"),
 		@Interface(iface = "buildcraft.api.tiles.IHasWork", modid = "BuildCraft|Core") })
-public class TileEntityAssembler extends TileEntityContainer implements IDiskDrive, ISidedInventory, IOptionsProvider, ITickable //FIXME use capabilities
+public class TileEntityAssembler extends TileEntityInventory implements IDiskDrive, IOptionsProvider, ITickable //FIXME use capabilities
 		/* FIXME reimplement IHasWork, IControllable */ {
 	public static final int IDLE = 0, RUNNING = 1, OUT_OF_MATERIALS = 2,
 			OUT_OF_PCB = 3;
@@ -63,7 +65,6 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 	public CircuitData cdata;
 	public LaserHelper laserHelper = new LaserHelper(this, 9);
 
-	public ItemStack[] contents = new ItemStack[13];
 	public CraftingSupply craftingSupply = new CraftingSupply(this, 2, 9);
 	private OptionSet<TileEntityAssembler> optionSet = new OptionSet<TileEntityAssembler>(this);
 
@@ -91,7 +92,7 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 			if ((isPowered() || powerOverride) && output < 0) {
 				ItemStack stack = tryFetchPCB();
 				if (stack != null)
-					setInventorySlotContents(1, stack);
+					inventory.setStackInSlot(1, stack);
 				requestCircuit((byte) 1);
 			}
 		}
@@ -115,7 +116,7 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 				if (getStatus() == IDLE) {
 					ItemStack stack = tryFetchPCB();
 					if (stack != null)
-						setInventorySlotContents(1, stack);
+						inventory.setStackInSlot(1, stack);
 					requestCircuit((byte) 1);
 				}
 			}
@@ -192,13 +193,13 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 
 	/** Clears the PCB slot and returns an empty PCB if one was found **/
 	public ItemStack tryFetchPCB() {
-		ItemStack pcb = getStackInSlot(1);
+		ItemStack pcb = inventory.getStackInSlot(1);
 		if (pcb != null) {
 			if (STACK_PCB.isItemEqual(pcb))
 				return pcb;
 			if (!InventoryUtils.tryPutItem(this, pcb, 2, 9))
 				return null;
-			setInventorySlotContents(1, null);
+			inventory.setStackInSlot(1, null);
 		}
 		pcb = InventoryUtils.tryFetchItem(this, STACK_PCB.copy(), 2, 9);
 		return pcb;
@@ -228,11 +229,11 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 	}
 
 	public void onCircuitFinished() {
-		if (getStackInSlot(1) == null) {
-			contents[1] = new ItemStack(Content.itemPCB, 1, 1);
+		if (inventory.getStackInSlot(1) == null) {
+			inventory.setStackInSlot(1, new ItemStack(Content.itemPCB, 1, 1));
 			NBTTagCompound comp = new NBTTagCompound();
 			comp.setTag("circuit", cdata.writeToNBTRaw(new NBTTagCompound()));
-			contents[1].setTagCompound(comp);
+			inventory.getStackInSlot(1).setTagCompound(comp);
 			worldObj.addBlockEvent(pos, getBlockType(), 2, ++position);
 			// Give off a redstone pulse
 			output = 2;
@@ -257,68 +258,14 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 	}
 
 	@Override
-	public int getSizeInventory() {
-		return contents.length;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int id) {
-		return contents[id];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int id, int amount) {
-		ItemStack temp = getStackInSlot(id);
-		ItemStack stack = null;
-		if (contents[id] != null) {
-			if (contents[id].stackSize <= amount) {
-				stack = this.contents[id];
-				contents[id] = null;
-			} else {
-				stack = contents[id].splitStack(amount);
-				if (contents[id].stackSize == 0)
-					contents[id] = null;
-			}
-			this.markDirty();
-		}
-		if (!ItemStack.areItemStacksEqual(temp, contents[id]))
-			onSlotChange(id);
-		return stack;
-	}
-
-	@Override
-	public void setInventorySlotContents(int id, ItemStack stack) {
-		boolean change = !ItemStack.areItemStacksEqual(contents[id], stack);
-		contents[id] = stack;
-		if (change)
-			onSlotChange(id);
-		markDirty();
-	}
-
-	@Override
 	public void onSlotChange(int id) {
 		if (worldObj.isRemote)
 			return;
 		if (id > 8 && id < 13)
-			laserHelper.createLaser(id - 9, getStackInSlot(id));
+			laserHelper.createLaser(id - 9, inventory.getStackInSlot(id));
 		else if (id == 1)
 			CommonProxy.networkWrapper.sendToDimension(new PacketAssemblerStart(pos.getX(), pos.getY(), pos.getZ(), queue),
 					worldObj.provider.getDimension());
-	}
-
-	@Override
-	public ITextComponent getDisplayName() {
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
 	}
 
 	@Override
@@ -329,11 +276,12 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 
 	@Override
 	public ItemStack getDisk() {
-		return getStackInSlot(0);
+		return inventory.getStackInSlot(0);
 	}
 
 	public void dropContents() {
-		for (ItemStack stack : contents) {
+		for (int i = 0; i < inventory.getSlots(); ++i) {
+			ItemStack stack = inventory.getStackInSlot(i);
 			if (stack == null)
 				continue;
 			worldObj.spawnEntityInWorld(new EntityItem(worldObj, pos.getX(), pos.getY(), pos.getZ(), stack));
@@ -342,7 +290,7 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 
 	@Override
 	public void setDisk(ItemStack stack) {
-		setInventorySlotContents(0, stack);
+		inventory.setStackInSlot(0, stack);
 		if (!worldObj.isRemote)
 			CommonProxy.networkWrapper.sendToDimension(new PacketAssemblerStart(pos.getX(), pos.getY(), pos.getZ(), queue),
 					worldObj.provider.getDimension());
@@ -356,13 +304,6 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		NBTTagList slotList = compound.getTagList("contents", NBT.TAG_COMPOUND);
-		for (int i = 0; i < 13; i++) {
-			if (slotList.getCompoundTagAt(i).hasNoTags())
-				contents[i] = null;
-			else
-				contents[i] = ItemStack.loadItemStackFromNBT(slotList.getCompoundTagAt(i));
-		}
 
 		powerOverride = compound.getBoolean("powerOverride");
 		output = compound.getInteger("output");
@@ -381,7 +322,7 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 
 		laserHelper.readFromNBT(compound);
 
-		if (MiscUtils.isClient() && (getStackInSlot(1) != null || laserHelper.isRunning)) {
+		if (MiscUtils.isClient() && (inventory.getStackInSlot(1) != null || laserHelper.isRunning)) {
 			isOccupied = true;
 			TileEntityAssemblerRenderer.scheduleFramebuffer(this);
 		}
@@ -390,12 +331,6 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
-		NBTTagList slotList = new NBTTagList();
-		for (int i = 0; i < 13; i++) {
-			slotList.appendTag(contents[i] != null ? contents[i].writeToNBT(new NBTTagCompound())
-					: new NBTTagCompound());
-		}
-		compound.setTag("contents", slotList);
 
 		compound.setBoolean("powerOverride", powerOverride);
 		compound.setInteger("output", output);
@@ -414,6 +349,11 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 		}
 
 		laserHelper.writeToNBT(compound);
+	}
+
+	@Override
+	public int getSlots() {
+		return 13;
 	}
 
 	private void loadMatrix(NBTTagCompound compound) {
@@ -453,7 +393,6 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 
 	private static final int[] accessibleSlots = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-	@Override
 	public int[] getSlotsForFace(EnumFacing side) {
 		if (getConnectionOnSide(side) > -1)
 			return accessibleSlots;
@@ -473,22 +412,19 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 		return -1;
 	}
 
-	@Override
 	public boolean isItemValidForSlot(int id, ItemStack stack) {
 		if (id < 1 || id > 9)
 			return false;
-		if (id == 1 && getStackInSlot(1) == null && STACK_PCB.isItemEqual(stack))
+		if (id == 1 && inventory.getStackInSlot(1) == null && STACK_PCB.isItemEqual(stack))
 			return true;
 		return id != 1;
 	}
 
-	@Override
-	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
+	/*public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
 		int con = getConnectionOnSide(direction);
 		return con == 0;
 	}
 
-	@Override
 	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
 		int con = getConnectionOnSide(direction);
 		boolean isPCB = stack.getItem() == Content.itemPCB && stack.getItemDamage() == 1;
@@ -497,7 +433,7 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 		else if (con == 1)
 			return isPCB;
 		return false;
-	}
+	}*/ // FIXME reimplement sidedness
 
 	/* FIXME reimplement
 	@Override
@@ -525,6 +461,30 @@ public class TileEntityAssembler extends TileEntityContainer implements IDiskDri
 	public boolean hasWork() {
 		return getStatus() != IDLE;
 	}*/
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+
+
+		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	protected void createStackHandler() {
+		inventory = new ItemStackHandler(getSlots()) {
+			@Override
+			public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+				if (!isItemValidForSlot(slot, stack)) return stack;
+
+				return super.insertItem(slot, stack, simulate);
+			}
+
+			@Override
+			public ItemStack extractItem(int slot, int amount, boolean simulate) {
+				return super.extractItem(slot, amount, simulate);
+			}
+		};
+	}
 
 	public boolean rotate() {
 		rotation = rotation.rotateY();

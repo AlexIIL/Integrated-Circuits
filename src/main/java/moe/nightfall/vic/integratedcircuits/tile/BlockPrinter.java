@@ -46,7 +46,8 @@ public class BlockPrinter extends Block {
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase entity, ItemStack stack) {
-		int rotation = MathHelper.floor_double((double) (entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		//EnumFacing rotation = MathHelper.floor_double((double) (entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3; // TODO reimplement this
+		EnumFacing rotation = EnumFacing.NORTH;
 		TileEntityPrinter te = (TileEntityPrinter) world.getTileEntity(blockPos);
 		if (te != null)
 			te.rotation = rotation;
@@ -69,8 +70,8 @@ public class BlockPrinter extends Block {
 					}
 				} else {
 					if (te.paperCount() > 0 && player.isSneaking()) {
-						player.setHeldItem(hand, te.getStackInSlot(0));
-						te.setInventorySlotContents(0, null);
+						player.setHeldItem(hand, te.inventory.getStackInSlot(0));
+						te.inventory.setStackInSlot(0, null);
 						world.notifyBlockUpdate(blockPos, blockState, blockState, 0); // FIXME blockstates // FIXME flags
 					}
 				}
@@ -83,7 +84,7 @@ public class BlockPrinter extends Block {
 	public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
 		TileEntityPrinter te = (TileEntityPrinter) world.getTileEntity(blockPos);
 		if (te != null)
-			MiscUtils.dropItem(world, te.getStackInSlot(0), blockPos.getX(), blockPos.getY(), blockPos.getZ());
+			MiscUtils.dropItem(world, te.inventory.getStackInSlot(0), blockPos.getX(), blockPos.getY(), blockPos.getZ());
 	}
 
 	@Override

@@ -1,18 +1,14 @@
 package moe.nightfall.vic.integratedcircuits.tile;
 
 import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.ITextComponent;
 
-public abstract class TileEntityContainer extends TileEntity implements IInventory {
+public abstract class TileEntityContainer extends TileEntity {
 	public EnumFacing rotation;
 	public int playersUsing;
 
@@ -51,52 +47,8 @@ public abstract class TileEntityContainer extends TileEntity implements IInvento
 		return false;
 	}
 
-	@Override
-	public void openInventory(EntityPlayer player) {
-		if (!worldObj.isRemote)
-			worldObj.addBlockEvent(pos, getBlockType(), 0, ++playersUsing);
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-		if (!worldObj.isRemote)
-			worldObj.addBlockEvent(pos, getBlockType(), 0, --playersUsing);
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		return pos.distanceSqToCenter(player.posX, player.posY, player.posZ) < 64; //FIXME is this right?
-	}
-
 	public void onSlotChange(int id) {
 
-	}
-
-	// IInventory defaults
-
-	@Override
-	public ItemStack decrStackSize(int id, int size) {
-		return null;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int id, ItemStack stack) {
-		return true;
-	}
-
-	@Override
-	public ITextComponent getDisplayName() {
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		return false;
 	}
 
 	public boolean rotate() {

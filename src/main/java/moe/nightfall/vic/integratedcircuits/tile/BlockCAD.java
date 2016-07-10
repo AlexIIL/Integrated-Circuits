@@ -32,9 +32,10 @@ public class BlockCAD extends Block {
 	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
 			TileEntityCAD te = (TileEntityCAD) world.getTileEntity(blockPos);
-			int rotation = te.rotation;
-			boolean canInteract = rotation == 3 && side.ordinal() == 4 || rotation == 0 && side.ordinal() == 2 || rotation == 1
-					&& side.ordinal() == 5 || rotation == 2 && side.ordinal() == 3;
+			EnumFacing rotation = te.rotation;
+			//boolean canInteract = rotation == 3 && side.ordinal() == 4 || rotation == 0 && side.ordinal() == 2 || rotation == 1
+					//&& side.ordinal() == 5 || rotation == 2 && side.ordinal() == 3; // TODO reimplement this
+			boolean canInteract = true;
 			if (canInteract)
 				player.openGui(IntegratedCircuits.instance, 0, world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			return canInteract;
@@ -52,7 +53,8 @@ public class BlockCAD extends Block {
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase entity, ItemStack stack) {
-		int rotation = MathHelper.floor_double((double) (entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		//EnumFacing rotation = MathHelper.floor_double((double) (entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3; TODO reimplement this
+		EnumFacing rotation = EnumFacing.NORTH;
 		TileEntityCAD te = (TileEntityCAD) world.getTileEntity(blockPos);
 		if (te != null) {
 			te.rotation = rotation;

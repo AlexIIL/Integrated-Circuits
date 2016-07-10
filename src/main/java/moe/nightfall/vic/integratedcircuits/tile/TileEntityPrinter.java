@@ -6,21 +6,17 @@ import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
-public class TileEntityPrinter extends TileEntityContainer {
+public class TileEntityPrinter extends TileEntityInventory {
 
-	private ItemStack paperStack;
+	private int field = 0;
 	private float inkLevel = 0F;
-
-	@Override
-	public int getSizeInventory() {
-		return 1;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int id) {
-		return id == 0 ? paperStack : null;
-	}
 
 	public boolean hasInk() {
 		return inkLevel() > 0F;
@@ -35,23 +31,24 @@ public class TileEntityPrinter extends TileEntityContainer {
 	}
 
 	public int paperCount() {
-		return paperStack != null ? paperStack.stackSize : 0;
+		return inventory.getStackInSlot(0) != null ? inventory.getStackInSlot(0).stackSize : 0;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		paperStack = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("paperStack"));
 		inkLevel = compound.getFloat("inkLevel");
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
-		if (paperStack != null) {
-			compound.setTag("paperStack", paperStack.writeToNBT(new NBTTagCompound()));
-		}
 		compound.setFloat("inkLevel", inkLevel);
+	}
+
+	@Override
+	public int getSlots() {
+		return 1;
 	}
 
 	public boolean addInk(ItemStack stack) {
@@ -70,18 +67,17 @@ public class TileEntityPrinter extends TileEntityContainer {
 	public boolean addPaper(ItemStack stack) {
 		// TODO Same as above
 		if (stack != null && stack.getItem() == Items.PAPER && paperCount() < 16) {
-			if (paperStack == null) {
-				paperStack = new ItemStack(Items.PAPER);
-				paperStack.stackSize = stack.stackSize;
+			if (inventory.getStackInSlot(0) == null) {
+				inventory.setStackInSlot(0, new ItemStack(Items.PAPER, stack.stackSize));
 			} else {
-				paperStack.stackSize += stack.stackSize;
+				inventory.getStackInSlot(0).stackSize += stack.stackSize;
 			}
 
 			markDirty();
 
 			stack.stackSize = 0;
-			int over = paperStack.stackSize - 16;
-			paperStack.stackSize = Math.min(paperStack.stackSize, 16);
+			int over = inventory.getStackInSlot(0).stackSize - 16;
+			inventory.getStackInSlot(0).stackSize = Math.min(inventory.getStackInSlot(0).stackSize, 16);
 			if (over > 0) {
 				stack.stackSize = over;
 			}
@@ -90,21 +86,9 @@ public class TileEntityPrinter extends TileEntityContainer {
 		return false;
 	}
 
-	@Override
-	public void setInventorySlotContents(int id, ItemStack stack) {
-		if (id == 0)
-			paperStack = stack;
-		markDirty();
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int id, ItemStack stack) {
-		return id == 0 && stack != null && stack.getItem() == Items.PAPER ? true : false;
-	}
-
 	public void print(CircuitData cdata) {
 		if (hasPaper() && inkLevel() >= 0.1F) {
-			paperStack.stackSize--;
+			inventory.getStackInSlot(0).stackSize--;
 			inkLevel -= 0.1F;
 			markDirty();
 			MiscUtils.dropItem(worldObj, ItemPCBPrint.create(cdata), pos.getX(), pos.getY(), pos.getZ());

@@ -3,6 +3,8 @@ package moe.nightfall.vic.integratedcircuits.tile;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,9 +26,12 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
-public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDiskDrive, ITickable {
-	private ItemStack floppyStack;
+public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDiskDrive, ITickable {
+
 	private CircuitData circuitData;
 	public CircuitCache cache = new CircuitCache(this);
 
@@ -99,8 +104,6 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 		in = compound.getIntArray("in");
 		out = compound.getIntArray("out");
 		pausing = compound.getBoolean("pausing");
-		NBTTagCompound stackCompound = compound.getCompoundTag("floppyStack");
-		floppyStack = ItemStack.loadItemStackFromNBT(stackCompound);
 	}
 
 	@Override
@@ -110,10 +113,11 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 		compound.setIntArray("in", in);
 		compound.setIntArray("out", out);
 		compound.setBoolean("pausing", pausing);
-		NBTTagCompound stackCompound = new NBTTagCompound();
-		if (floppyStack != null)
-			floppyStack.writeToNBT(stackCompound);
-		compound.setTag("floppyStack", stackCompound);
+	}
+
+	@Override
+	public int getSlots() {
+		return 1;
 	}
 
 	public final boolean getExternalInputFromSide(EnumFacing dir, int frequency) {
@@ -210,33 +214,6 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 	}
 
 	@Override
-	public int getSizeInventory() {
-		return 1;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int id) {
-		return id == 0 ? floppyStack : null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int id, ItemStack stack) {
-		if (id == 0)
-			floppyStack = stack;
-		markDirty();
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 1;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int id, ItemStack stack) {
-		return false;
-	}
-
-	@Override
 	public AxisAlignedBB getBoundingBox() {
 		return MiscUtils.getRotatedInstance(
 				new AxisAlignedBB(1 / 16F, 1 / 16F, -1 / 16F, 13 / 16F, 3 / 16F, 1 / 16F), rotation);
@@ -244,12 +221,13 @@ public class TileEntityCAD extends TileEntityContainer implements ICircuit, IDis
 
 	@Override
 	public ItemStack getDisk() {
-		return getStackInSlot(0);
+		return inventory.getStackInSlot(0);
 	}
 
 	@Override
 	public void setDisk(ItemStack stack) {
-		setInventorySlotContents(0, stack);
+		inventory.
+		setStackInSlot(0, stack);
 		if (!worldObj.isRemote)
 			CommonProxy.networkWrapper.sendToDimension(new PacketFloppyDisk(getPos().getX(), getPos().getY(), getPos().getZ(), stack),
 					worldObj.provider.getDimension());
