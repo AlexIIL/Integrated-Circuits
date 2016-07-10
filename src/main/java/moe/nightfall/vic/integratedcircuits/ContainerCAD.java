@@ -14,13 +14,14 @@ public class ContainerCAD extends Container {
 
 	public ContainerCAD(EntityPlayer player, TileEntityCAD tileentity) {
 		this.tileentity = tileentity;
-        SimpleSlotItemHandler slotHandler = (SimpleSlotItemHandler)tileentity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		this.tileentity.openUI(player);
+        SlotItemHandler slotHandler = new SlotItemHandler(tileentity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), 0, 0, 0);
         this.addSlotToContainer(slotHandler);
 	}
 
 	@Override
 	public void onContainerClosed(EntityPlayer player) {
-		//this.tileentity.closeInventory(player);
+		this.tileentity.closeUI(player);
 		super.onContainerClosed(player);
 	}
 

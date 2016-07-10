@@ -1,10 +1,9 @@
 package moe.nightfall.vic.integratedcircuits.tile;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -26,14 +25,17 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDiskDrive, ITickable {
 
 	private CircuitData circuitData;
 	public CircuitCache cache = new CircuitCache(this);
+
+	Set<EntityPlayer> playersUsing = Collections.newSetFromMap(new WeakHashMap<EntityPlayer, Boolean>());
 
 	// Used for the GUI.
 	public float scale = 0.33F;
@@ -73,10 +75,32 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 		circuitData.clearAllAndSetup(size);
 	}
 
+	public void closeUI(EntityPlayer player) {
+		playersUsing.remove(player);
+	}
+
+	public void openUI(EntityPlayer player) {
+		playersUsing.add(player);
+	}
+
+	public boolean isBeingUsed() {
+		checkDeadReferences();
+		return playersUsing.size() > 0;
+	}
+
+	private void checkDeadReferences() {
+		Iterator<EntityPlayer> it = playersUsing.iterator();
+		while (it.hasNext()) {
+			if (it.next().isDead) {
+				it.remove();
+			}
+		}
+	}
+
 	@Override
 	public void update() {
 		// Update the matrix in case there is at least one player watching.
-		if (!worldObj.isRemote && playersUsing > 0) {
+		if (!worldObj.isRemote && isBeingUsed()) {
 			if (step || !pausing) {
 				getCircuitData().updateMatrix();
 				step = false;
