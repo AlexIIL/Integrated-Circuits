@@ -178,7 +178,7 @@ public class IntegratedCircuits {
 		// constructing this class.
 		Content.blockSocket = BlockSocket.class.newInstance();
 
-		GameRegistry.register(Content.blockSocket);
+		GameRegistry.register(Content.blockSocket.setRegistryName("socket"));
 		GameRegistry.registerTileEntity(TileEntitySocket.class, Constants.MOD_ID + ".socket");
 
 		/*

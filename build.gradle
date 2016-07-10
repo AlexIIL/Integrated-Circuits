@@ -15,10 +15,11 @@ buildscript {
     }
 }
 
-repositories {
+//repositories {
+    /*
     maven {
         url "http://maven.amadornes.com/"
-    }
+    }*/
 
     /*maven {
         name "rx14"
@@ -54,7 +55,7 @@ repositories {
         name "BuildCraft"
         artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
     }*/
-}
+//}
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
@@ -72,12 +73,12 @@ minecraft {
 
     mappings="stable_24"
     
-    replaceIn "Constants.java"
-    replace "\${modVersion}", project.version
+    //replaceIn "Constants.java"
+    //replace "\${modVersion}", project.version
 }
 
-dependencies {
-    compile "MCMultiPart:MCMultiPart-experimental:1.1.1_57:deobf"
+//dependencies {
+    //compile "MCMultiPart:MCMultiPart-experimental:1.1.1_57:deobf"
     //compile "codechicken:CodeChickenLib:${mcVersion}-${cclVersion}:dev"
     //compile "codechicken:CodeChickenCore:${mcVersion}-${cccVersion}:dev"
     //compile "codechicken:ForgeMultipart:${mcVersion}-${fmpVersion}:dev"
@@ -98,7 +99,7 @@ dependencies {
     compile name: "redlogic", version: "${redlogicVersion}", ext: "jar"
     compile name: "immibis-core", version: "${imcVersion}", ext: "jar"
     compile name: "buildcraft", version: "${buildcraftVersion}", classifier: "dev"*/
-}
+//}
 
 processResources {
     inputs.property "version", project.version
