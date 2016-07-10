@@ -7,7 +7,6 @@ import moe.nightfall.vic.integratedcircuits.Constants;
 import moe.nightfall.vic.integratedcircuits.Content;
 import moe.nightfall.vic.integratedcircuits.IntegratedCircuits;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
-import moe.nightfall.vic.integratedcircuits.compat.gateio.GateIO;
 import moe.nightfall.vic.integratedcircuits.gate.Socket;
 import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import net.minecraft.block.Block;
@@ -113,9 +112,8 @@ public class BlockSocket extends Block {
 	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileEntitySocket te = (TileEntitySocket) world.getTileEntity(blockPos);
 
-		ItemStack heldStack = player.getHeldItem();
-		if (heldStack != null) {
-			Item item = heldStack.getItem();
+		if (heldItem != null) {
+			Item item = heldItem.getItem();
 			if (Socket.checkItemIsTool(item) && !player.isSneaking()) {
 				// return before activate is called if the item right clicked causes a rotation anyway // FIXME reimplement
 				//if ((IntegratedCircuits.isBPAPIThere && item instanceof com.bluepowermod.api.misc.IScrewdriver)
@@ -127,7 +125,7 @@ public class BlockSocket extends Block {
 
 		return te.getSocket().activate(player,
 				new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, blockPos),
-				heldStack);
+				heldItem);
 	}
 
 	@Override
@@ -179,14 +177,14 @@ public class BlockSocket extends Block {
 
 	@Override
 	public boolean canConnectRedstone(IBlockState blockState, IBlockAccess world, BlockPos blockPos, EnumFacing side) {
-		side = GateIO.vanillaToSide(side);
+		//side = GateIO.vanillaToSide(side);
 
 		TileEntitySocket te = (TileEntitySocket) world.getTileEntity(blockPos);
 		ISocket socket = te.getSocket();
 
-		if ((side & 6) == (socket.getSide() & 6))
+		if (side == socket.getSide()) // FIXME PLS
 			return false;
-		int rel = socket.getSideRel(side);
+		EnumFacing rel = socket.getSideRel(side);
 
 		return socket.getConnectionTypeAtSide(rel).isRedstone();
 	}
@@ -198,14 +196,14 @@ public class BlockSocket extends Block {
 
 	@Override
 	public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos, EnumFacing side) {
-		side ^= 1;
+		//side ^= 1; TODO figure out wth this is doing
 
-		TileEntitySocket te = (TileEntitySocket) blockAccess.getTileEntity(x, y, z);
+		TileEntitySocket te = (TileEntitySocket) blockAccess.getTileEntity(blockPos);
 		ISocket socket = te.getSocket();
 
-		if ((side & 6) == (socket.getSide() & 6))
+		if (side == socket.getSide()) // FIXME PLS
 			return 0;
-		int rot = socket.getSideRel(side);
+		EnumFacing rot = socket.getSideRel(side);
 		if (!socket.getConnectionTypeAtSide(side).isRedstone())
 			return 0;
 
