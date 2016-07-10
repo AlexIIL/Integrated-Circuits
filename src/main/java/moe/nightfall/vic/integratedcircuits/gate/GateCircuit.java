@@ -1,7 +1,6 @@
 package moe.nightfall.vic.integratedcircuits.gate;
 
 import moe.nightfall.vic.integratedcircuits.Content;
-import moe.nightfall.vic.integratedcircuits.api.gate.IGatePeripheralProvider;
 import moe.nightfall.vic.integratedcircuits.api.gate.ISocket.EnumConnectionType;
 import moe.nightfall.vic.integratedcircuits.cp.CircuitData;
 import moe.nightfall.vic.integratedcircuits.cp.ICircuit;
