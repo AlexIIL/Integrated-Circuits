@@ -12,14 +12,15 @@ import net.minecraft.client.resources.I18n;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
 public class GuiIOMode extends GuiButton implements IHoverable {
 	private GuiCAD parent;
-	private int side;
+	private EnumFacing side;
 	private EnumConnectionType mode;
 
-	public GuiIOMode(int id, int xPos, int yPos, GuiCAD parent, int side) {
+	public GuiIOMode(int id, int xPos, int yPos, GuiCAD parent, EnumFacing side) {
 		super(id, xPos, yPos, 11, 11, "");
 		this.parent = parent;
 		this.side = side;
@@ -47,11 +48,11 @@ public class GuiIOMode extends GuiButton implements IHoverable {
 			parent.setCurrentItem(this);
 			hover = true;
 		}
-		GuiUtils.drawContinuousTexturedBox(buttonTextures, this.xPosition, this.yPosition, 0, 46, this.width,
+		GuiUtils.drawContinuousTexturedBox(BUTTON_TEXTURES, this.xPosition, this.yPosition, 0, 46, this.width,
 				this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
 		String text = ChatFormatting.BOLD + mode.singleID();
-		int twidth = mc.fontRenderer.getStringWidth(text);
-		mc.fontRenderer.drawString(text, this.xPosition + width / 2 - twidth / 2, this.yPosition + 2, hover ? 0xFFFFFF
+		int twidth = mc.fontRendererObj.getStringWidth(text);
+		mc.fontRendererObj.drawString(text, this.xPosition + width / 2 - twidth / 2, this.yPosition + 2, hover ? 0xFFFFFF
 				: 0xE0E0E0);
 	}
 

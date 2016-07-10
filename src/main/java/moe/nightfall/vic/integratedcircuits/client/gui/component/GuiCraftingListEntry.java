@@ -8,11 +8,10 @@ import moe.nightfall.vic.integratedcircuits.client.gui.GuiInterfaces;
 import moe.nightfall.vic.integratedcircuits.client.gui.GuiInterfaces.IHoverable;
 import moe.nightfall.vic.integratedcircuits.misc.ItemAmount;
 import moe.nightfall.vic.integratedcircuits.misc.RenderUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiListExtended.IGuiListEntry;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -33,9 +32,14 @@ public class GuiCraftingListEntry implements IGuiListEntry, IHoverable {
 	}
 
 	@Override
-	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, Tessellator tes, int mouseX,
+	public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_) {
+
+	}
+
+	@Override
+	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX,
 			int mouseY, boolean isSelected) {
-		FontRenderer fr = parent.mc.fontRenderer;
+		FontRenderer fr = parent.mc.fontRendererObj;
 		if (mouseX >= x && mouseY >= y && mouseX <= x + listWidth && mouseY <= y + slotHeight
 				&& !parent.te.laserHelper.isRunning && !Mouse.isButtonDown(0))
 			parent.setCurrentItem(this);
@@ -48,8 +52,8 @@ public class GuiCraftingListEntry implements IGuiListEntry, IHoverable {
 		boolean supplied = current >= needed;
 
 		RenderHelper.enableStandardItemLighting();
-		RenderItem.getInstance().renderItemIntoGUI(fr, parent.mc.renderEngine, stack, x + 2, y + slotHeight / 2 - 8,
-				true);
+
+		Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(stack, x + 2, y + slotHeight / 2 - 8);
 		RenderHelper.disableStandardItemLighting();
 
 		String s = current + "/" + needed;

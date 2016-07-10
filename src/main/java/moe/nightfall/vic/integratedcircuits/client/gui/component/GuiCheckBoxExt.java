@@ -41,9 +41,9 @@ public class GuiCheckBoxExt extends GuiCheckBox implements IHoverable {
 	@Override
 	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (visible) {
-			field_146123_n = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + boxWidth
+			hovered = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + boxWidth
 					&& mouseY < yPosition + height;
-			GuiUtils.drawContinuousTexturedBox(buttonTextures, xPosition, yPosition, 0, 46, boxWidth, height, 200, 20,
+			GuiUtils.drawContinuousTexturedBox(BUTTON_TEXTURES, xPosition, yPosition, 0, 46, boxWidth, height, 200, 20,
 					2, 3, 2, 2, zLevel);
 			mouseDragged(mc, mouseX, mouseY);
 			int color = 0xE0E0E0;
@@ -54,11 +54,11 @@ public class GuiCheckBoxExt extends GuiCheckBox implements IHoverable {
 				color = 0xA0A0A0;
 
 			if (isChecked())
-				this.drawCenteredString(mc.fontRenderer, "x", xPosition + boxWidth / 2 + 1, yPosition + 1, 0xE0E0E0);
+				this.drawCenteredString(mc.fontRendererObj, "x", xPosition + boxWidth / 2 + 1, yPosition + 1, 0xE0E0E0);
 
-			mc.fontRenderer.drawString(displayString, xPosition + boxWidth + 2, yPosition + 2, color, dropShadow);
+			mc.fontRendererObj.drawString(displayString, xPosition + boxWidth + 2, yPosition + 2, color, dropShadow);
 		}
-		if (field_146123_n)
+		if (hovered)
 			parent.setCurrentItem(this);
 	}
 

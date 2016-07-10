@@ -70,10 +70,10 @@ public class CircuitProperties implements Cloneable {
 		return EnumConnectionType.values()[con >> (side.getHorizontalIndex() * 2) & 3];
 	}
 
-	public int setModeAtSide(int side, EnumConnectionType type) {
+	public int setModeAtSide(EnumFacing side, EnumConnectionType type) {
 		int con = this.con;
-		con &= ~(3 << (side * 2));
-		con |= type.ordinal() << (side * 2);
+		con &= ~(3 << (side.getHorizontalIndex() * 2));
+		con |= type.ordinal() << (side.getHorizontalIndex() * 2);
 		return con;
 	}
 

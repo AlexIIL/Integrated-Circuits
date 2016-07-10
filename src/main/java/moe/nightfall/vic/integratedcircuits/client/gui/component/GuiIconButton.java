@@ -74,7 +74,7 @@ public class GuiIconButton extends GuiButtonExt implements IHoverable {
 	@Override
 	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		super.drawButton(mc, mouseX, mouseY);
-		if (field_146123_n && mc.currentScreen instanceof IHoverableHandler)
+		if (hovered && mc.currentScreen instanceof IHoverableHandler)
 			((IHoverableHandler) mc.currentScreen).setCurrentItem(this);
 		mc.renderEngine.bindTexture(resource);
 		drawTexturedModalRect(xPosition, yPosition, pos.x, pos.y, size.x, size.y);

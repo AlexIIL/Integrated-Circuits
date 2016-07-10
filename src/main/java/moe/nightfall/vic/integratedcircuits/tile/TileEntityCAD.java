@@ -154,10 +154,10 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void setInputMode(int side, EnumConnectionType mode) {
+	public void setInputMode(EnumFacing side, EnumConnectionType mode) {
 		int con = circuitData.getProperties().setModeAtSide(side, mode);
 		int i[] = this.in.clone();
-		i[side] = mode == EnumConnectionType.ANALOG ? 1 : 0;
+		i[side.getHorizontalIndex()] = mode == EnumConnectionType.ANALOG ? 1 : 0;
 		CommonProxy.networkWrapper.sendToServer(new PacketPCBChangeInput(true, i, con, this));
 	}
 

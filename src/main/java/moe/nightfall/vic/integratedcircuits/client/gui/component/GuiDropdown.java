@@ -74,7 +74,7 @@ public class GuiDropdown extends GuiButton implements IHoverable {
 	public void drawButton(Minecraft mc, int x, int y) {
 		if (!visible)
 			return;
-		FontRenderer fr = mc.fontRenderer;
+		FontRenderer fr = mc.fontRendererObj;
 
 		if (x >= xPosition && x < xPosition + width && y >= yPosition && y < yPosition + height && tooltips != null
 				&& !toggle && enabled)
@@ -84,11 +84,11 @@ public class GuiDropdown extends GuiButton implements IHoverable {
 		drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, 0xFF525252);
 
 		int k = this.enabled ? toggle ? 2 : 1 : 0;
-		GuiUtils.drawContinuousTexturedBox(buttonTextures, xPosition + width - height + 1, yPosition, 0, 46 + k * 20,
+		GuiUtils.drawContinuousTexturedBox(BUTTON_TEXTURES, xPosition + width - height + 1, yPosition, 0, 46 + k * 20,
 				height - 1, height, 200, 20, 2, 3, 2, 2, zLevel);
 
 		mc.renderEngine.bindTexture(Resources.RESOURCE_GUI_CONTROLS);
-		Gui.func_146110_a(xPosition + width - height / 2 - 4, yPosition + height / 2 - 3, 16 - (toggle ? 8 : 0), 0, 8,
+		Gui.drawModalRectWithCustomSizedTexture(xPosition + width - height / 2 - 4, yPosition + height / 2 - 3, 16 - (toggle ? 8 : 0), 0, 8,
 				7, 32, 32);
 
 		String current = elements.get(selected);
@@ -149,7 +149,7 @@ public class GuiDropdown extends GuiButton implements IHoverable {
 				&& x < xPosition + width && y < yPosition + height;
 		if (pressed && enabled) {
 			toggle = !toggle;
-			func_146113_a(Minecraft.getMinecraft().getSoundHandler());
+			playPressSound(Minecraft.getMinecraft().getSoundHandler());
 		}
 
 		return false;

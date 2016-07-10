@@ -1,5 +1,6 @@
 package moe.nightfall.vic.integratedcircuits.client.gui.component;
 
+import java.io.IOException;
 import java.util.List;
 
 import moe.nightfall.vic.integratedcircuits.client.gui.GuiInterfaces;
@@ -43,7 +44,7 @@ public class GuiCallback<E extends GuiScreen & IGuiCallback> extends GuiScreen i
 	public void setWorldAndResolution(Minecraft mc, int w, int h) {
 		parent.setWorldAndResolution(mc, w, h);
 		this.mc = mc;
-		this.fontRendererObj = mc.fontRenderer;
+		this.fontRendererObj = mc.fontRendererObj;
 		this.width = w;
 		this.height = h;
 		this.initGui();
@@ -69,7 +70,7 @@ public class GuiCallback<E extends GuiScreen & IGuiCallback> extends GuiScreen i
 	public <F extends Gui> GuiCallback addControl(F control) {
 		if (control instanceof GuiButton) {
 			((GuiButton) control).id += 4;
-			buttonList.add(control);
+			buttonList.add((GuiButton)control);
 		} else if (control instanceof GuiLabel) {
 			labelList.add((GuiLabel) control);
 		} else
@@ -127,13 +128,13 @@ public class GuiCallback<E extends GuiScreen & IGuiCallback> extends GuiScreen i
 	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int par3) {
+	protected void mouseClicked(int x, int y, int par3) throws IOException {
 		super.mouseClicked(x - xOff, y - yOff, par3);
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int x, int y, int par3) {
-		super.mouseMovedOrUp(x - xOff, y - yOff, par3);
+	protected void mouseReleased(int x, int y, int par3) {
+		super.mouseReleased(x - xOff, y - yOff, par3);
 	}
 
 	@Override

@@ -35,12 +35,12 @@ public class GuiLabel extends Gui {
 		GL11.glScalef(scale, scale, 1);
 		String[] list = MiscUtils.stringNewlineSplit(text);
 		for (int i = 0; i < list.length; i++) {
-			int width = mc.fontRenderer.getStringWidth(list[i]);
+			int width = mc.fontRendererObj.getStringWidth(list[i]);
 			int xOff = centered ? width / 2 : 0;
 			if (shadow)
-				mc.fontRenderer.drawStringWithShadow(list[i], xCoord - xOff, yCoord + i * (size + 3), color);
+				mc.fontRendererObj.drawStringWithShadow(list[i], xCoord - xOff, yCoord + i * (size + 3), color);
 			else
-				mc.fontRenderer.drawString(list[i], xCoord - xOff, yCoord + i * (size + 3), color);
+				mc.fontRendererObj.drawString(list[i], xCoord - xOff, yCoord + i * (size + 3), color);
 		}
 		GL11.glScalef(1 / scale, 1 / scale, 1);
 	}
