@@ -126,7 +126,7 @@ public class GuiPartChooser extends GuiButton implements IHoverable {
 		if (showList && children != null) {
 			for (GuiPartChooser child : children) {
 				if (child.mousePressed(mc, x, y)) {
-					child.func_146113_a(mc.getSoundHandler());
+					child.playPressSound(mc.getSoundHandler());
 					parent.selectedChooser = child;
 				}
 			}

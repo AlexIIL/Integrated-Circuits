@@ -38,7 +38,7 @@ public class GuiTextArea extends Gui {
 	protected int cursorColor = 0xFFFFFFFF;
 	protected int border = 5;
 
-	protected FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+	protected FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
 
 	public GuiTextArea(int xCoord, int yCoord) {
 		textBuffer.add(new StringBuilder());

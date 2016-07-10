@@ -49,9 +49,9 @@ public class GuiStateLabel extends GuiButtonExt implements IHoverable {
 	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (!this.visible || states == null || state >= states.length)
 			return;
-		this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition
+		this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition
 				&& mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-		if (field_146123_n) {
+		if (hovered) {
 			if (mc.currentScreen instanceof IHoverableHandler)
 				((IHoverableHandler) mc.currentScreen).setCurrentItem(this);
 			GL11.glColor3f(0.8F, 0.9F, 1F);

@@ -25,13 +25,13 @@ public class GuiListExt<T extends IGuiListEntry> extends GuiListExtended {
 	public boolean mouseClicked(int x, int y, int button) {
 		if (isMouseInputLocked())
 			return false;
-		return super.func_148179_a(x + xCoord, y + yCoord, button);
+		return super.mouseClicked(x + xCoord, y + yCoord, button);
 	}
 
-	public boolean mouseMovedOrUp(int x, int y, int button) {
+	public boolean mouseReleased(int x, int y, int button) {
 		if (isMouseInputLocked())
 			return false;
-		return super.func_148181_b(x + xCoord, y + yCoord, button);
+		return super.mouseReleased(x + xCoord, y + yCoord, button);
 	}
 
 	public boolean isMouseInputLocked() {
@@ -39,18 +39,18 @@ public class GuiListExt<T extends IGuiListEntry> extends GuiListExtended {
 	}
 
 	@Override
-	protected void drawSlot(int par1, int x, int y, int par4, Tessellator tes, int par6, int par7) {
-		super.drawSlot(par1, 0, y, par4, tes, par6, par7);
+	protected void drawSlot(int par1, int x, int y, int par4, int par6, int par7) {
+		super.drawSlot(par1, 0, y, par4, par6, par7);
 	}
 
 	@Override
 	public int getListWidth() {
-		return width - (func_148135_f() > 0 ? 6 : 0);
+		return width - (getMaxScroll() > 0 ? 6 : 0);
 	}
 
 	@Override
 	public void drawScreen(int x, int y, float par3) {
-		ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+		ScaledResolution scaledresolution = new ScaledResolution(this.mc);
 		int guiScale = scaledresolution.getScaleFactor();
 		int width = this.width;
 		int height = this.bottom;

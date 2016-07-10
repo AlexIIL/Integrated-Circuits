@@ -13,12 +13,13 @@ import moe.nightfall.vic.integratedcircuits.net.PacketAssemblerStart;
 import moe.nightfall.vic.integratedcircuits.proxy.ClientProxy;
 import moe.nightfall.vic.integratedcircuits.proxy.CommonProxy;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntityAssembler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.math.MathHelper;
 
 import net.minecraft.util.text.TextFormatting;
@@ -26,6 +27,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraftforge.fml.client.config.GuiButtonExt;
+
+import java.io.IOException;
 
 public class GuiAssembler extends GuiContainer implements IHoverableHandler {
 	public TileEntityAssembler te;
@@ -100,15 +103,15 @@ public class GuiAssembler extends GuiContainer implements IHoverableHandler {
 	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int button) {
+	protected void mouseClicked(int x, int y, int button) throws IOException {
 		if (button != 0 || !craftingList.mouseClicked(x, y, button))
 			super.mouseClicked(x, y, button);
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int x, int y, int button) {
-		if (button != 0 || !craftingList.mouseMovedOrUp(x, y, button))
-			super.mouseMovedOrUp(x, y, button);
+	protected void mouseReleased(int x, int y, int button) {
+		if (button != 0 || !craftingList.mouseReleased(x, y, button))
+			super.mouseReleased(x, y, button);
 	}
 
 	private boolean renderItemHover;
@@ -179,16 +182,16 @@ public class GuiAssembler extends GuiContainer implements IHoverableHandler {
 						int i5 = i4 + fontRendererObj.getStringWidth(status) / 2;
 						RenderHelper.enableStandardItemLighting();
 						GL11.glColor3f(color / 255F, color / 255F, color / 255F);
-						RenderItem.getInstance().renderWithColor = false;
+						//RenderItem.getInstance().renderWithColor = false; TODO reimplement
 						ItemAmount amount = te.craftingSupply.getInsufficient();
 						if (amount != null) {
 							ItemStack stack = amount.convertToItemStack(1);
 							if (stack != null)
-								RenderItem.getInstance().renderItemIntoGUI(fontRendererObj, mc.renderEngine, stack,
-										guiLeft + i5, guiTop + 71, true);
+								Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(stack,
+										guiLeft + i5, guiTop + 71);
 						}
 
-						RenderItem.getInstance().renderWithColor = true;
+						//RenderItem.getInstance().renderWithColor = true; TODO reimplement
 						GL11.glColor3f(1, 1, 1);
 						RenderHelper.disableStandardItemLighting();
 						renderItemHover = x > guiLeft + i5 && y > guiTop + 71 && x <= guiLeft + 16 + i5

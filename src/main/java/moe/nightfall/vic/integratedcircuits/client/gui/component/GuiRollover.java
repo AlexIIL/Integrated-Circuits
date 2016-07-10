@@ -21,7 +21,7 @@ import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 public final class GuiRollover extends GuiButton implements IHoverable {
@@ -133,18 +133,18 @@ public final class GuiRollover extends GuiButton implements IHoverable {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glTranslatef(0, 0, 10);
 
-		this.field_146123_n = mx >= this.xPosition && my >= this.yPosition && mx < this.xPosition + this.width && my < this.yPosition + this.height;
+		this.hovered = mx >= this.xPosition && my >= this.yPosition && mx < this.xPosition + this.width && my < this.yPosition + this.height;
 		double interpolate = MathHelper.clamp_double((System.currentTimeMillis() - startTime) / timeToOpen, 0, 1);
 		int height = (int) (interpolate * (nextHeight - currentHeight)) + currentHeight;
 
-		mc.renderEngine.bindTexture(buttonTextures);
+		mc.renderEngine.bindTexture(BUTTON_TEXTURES);
 		int i = 0;
 		for (Category category : categoryMap.values()) {
 			int ypos = yPosition + i * boxHeight;
 			if (i >= selected)
 				ypos += height;
 			int iconOffset = 66;
-			boolean hovered = (field_146123_n && my > ypos && my < ypos + boxHeight);
+			boolean hovered = (this.hovered && my > ypos && my < ypos + boxHeight);
 			if (hovered && mc.currentScreen instanceof IHoverableHandler && category.tooltip != null) {
 				((IHoverableHandler) mc.currentScreen).setCurrentItem(this);
 				hoveredCategory = category;
@@ -193,7 +193,7 @@ public final class GuiRollover extends GuiButton implements IHoverable {
 			GL11.glTranslatef(0, 0, -5);
 			if (buttons.size() > 0) {
 				// draw bridge
-				GuiUtils.drawContinuousTexturedBox(buttonTextures, xPosition + width / 2 - 5, yPosition + height2 - 8, 0, 66, 12, height, 200, 20, 2, 3, 2, 2, this.zLevel);
+				GuiUtils.drawContinuousTexturedBox(BUTTON_TEXTURES, xPosition + width / 2 - 5, yPosition + height2 - 8, 0, 66, 12, height, 200, 20, 2, 3, 2, 2, this.zLevel);
 			}
 			
 			GL11.glTranslatef(0, 0, 10);
@@ -247,7 +247,7 @@ public final class GuiRollover extends GuiButton implements IHoverable {
 			}
 		}
 
-		if (!field_146123_n)
+		if (!hovered)
 			return false;
 
 		// Exclude clicking in-between the buttons
