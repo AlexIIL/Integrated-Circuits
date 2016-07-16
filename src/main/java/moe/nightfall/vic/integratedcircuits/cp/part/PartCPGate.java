@@ -47,18 +47,18 @@ public abstract class PartCPGate extends CircuitPart {
 	}
 
 	public EnumFacing toInternal(Vec2i pos, ICircuit parent, EnumFacing dir) {
-		return MiscUtils.rotn(dir, -getRotation(pos, parent));
+		return MiscUtils.rotn(dir, getRotation(pos, parent) - 2);
 	}
 
 	public EnumFacing toExternal(Vec2i pos, ICircuit parent, EnumFacing dir) {
-		return MiscUtils.rotn(dir, getRotation(pos, parent));
+		return MiscUtils.rotn(dir, getRotation(pos, parent) + 2);
 	}
 
 	@Override
 	public ArrayList<String> getInformation(Vec2i pos, ICircuit parent, boolean edit, boolean ctrlDown) {
 		ArrayList<String> text = Lists.newArrayList();
-		EnumFacing rot = MiscUtils.getDirection(getRotation(pos, parent));
-		text.add(TextFormatting.DARK_GRAY + "" + TextFormatting.ITALIC + MiscUtils.getLocalizedDirection(rot));
+		EnumFacing rot = EnumFacing.getHorizontal(getRotation(pos, parent));
+		text.add(TextFormatting.DARK_GRAY + "" + TextFormatting.ITALIC + rot.getName());
 		if (edit && !ctrlDown)
 			text.add(I18n.format("gui.integratedcircuits.cad.rotate"));
 		return text;
