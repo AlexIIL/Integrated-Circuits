@@ -145,7 +145,7 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 	}
 
 	public final boolean getExternalInputFromSide(EnumFacing dir, int frequency) {
-		return (in[MiscUtils.getSide(dir)] & 1 << frequency) != 0;
+		return (in[dir.getHorizontalIndex()] & 1 << frequency) != 0;
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 	}
 
 	public boolean getOutputToSide(EnumFacing dir, int frequency) {
-		return (out[MiscUtils.getSide(dir)] & 1 << frequency) != 0;
+		return (out[dir.getHorizontalIndex()] & 1 << frequency) != 0;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -163,14 +163,14 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 		if (mode != EnumConnectionType.SIMPLE || frequency == 0) {
 			int[] i = this.in.clone();
 			if (mode == EnumConnectionType.ANALOG)
-				i[MiscUtils.getSide(dir)] = 0;
+				i[dir.getHorizontalIndex()] = 0;
 			if (output)
-				i[MiscUtils.getSide(dir)] |= 1 << frequency;
+				i[dir.getHorizontalIndex()] |= 1 << frequency;
 			else {
 				if (mode == EnumConnectionType.ANALOG)
-					i[MiscUtils.getSide(dir)] = 1;
+					i[dir.getHorizontalIndex()] = 1;
 				else
-					i[MiscUtils.getSide(dir)] &= ~(1 << frequency);
+					i[dir.getHorizontalIndex()] &= ~(1 << frequency);
 			}
 			CommonProxy.networkWrapper.sendToServer(new PacketPCBChangeInput(true, i, circuitData.getProperties()
 				.getCon(), this));
@@ -188,9 +188,9 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 	@Override
 	public void setOutputToSide(EnumFacing dir, int frequency, boolean output) {
 		if (output)
-			out[MiscUtils.getSide(dir)] |= 1 << frequency;
+			out[dir.getHorizontalIndex()] |= 1 << frequency;
 		else
-			out[MiscUtils.getSide(dir)] &= ~(1 << frequency);
+			out[dir.getHorizontalIndex()] &= ~(1 << frequency);
 		updateIO = true;
 	}
 

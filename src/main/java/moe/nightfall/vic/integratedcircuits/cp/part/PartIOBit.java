@@ -97,7 +97,7 @@ public class PartIOBit extends CircuitPart {
 	}
 
 	public boolean isPowered(Vec2i pos, ICircuit parent) {
-		EnumFacing dir = getRotation(pos, parent).getOpposite();
+		EnumFacing dir = getRotation(pos, parent);
 		return getOutputToSide(pos, parent, dir)
 				|| getNeighbourOnSide(pos, parent, dir).getOutputToSide(pos.offset(dir), parent, dir.getOpposite());
 	}

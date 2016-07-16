@@ -227,7 +227,7 @@ public abstract class CircuitPart {
 	public final boolean getInputFromSide(Vec2i pos, ICircuit parent, EnumFacing side) {
 		if (side == null)
 			return false;
-		boolean in = (getProperty(pos, parent, PROP_INPUT) << (side.ordinal() - 2) & 8) != 0;
+		boolean in = (getProperty(pos, parent, PROP_INPUT) << (side.getHorizontalIndex()) & 8) != 0;
 		return in;
 	}
 
@@ -246,11 +246,11 @@ public abstract class CircuitPart {
 	/** Check every side to update the internal buffer **/
 	public final void updateInput(Vec2i pos, ICircuit parent) {
 		int input = 0;
-		for (int i = 2; i < 6; i++) {
-			EnumFacing fd = EnumFacing.getFront(i);
+		for (int i = 0; i < 4; i++) {
+			EnumFacing fd = EnumFacing.getHorizontal(i);
 			if (hasConnectionOnSide(pos, parent, fd) && getNeighbourOnSide(pos, parent, fd)
 					.getOutputToSide(pos.offset(fd), parent, fd.getOpposite()))
-				input |= 8 >> (i - 2);
+				input |= 8 >> (i);
 		}
 		setProperty(pos, parent, PROP_INPUT, input);
 	}
@@ -260,8 +260,8 @@ public abstract class CircuitPart {
 	}
 
 	public final void notifyNeighbours(Vec2i pos, ICircuit parent) {
-		for (int i = 2; i < 6; i++) {
-			EnumFacing fd = EnumFacing.getFront(i);
+		for (int i = 0; i < 4; i++) {
+			EnumFacing fd = EnumFacing.getHorizontal(i);
 			CircuitPart part = getNeighbourOnSide(pos, parent, fd);
 
 			if (part != null) {

@@ -47,10 +47,10 @@ public class CircuitPartRenderer {
 
 	@SideOnly(Side.CLIENT)
 	public static int checkConnections(Vec2i pos, ICircuit parent, CircuitPart part) {
-		boolean c1 = part.hasConnectionOnSide(pos, parent, EnumFacing.NORTH);
-		boolean c2 = part.hasConnectionOnSide(pos, parent, EnumFacing.SOUTH);
-		boolean c3 = part.hasConnectionOnSide(pos, parent, EnumFacing.WEST);
-		boolean c4 = part.hasConnectionOnSide(pos, parent, EnumFacing.EAST);
+		boolean c1 = part.hasConnectionOnSide(pos, parent, EnumFacing.SOUTH);
+		boolean c2 = part.hasConnectionOnSide(pos, parent, EnumFacing.NORTH);
+		boolean c3 = part.hasConnectionOnSide(pos, parent, EnumFacing.EAST);
+		boolean c4 = part.hasConnectionOnSide(pos, parent, EnumFacing.WEST);
 
 		return (c1 ? 1 : 0) << 3 | (c2 ? 1 : 0) << 2 | (c3 ? 1 : 0) << 1 | (c4 ? 1 : 0);
 	}

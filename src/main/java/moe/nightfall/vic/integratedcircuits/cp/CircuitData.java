@@ -175,41 +175,41 @@ public class CircuitData implements Cloneable {
 		
 		for (int i = 0; i < (supportsBundled() ? 16 : 1); i++) {
 			// Get the positions
-			Vec2i pos1 = new Vec2i(size - 1 - (i + o), 0);
-			Vec2i pos2 = new Vec2i(size - 1, size - 1 - (i + o));
-			Vec2i pos3 = new Vec2i(i + o, size - 1);
-			Vec2i pos4 = new Vec2i(0, i + o);
+			Vec2i posN = new Vec2i(size - 1 - (i + o), 0);
+			Vec2i posE = new Vec2i(size - 1, size - 1 - (i + o));
+			Vec2i posS = new Vec2i(i + o, size - 1);
+			Vec2i posW = new Vec2i(0, i + o);
 			
-			if (prop.getModeAtSide(EnumFacing.SOUTH) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.SOUTH) == EnumConnectionType.SIMPLE && i >= 1)) {
+ 			if (prop.getModeAtSide(EnumFacing.NORTH) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.NORTH) == EnumConnectionType.SIMPLE && i >= 1)) {
 				// Set the part at the position to be a IOBit
-				setID(pos1, cid);
+				setID(posN, cid);
 				// Get the IOBit at that position
-				PartIOBit io1 = (PartIOBit) getPart(pos1);
+				PartIOBit io1 = (PartIOBit) getPart(posN);
 				// Set the number of the IOBit (colour / redstone strength)
-				io1.setFrequency(pos1, parent, i);
-				// The rotation is what side the IOBit is on
-				io1.setRotation(pos1, parent, EnumFacing.SOUTH);
-			}
-			
-			if (prop.getModeAtSide(EnumFacing.WEST) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.WEST) == EnumConnectionType.SIMPLE && i >= 1)) {
-				setID(pos2, cid);
-				PartIOBit io2 = (PartIOBit) getPart(pos2);
-				io2.setFrequency(pos2, parent, i);
-				io2.setRotation(pos2, parent, EnumFacing.WEST);
-			}
-			
-			if (prop.getModeAtSide(EnumFacing.NORTH) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.NORTH) == EnumConnectionType.SIMPLE && i >= 1)) {
-				setID(pos3, cid);
-				PartIOBit io3 = (PartIOBit) getPart(pos3);
-				io3.setFrequency(pos3, parent, i);
-				io3.setRotation(pos3, parent, EnumFacing.NORTH);
+				io1.setFrequency(posN, parent, i);
+				// The rotation is what side the internal connector of the iobit is pointing to
+				io1.setRotation(posN, parent, EnumFacing.NORTH);
 			}
 			
 			if (prop.getModeAtSide(EnumFacing.EAST) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.EAST) == EnumConnectionType.SIMPLE && i >= 1)) {
-				setID(pos4, cid);
-				PartIOBit io4 = (PartIOBit) getPart(pos4);
-				io4.setFrequency(pos4, parent, i);
-				io4.setRotation(pos4, parent, EnumFacing.EAST);
+				setID(posE, cid);
+				PartIOBit io2 = (PartIOBit) getPart(posE);
+				io2.setFrequency(posE, parent, i);
+				io2.setRotation(posE, parent, EnumFacing.EAST);
+			}
+			
+			if (prop.getModeAtSide(EnumFacing.SOUTH) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.SOUTH) == EnumConnectionType.SIMPLE && i >= 1)) {
+				setID(posS, cid);
+				PartIOBit io3 = (PartIOBit) getPart(posS);
+				io3.setFrequency(posS, parent, i);
+				io3.setRotation(posS, parent, EnumFacing.SOUTH);
+			}
+			
+			if (prop.getModeAtSide(EnumFacing.WEST) != EnumConnectionType.NONE && !(prop.getModeAtSide(EnumFacing.WEST) == EnumConnectionType.SIMPLE && i >= 1)) {
+				setID(posW, cid);
+				PartIOBit io4 = (PartIOBit) getPart(posW);
+				io4.setFrequency(posW, parent, i);
+				io4.setRotation(posW, parent, EnumFacing.WEST);
 			}
 		}
 	}
