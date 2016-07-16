@@ -82,41 +82,41 @@ public class RenderManager {
         Tessellator tes = Tessellator.getInstance();
         VertexBuffer buffer = tes.getBuffer();
 
-        d1 = u + 0;
-        d2 = u + w2;
+        d1 = u + 0;  // u = horiz, v = vert, d1 = left
+        d2 = u + w2; // d2 = right
 
-        if (rotation == 1) {
-            d3 = v + h2;
-            d4 = v + 0;
+        if (rotation == 3) { // rotate to south?
+            d3 = v + h2; // d3 = bottom
+            d4 = v + 0; // d4 = top
 
-            buffer.pos(x + w, y + h, 0).tex(d2 * scalew, d4 * scaleh).color(r, g, b, a).endVertex();
-            buffer.pos(x + w, y + 0, 0).tex(d1 * scalew, d4 * scaleh).color(r, g, b, a).endVertex();
-            buffer.pos(x + 0, y + 0, 0).tex(d1 * scalew, d3 * scaleh).color(r, g, b, a).endVertex();
-            buffer.pos(x + 0, y + h, 0).tex(d2 * scalew, d3 * scaleh).color(r, g, b, a).endVertex();
-        } else if (rotation == 2) {
-            d3 = v + h2;
-            d4 = v + 0;
+            buffer.pos(x + w, y + h, 0).tex(d2 * scalew, d4 * scaleh).color(r, g, b, a).endVertex(); // bottom right for tex top right
+            buffer.pos(x + w, y + 0, 0).tex(d1 * scalew, d4 * scaleh).color(r, g, b, a).endVertex(); // top right for tex top left
+            buffer.pos(x + 0, y + 0, 0).tex(d1 * scalew, d3 * scaleh).color(r, g, b, a).endVertex(); // top left for tex bottom left
+            buffer.pos(x + 0, y + h, 0).tex(d2 * scalew, d3 * scaleh).color(r, g, b, a).endVertex(); // bottom left for tex bottom right
+        } else if (rotation == 0) {
+            d3 = v + h2; // d3 = bottom
+            d4 = v + 0; // d4 = top
 
-            buffer.pos(x + 0, y + h, 0).tex(d2 * scalew, d4 * scaleh).color(r, g, b, a).endVertex();
-            buffer.pos(x + w, y + h, 0).tex(d1 * scalew, d4 * scaleh).color(r, g, b, a).endVertex();
-            buffer.pos(x + w, y + 0, 0).tex(d1 * scalew, d3 * scaleh).color(r, g, b, a).endVertex();
-            buffer.pos(x + 0, y + 0, 0).tex(d2 * scalew, d3 * scaleh).color(r, g, b, a).endVertex();
-        } else if (rotation == 3) {
-            d3 = v + 0;
-            d4 = v + h2;
+            buffer.pos(x + 0, y + h, 0).tex(d2 * scalew, d4 * scaleh).color(r, g, b, a).endVertex(); // bottom left for tex top right
+            buffer.pos(x + w, y + h, 0).tex(d1 * scalew, d4 * scaleh).color(r, g, b, a).endVertex(); // bottom right for tex top left
+            buffer.pos(x + w, y + 0, 0).tex(d1 * scalew, d3 * scaleh).color(r, g, b, a).endVertex(); // top right for tex bottom left
+            buffer.pos(x + 0, y + 0, 0).tex(d2 * scalew, d3 * scaleh).color(r, g, b, a).endVertex(); // top left for tex bottom right
+        } else if (rotation == 1) {
+            d3 = v + 0; // bottom
+            d4 = v + h2; // top
 
             buffer.pos(x + w, y + h, 0).tex(d1 * scalew, d4 * scaleh).color(r, g, b, a).endVertex();
             buffer.pos(x + w, y + 0, 0).tex(d2 * scalew, d4 * scaleh).color(r, g, b, a).endVertex();
             buffer.pos(x + 0, y + 0, 0).tex(d2 * scalew, d3 * scaleh).color(r, g, b, a).endVertex();
             buffer.pos(x + 0, y + h, 0).tex(d1 * scalew, d3 * scaleh).color(r, g, b, a).endVertex();
-        } else {
-            d3 = v + 0;
-            d4 = v + h2;
+        } else if (rotation == 2) { // no rot
+            d3 = v + 0; // top
+            d4 = v + h2; // bottom
 
-            buffer.pos(x + 0, y + h, 0).tex(d1 * scalew, d4 * scaleh).color(r, g, b, a).endVertex();
-            buffer.pos(x + w, y + h, 0).tex(d2 * scalew, d4 * scaleh).color(r, g, b, a).endVertex();
-            buffer.pos(x + w, y + 0, 0).tex(d2 * scalew, d3 * scaleh).color(r, g, b, a).endVertex();
-            buffer.pos(x + 0, y + 0, 0).tex(d1 * scalew, d3 * scaleh).color(r, g, b, a).endVertex();
+            buffer.pos(x + 0, y + h, 0).tex(d1 * scalew, d4 * scaleh).color(r, g, b, a).endVertex(); // bottom left for tex bottom left
+            buffer.pos(x + w, y + h, 0).tex(d2 * scalew, d4 * scaleh).color(r, g, b, a).endVertex(); // bottom right for tex bottom right
+            buffer.pos(x + w, y + 0, 0).tex(d2 * scalew, d3 * scaleh).color(r, g, b, a).endVertex(); // top right for tex top right
+            buffer.pos(x + 0, y + 0, 0).tex(d1 * scalew, d3 * scaleh).color(r, g, b, a).endVertex(); // top left for tex top left
         }
     }
 
