@@ -227,7 +227,8 @@ public abstract class CircuitPart {
 	public final boolean getInputFromSide(Vec2i pos, ICircuit parent, EnumFacing side) {
 		if (side == null)
 			return false;
-		boolean in = (getProperty(pos, parent, PROP_INPUT) << (side.getHorizontalIndex()) & 8) != 0;
+		boolean in = ((getProperty(pos, parent, PROP_INPUT) << (side.getHorizontalIndex())) & 8) != 0;
+		//boolean in = (getProperty(pos, parent, PROP_INPUT) << (side.getHorizontalIndex()) & 8) != 0;
 		return in;
 	}
 
