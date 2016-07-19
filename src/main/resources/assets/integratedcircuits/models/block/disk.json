@@ -1,0 +1,18 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "all": "blocks/wool_colored_black"
+  },
+  "elements": [
+    {   "from": [ 1, 1, -1 ],
+      "to": [ 13, 3, 1 ],
+      "faces": {
+        "down":  { "texture": "#all", "cullface": "north", "uv": [0, 0, 12, 2]},
+        "up":    { "texture": "#all", "cullface": "north", "uv": [0, 0, 12, 2]},
+        "north": { "texture": "#all", "cullface": "north", "uv": [0, 0, 12, 2]},
+        "west":  { "texture": "#all", "cullface": "north", "uv": [0, 0, 12, 2]},
+        "east":  { "texture": "#all", "cullface": "north", "uv": [0, 0, 12, 2]}
+      }
+    }
+  ]
+}

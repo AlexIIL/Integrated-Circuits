@@ -1,5 +1,31 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "transform": "forge:default-block",
+    "textures": {
+      "side": "integratedcircuits:blocks/assembler_side",
+      "up": "integratedcircuits:blocks/printer_top",
+      "down": "integratedcircuits:blocks/assembler_bottom"
+    },
+    "model": "integratedcircuits:pcbprinter",
+    "uvlock": false
+  },
   "variants": {
-    "normal": { "model": "integratedcircuits:integratedcircuits_null" }
+    "inventory": [{}],
+    "normal": [{}],
+    "facing": {
+      "east": {
+        "y": 90
+      },
+      "north": {
+        "y": 0
+      },
+      "south": {
+        "y": 180
+      },
+      "west": {
+        "y": 270
+      }
+    }
   }
 }

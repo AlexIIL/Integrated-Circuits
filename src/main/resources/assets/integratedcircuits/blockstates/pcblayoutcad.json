@@ -1,0 +1,56 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "north": "integratedcircuits:blocks/cad_front_off",
+      "east": "integratedcircuits:blocks/cad_side",
+      "west": "integratedcircuits:blocks/cad_side",
+      "south": "integratedcircuits:blocks/cad_back_off",
+      "up": "integratedcircuits:blocks/cad_side",
+      "down": "integratedcircuits:blocks/cad_side",
+      "particle": "integratedcircuits:blocks/cad_side"
+    },
+    "model": "integratedcircuits:cube",
+    "uvlock": false
+  },
+  "variants": {
+    "inventory": [{"y": 90}],
+    "active": {
+      "true": {
+        "textures": {
+          "north": "integratedcircuits:blocks/cad_front_on",
+          "south": "integratedcircuits:blocks/cad_back_on"
+        }
+      },
+      "false": {
+
+      }
+    },
+    "facing": {
+      "east": {
+        "y": 90
+      },
+      "north": {
+        "y": 0
+      },
+      "south": {
+        "y": 180
+      },
+      "west": {
+        "y": 270
+      }
+    },
+    "has_disk" : {
+      "false": {
+
+      },
+      "true": {
+        "submodel": {
+          "disk": {
+            "model": "integratedcircuits:disk"
+          }
+        }
+      }
+    }
+  }
+}
