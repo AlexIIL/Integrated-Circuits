@@ -42,6 +42,11 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 	public double offX = 0;
 	public double offY = 0;
 
+	public static byte TicksTillOff = 10;
+	public byte ticksTillOff = 0;
+
+	private boolean dirty = false;
+
 	public int[] in = new int[4];
 	public int[] out = new int[4];
 	private boolean updateIO;
@@ -66,6 +71,8 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 		this.step = true;
 	}
 
+
+
 	public void sendSimulationState() {
 		CommonProxy.networkWrapper.sendToServer(new PacketPCBSimulation(step, pausing, getPos().getX(), getPos().getY(), getPos().getZ()));
 	}
@@ -77,10 +84,15 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 
 	public void closeUI(EntityPlayer player) {
 		playersUsing.remove(player);
+		if (!isBeingUsed()) {
+			ticksTillOff = TicksTillOff;
+		}
+		getWorld().scheduleBlockUpdate(getPos(), getBlockType(), 10, 0);
 	}
 
 	public void openUI(EntityPlayer player) {
 		playersUsing.add(player);
+		getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
 	}
 
 	public boolean isBeingUsed() {
@@ -99,6 +111,13 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 
 	@Override
 	public void update() {
+
+		if (worldObj.isRemote && ticksTillOff > 0) {
+			ticksTillOff--;
+			if (ticksTillOff == 0)
+				getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
+		}
+
 		// Update the matrix in case there is at least one player watching.
 		if (!worldObj.isRemote && isBeingUsed()) {
 			if (step || !pausing) {
@@ -217,7 +236,7 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 		printerLocation = null;
 		for (EnumFacing fd : EnumFacing.VALUES) {
 			BlockPos bcs = bc.offset(fd);
-			if (worldObj.getBlockState(bcs) == Content.blockPrinter) {
+			if (worldObj.getBlockState(bcs).getBlock() == Content.blockPrinter) {
 				printerLocation = fd;
 			}
 		}
@@ -250,8 +269,8 @@ public class TileEntityCAD extends TileEntityInventory implements ICircuit, IDis
 
 	@Override
 	public void setDisk(ItemStack stack) {
-		inventory.
-		setStackInSlot(0, stack);
+		inventory.setStackInSlot(0, stack);
+		getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
 		if (!worldObj.isRemote)
 			CommonProxy.networkWrapper.sendToDimension(new PacketFloppyDisk(getPos().getX(), getPos().getY(), getPos().getZ(), stack),
 					worldObj.provider.getDimension());
