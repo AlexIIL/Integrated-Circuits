@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import moe.nightfall.vic.integratedcircuits.client.TileEntityPCBLayoutRenderer;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.RenderEnderman;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -114,6 +115,8 @@ public class ClientProxy extends CommonProxy {
 		//stRenderer = new SemiTransparentRenderer();
 		ShaderHelper.loadShaders();
 
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCAD.class, new TileEntityPCBLayoutRenderer());
+
 		//Constants.GATE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 		//Constants.PRINTER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
@@ -123,7 +126,7 @@ public class ClientProxy extends CommonProxy {
 		//RenderingRegistry.registerBlockHandler(Constants.GATE_RENDER_ID, gateRenderer);
 		//RenderingRegistry.registerBlockHandler(Constants.PRINTER_RENDER_ID, printerRenderer);
 
-		/*ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCAD.class, new TileEntityPCBLayoutRenderer());
+		/*
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAssembler.class, new TileEntityAssemblerRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySocket.class, gateRenderer);
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, printerRenderer);
@@ -172,8 +175,10 @@ public class ClientProxy extends CommonProxy {
 		Block block = world.getBlockState(pos).getBlock();
 		TileEntity tileEntity = world.getTileEntity(pos);
 
-		if (tileEntity instanceof IDiskDrive)
-			box = DiskDrive.getDiskDriveBoundingBox((IDiskDrive) tileEntity, pos.getX(), pos.getY(), pos.getZ(), event.getTarget().hitVec);
+		if (tileEntity instanceof IDiskDrive) {
+			box = DiskDrive.getDiskDriveBoundingBox((IDiskDrive) tileEntity, event.getTarget().hitVec.subtract(pos.getX(), pos.getY(), pos.getZ()));
+				if (box != null) box = box.offset(pos.getX(), pos.getY(), pos.getZ());
+		}
 		if (tileEntity instanceof TileEntityAssembler && box == null)
 			box = getLaserBoundingBox((TileEntityAssembler) tileEntity, pos.getX(), pos.getY(), pos.getZ(), event.getPlayer(), event.getPlayer().getHeldItem(EnumHand.MAIN_HAND), event.getPartialTicks())
 				.getLeft(); // TODO support both hands
