@@ -133,6 +133,7 @@ public class IntegratedCircuits {
 
 		// Initialize content
 		Content.init();
+		Content.registerIcons();
 
 		// Register socket provider
 		/*if (isMCMPLoaded) {
