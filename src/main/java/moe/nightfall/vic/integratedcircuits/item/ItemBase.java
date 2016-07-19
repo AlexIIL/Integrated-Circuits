@@ -1,5 +1,7 @@
 package moe.nightfall.vic.integratedcircuits.item;
 
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import moe.nightfall.vic.integratedcircuits.Constants;
 import moe.nightfall.vic.integratedcircuits.IntegratedCircuits;
@@ -16,6 +18,7 @@ public class ItemBase extends Item {
 		item.setCreativeTab(IntegratedCircuits.creativeTab);
 		item.setUnlocalizedName(Constants.MOD_ID + "." + name);
 		item.setRegistryName(name);
+
 		GameRegistry.register(item);
 	}
 
@@ -23,10 +26,9 @@ public class ItemBase extends Item {
 		this.hasIcon = hasIcon;
 		return this;
 	}
-/* FIXME 1.8+ rendering
-	@Override
-	public void registerIcons(IIconRegister ir) {
+
+	public void registerIcons() {
 		if (hasIcon)
-			super.registerIcons(ir);
-	}*/
+			ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName().toString()));
+	}
 }

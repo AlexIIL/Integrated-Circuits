@@ -1,7 +1,9 @@
 package moe.nightfall.vic.integratedcircuits;
 
 import moe.nightfall.vic.integratedcircuits.item.*;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import moe.nightfall.vic.integratedcircuits.tile.BlockAssembler;
 import moe.nightfall.vic.integratedcircuits.tile.BlockCAD;
@@ -66,16 +68,30 @@ public final class Content {
 		blockAssembler = new BlockAssembler();
 		blockPrinter = new BlockPrinter();
 
-		GameRegistry.register(Content.blockPCBLayout.setRegistryName("pcblayout"));
+		GameRegistry.register(Content.blockPCBLayout.setRegistryName("pcblayoutcad"));
 		GameRegistry.register(Content.blockAssembler.setRegistryName("assembler"));
 		GameRegistry.register(Content.blockPrinter.setRegistryName("pcbprinter"));
 
-		GameRegistry.register(new ItemBlock(Content.blockPCBLayout), Content.blockPCBLayout.getRegistryName());
+		GameRegistry.register(new ItemBlock(Content.blockPCBLayout).setRegistryName(Content.blockPCBLayout.getRegistryName()));
 		GameRegistry.register(new ItemBlock(Content.blockAssembler), Content.blockAssembler.getRegistryName());
 		GameRegistry.register(new ItemBlock(Content.blockPrinter), Content.blockPrinter.getRegistryName());
 
 		GameRegistry.registerTileEntity(TileEntityCAD.class, Constants.MOD_ID + ".pcblayoutcad");
 		GameRegistry.registerTileEntity(TileEntityAssembler.class, Constants.MOD_ID + ".assembler");
 		GameRegistry.registerTileEntity(TileEntityPrinter.class, Constants.MOD_ID + ".pcbprinter");
+	}
+
+	public static void registerIcons() {
+		((ItemBase)itemScrewdriver).registerIcons();
+		((ItemBase)itemSilicon).registerIcons();
+		((ItemBase)itemSiliconDrop).registerIcons();
+		((ItemBase)itemPCB).registerIcons();
+		((ItemBase)itemPCBChip).registerIcons();
+		((ItemBase)itemCoalCompound).registerIcons();
+		((ItemBase)itemSolderingIron).registerIcons();
+		((ItemBase)itemFloppyDisk).registerIcons();
+
+		Item itemBlockPCBLayout = Item.getItemFromBlock(Content.blockPCBLayout);
+		ModelLoader.setCustomModelResourceLocation(itemBlockPCBLayout, 0, new ModelResourceLocation(Content.blockPCBLayout.getRegistryName(), "inventory"));
 	}
 }
