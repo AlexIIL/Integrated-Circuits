@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
 public abstract class TileEntityContainer extends TileEntity {
-	public EnumFacing rotation;
+	public EnumFacing rotation = EnumFacing.NORTH;
 	public int playersUsing;
 
 	@Override
