@@ -31,8 +31,15 @@ public class BlockAssembler extends Block {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing side, float p_onBlockActivated_8_, float p_onBlockActivated_9_, float p_onBlockActivated_10_) { // Are the last three args (float hitX, float hitY, float hitZ)?
-		if (!world.isRemote)
+		TileEntityAssembler te = (TileEntityAssembler)world.getTileEntity(pos);
+		if (te != null) {
+			if (te.useDisk(world, pos, state, player, hand, item, side, p_onBlockActivated_8_,p_onBlockActivated_9_, p_onBlockActivated_10_))
+				return true;
+		}
+
+		if (!world.isRemote) {
 			player.openGui(IntegratedCircuits.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
+		}
 		return false;
 	}
 	
