@@ -1,15 +1,17 @@
 package moe.nightfall.vic.integratedcircuits;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -17,43 +19,33 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO Rewrite!
 public class DiskDrive {
-	public static AxisAlignedBB getDiskDriveBoundingBox(IDiskDrive drive, int x, int y, int z, Vec3d hitVec) {
+	public static AxisAlignedBB getDiskDriveBoundingBox(IDiskDrive drive, Vec3d hitVec) {
 		AxisAlignedBB box = drive.getBoundingBox();
-		box.offset(x, y, z);
 		if (!box.isVecInside(hitVec))
 			return null;
 		return box;
 	}
 
-	public static void dropFloppy(IDiskDrive drive, World world, int x, int y, int z) {
+	public static void dropFloppy(IDiskDrive drive, World world, BlockPos pos) {
 		if (drive.getDisk() != null)
-			world.spawnEntityInWorld(new EntityItem(world, x, y, z, drive.getDisk()));
+			world.spawnEntityInWorld(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), drive.getDisk()));
 	}
-/* FIXME 1.8+ rendering
+
 	@SideOnly(Side.CLIENT)
-	public static void renderFloppy(IDiskDrive drive, ModelFloppy model, double x, double y, double z,
-			float partialTicks, int rotation) {
+	public static void renderFloppy(IDiskDrive drive, double x, double y, double z,
+			float partialTicks, EnumFacing rotation) {
 		if (drive.getDisk() != null) {
 			ItemStack floppy = drive.getDisk();
 			String name = floppy.getTagCompound() != null && floppy.getTagCompound().hasKey("circuit") ? floppy
 				.getTagCompound().getCompoundTag("circuit").getCompoundTag("properties").getString("name") : null;
 
-			GL11.glPushMatrix();
-			GL11.glTranslated(x, y, z);
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			GL11.glColor3f(0.05F, 0.05F, 0.05F);
-			model.floppy.rotateAngleY = (float) Math.toRadians(-90 * rotation);
-			model.floppy.render(1 / 16F);
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
-			GL11.glPopMatrix();
-
 			if (name != null) {
-				FontRenderer fr = RenderManager.instance.getFontRenderer();
+				FontRenderer fr = FMLClientHandler.instance().getClient().fontRendererObj;
 				GL11.glPushMatrix();
 				GL11.glTranslated(x, y, z);
 				GL11.glRotatef(180, 0, 0, 1);
 				GL11.glTranslatef(-0.5F, -0.5F, 0.5F);
-				GL11.glRotatef(90 * rotation, 0, 1, 0);
+				GL11.glRotatef(90 * (rotation.getHorizontalIndex() - 2), 0, 1, 0);
 				GL11.glTranslatef(0.5F, 0.5F, -0.5F);
 				GL11.glTranslatef(-1, -1, 0);
 				float scale = 1 / 128F;
@@ -67,22 +59,33 @@ public class DiskDrive {
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
-	public static class ModelFloppy extends ModelBase {
-		public ModelRenderer floppy;
-
-		public ModelFloppy(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
-			floppy = new ModelRenderer(this);
-			floppy.addBox(minX, minY, minZ, maxX, maxY, maxZ);
-			floppy.setRotationPoint(8, 8, 8);
-		}
-	}*/
-
 	public interface IDiskDrive {
 		public AxisAlignedBB getBoundingBox();
 
 		public ItemStack getDisk();
 
 		public void setDisk(ItemStack stack);
+
+		default public boolean useDisk(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+			ItemStack stack = player.getHeldItem(hand);
+			AxisAlignedBB box = DiskDrive.getDiskDriveBoundingBox(this, new Vec3d(hitX, hitY, hitZ));
+			if (box != null) {
+				if (!world.isRemote) {
+					if (stack == null) {
+						ItemStack floppy = getDisk();
+						setDisk(null);
+						player.setHeldItem(hand, floppy);
+						return true;
+					} else if (stack.getItem() != null && stack.getItem() == Content.itemFloppyDisk
+							&& getDisk() == null) {
+						setDisk(stack);
+						player.setHeldItem(hand, null);
+						return true;
+					}
+				}
+				return true;
+			}
+			return false;
+		}
 	}
 }

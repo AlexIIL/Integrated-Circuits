@@ -30,8 +30,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import moe.nightfall.vic.integratedcircuits.Config;
 import moe.nightfall.vic.integratedcircuits.Constants;
 import moe.nightfall.vic.integratedcircuits.Content;
-import moe.nightfall.vic.integratedcircuits.DiskDrive;
-import moe.nightfall.vic.integratedcircuits.DiskDrive.IDiskDrive;
 import moe.nightfall.vic.integratedcircuits.IntegratedCircuits;
 import moe.nightfall.vic.integratedcircuits.LaserHelper.Laser;
 import moe.nightfall.vic.integratedcircuits.client.gui.IntegratedCircuitsGuiHandler;
@@ -203,40 +201,11 @@ public class CommonProxy {
 
 	@SubscribeEvent
 	public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
-		//if (event.action != Action.RIGHT_CLICK_BLOCK)
-//			return;
-
 		Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
 		if (!(block.hasTileEntity(event.getWorld().getBlockState(event.getPos()))))
 			return;
 		TileEntity te = (TileEntity) event.getWorld().getTileEntity(event.getPos());
 
-		if (te instanceof IDiskDrive) {
-			IDiskDrive drive = (IDiskDrive) te;
-
-
-			ItemStack stack = event.getEntityPlayer().getHeldItem(event.getHand());
-
-			RayTraceResult target = RayTracer.rayTrace(event.getEntityPlayer(), 1F);
-			if (target == null)
-				return;
-			AxisAlignedBB box = DiskDrive.getDiskDriveBoundingBox(drive, event.getPos().getX(), event.getPos().getY(), event.getPos().getZ(), target.hitVec);
-			if (box != null) {
-				if (!event.getWorld().isRemote) {
-					if (stack == null) {
-						ItemStack floppy = drive.getDisk();
-						drive.setDisk(null);
-						event.getEntityPlayer().setHeldItem(event.getHand(), floppy);
-					} else if (stack.getItem() != null && stack.getItem() == Content.itemFloppyDisk
-							&& drive.getDisk() == null) {
-						drive.setDisk(stack);
-						event.getEntityPlayer().setHeldItem(event.getHand(), null);
-					}
-				}
-				event.setUseBlock(Result.DENY);
-				event.setUseItem(Result.DENY);
-			}
-		}
 		if (te instanceof TileEntityAssembler) {
 			TileEntityAssembler assembler = (TileEntityAssembler) te;
 			Pair<AxisAlignedBB, Integer> result = getLaserBoundingBox(assembler, event.getPos().getX(), event.getPos().getY(), event.getPos().getZ(),
@@ -274,7 +243,8 @@ public class CommonProxy {
 		boolean holdsLaser = !holdsEmpty ? heldStack.getItem() == Content.itemLaser : false;
 
 		AxisAlignedBB base = new AxisAlignedBB(0, 0, 0, 1, 8 / 16F, 1).offset(x, y, z);
-		AxisAlignedBB boxBase = new AxisAlignedBB(11 / 16F, 8 / 16F, 11 / 16F, 15 / 16F, 15 / 16F, 15 / 16F);
+		AxisAlignedBB boxBase = new AxisAlignedBB(11 / 16F, 8 / 16F, 1 / 16F, 15 / 16F, 15 / 16F,
+				-1 / 16F);
 		AxisAlignedBB box1 = null, box2 = null, box3 = null, box4 = null;
 
 		Laser l1 = te.laserHelper.getLaser(te.rotation);
