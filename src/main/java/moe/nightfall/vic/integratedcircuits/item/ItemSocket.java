@@ -21,7 +21,7 @@ public class ItemSocket extends ItemBase {
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		Vec3d vhit = new Vec3d(hitX, hitY, hitZ);
-		pos.offset(facing);
+		pos = pos.offset(facing);
 		if (place(stack, player, world, pos, facing, vhit)) {
 			return EnumActionResult.SUCCESS;
 		}
@@ -32,8 +32,7 @@ public class ItemSocket extends ItemBase {
 	}
 
 	private boolean place(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, Vec3d vhit) {
-		BlockPos pos2 = new BlockPos(pos);
-		pos2.offset(side.getOpposite()); // is side ^ 1 the same as get opposite?
+		BlockPos pos2 = pos.offset(side.getOpposite());
 		if (!MiscUtils.canPlaceGateOnSide(world, pos2, side))
 			return false;
 
