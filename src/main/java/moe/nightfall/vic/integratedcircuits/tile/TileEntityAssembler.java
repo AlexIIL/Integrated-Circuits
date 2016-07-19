@@ -2,10 +2,8 @@ package moe.nightfall.vic.integratedcircuits.tile;
 
 //import buildcraft.api.tiles.IControllable;
 //import buildcraft.api.tiles.IHasWork;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
@@ -13,22 +11,17 @@ import moe.nightfall.vic.integratedcircuits.Content;
 import moe.nightfall.vic.integratedcircuits.DiskDrive.IDiskDrive;
 import moe.nightfall.vic.integratedcircuits.LaserHelper;
 import moe.nightfall.vic.integratedcircuits.client.TextureRenderer;
-//import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
 import moe.nightfall.vic.integratedcircuits.client.gui.GuiAssembler;
-import moe.nightfall.vic.integratedcircuits.client.gui.cad.GuiCAD;
 import moe.nightfall.vic.integratedcircuits.cp.CircuitData;
 import moe.nightfall.vic.integratedcircuits.misc.CraftingSupply;
 import moe.nightfall.vic.integratedcircuits.misc.IOptionsProvider;
 import moe.nightfall.vic.integratedcircuits.misc.InventoryUtils;
 import moe.nightfall.vic.integratedcircuits.misc.MiscUtils;
-import moe.nightfall.vic.integratedcircuits.net.PacketAssemblerChangeItem;
 import moe.nightfall.vic.integratedcircuits.net.PacketAssemblerStart;
-import moe.nightfall.vic.integratedcircuits.net.PacketFloppyDisk;
 import moe.nightfall.vic.integratedcircuits.proxy.ClientProxy;
 import moe.nightfall.vic.integratedcircuits.proxy.CommonProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -259,6 +252,7 @@ public class TileEntityAssembler extends TileEntityInventory implements IDiskDri
 
 	@Override
 	public void onSlotChange(int id) {
+		if (worldObj == null) return;
 		if (worldObj.isRemote)
 			return;
 		if (id > 8 && id < 13)
@@ -295,7 +289,7 @@ public class TileEntityAssembler extends TileEntityInventory implements IDiskDri
 			CommonProxy.networkWrapper.sendToDimension(new PacketAssemblerStart(pos.getX(), pos.getY(), pos.getZ(), queue),
 					worldObj.provider.getDimension());
 		loadMatrixFromDisk();
-		if (worldObj.isRemote && Minecraft.getMinecraft().currentScreen instanceof GuiCAD) {
+		if (worldObj.isRemote && Minecraft.getMinecraft().currentScreen instanceof GuiAssembler) {
 			cdata.calculateCost();
 			((GuiAssembler) Minecraft.getMinecraft().currentScreen).refreshUI();
 		}
@@ -482,6 +476,11 @@ public class TileEntityAssembler extends TileEntityInventory implements IDiskDri
 			@Override
 			public ItemStack extractItem(int slot, int amount, boolean simulate) {
 				return super.extractItem(slot, amount, simulate);
+			}
+
+			@Override
+			protected void onContentsChanged(int slot) {
+				onSlotChange(slot);
 			}
 		};
 	}
