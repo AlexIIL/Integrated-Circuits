@@ -64,9 +64,6 @@ public class BlockCAD extends Block {
 			blockState = blockState.withProperty(facing, te.rotation);
 			blockState = blockState.withProperty(hasDisk, te.getDisk() != null);
 
-			if (te.isDirty())
-				te.makeClean();
-
 			return blockState;
 		} else {
 			return getDefaultState();
