@@ -125,9 +125,9 @@ public class MiscUtils {
 	public static AxisAlignedBB getRotatedInstance(AxisAlignedBB def, EnumFacing rotation) {
 		def = def.offset(-0.5, -0.5, -0.5);
 		switch (rotation) { // FIXME fix to be the right dirs
-			case WEST:
-				def = new AxisAlignedBB(def.minZ, def.minY, -def.maxX, def.maxZ, def.maxY, -def.minX);
 			case SOUTH:
+				def = new AxisAlignedBB(def.minZ, def.minY, -def.maxX, def.maxZ, def.maxY, -def.minX);
+			case WEST:
 				def = new AxisAlignedBB(-def.maxX, def.minY, -def.maxZ, -def.minX, def.maxY, -def.minZ);
 			case EAST:
 				def = new AxisAlignedBB(-def.maxZ, def.minY, def.minX, -def.minZ, def.maxY, def.maxX);
