@@ -81,6 +81,8 @@ public class GuiAssembler extends GuiContainer implements IHoverableHandler {
 	public void refreshUI() {
 		if (te.cdata != null)
 			craftingList.setCraftingAmount(te.cdata.getCost());
+		else
+			craftingList.clearCraftingAmount();
 		labelAutomaticPull.setState(te.getOptionSet().getInt(te.SETTING_PULL));
 		labelRedstoneMode.setState(te.getOptionSet().getInt(te.SETTING_REDSTONE));
 	}

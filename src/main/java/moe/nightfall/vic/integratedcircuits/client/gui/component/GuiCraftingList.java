@@ -24,6 +24,11 @@ public class GuiCraftingList extends GuiListExt<GuiCraftingListEntry> {
 			entries.add(new GuiCraftingListEntry(ia, parent));
 	}
 
+	public void clearCraftingAmount() {
+		amount = null;
+		entries.clear();
+	}
+
 	@Override
 	public boolean isMouseInputLocked() {
 		return parent.te.getStatus() != TileEntityAssembler.IDLE && !parent.showBack;

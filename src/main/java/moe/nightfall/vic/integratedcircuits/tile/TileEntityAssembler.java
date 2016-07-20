@@ -2,6 +2,7 @@ package moe.nightfall.vic.integratedcircuits.tile;
 
 //import buildcraft.api.tiles.IControllable;
 //import buildcraft.api.tiles.IHasWork;
+import moe.nightfall.vic.integratedcircuits.net.PacketFloppyDisk;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,7 +32,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 @InterfaceList({ @Interface(iface = "buildcraft.api.tiles.IControllable", modid = "BuildCraft|Core"),
 		@Interface(iface = "buildcraft.api.tiles.IHasWork", modid = "BuildCraft|Core") })
-public class TileEntityAssembler extends TileEntityInventory implements IDiskDrive, IOptionsProvider, ITickable //FIXME use capabilities
+public class TileEntityAssembler extends TileEntityInventory implements IDiskDrive, IOptionsProvider, ITickable
 		/* FIXME reimplement IHasWork, IControllable */ {
 	public static final int IDLE = 0, RUNNING = 1, OUT_OF_MATERIALS = 2,
 			OUT_OF_PCB = 3;
@@ -253,8 +254,21 @@ public class TileEntityAssembler extends TileEntityInventory implements IDiskDri
 	@Override
 	public void onSlotChange(int id) {
 		if (worldObj == null) return;
-		if (worldObj.isRemote)
-			return;
+		if (worldObj.isRemote) {
+			if (id == 0) {
+
+                if (getDisk() == null) { // TODO remove this/ probably never gets called...
+                    cdata = null;
+                }
+
+                if (cdata != null) {
+                    cdata.calculateCost();
+                }
+                if (Minecraft.getMinecraft().currentScreen instanceof GuiAssembler) {
+                    ((GuiAssembler) Minecraft.getMinecraft().currentScreen).refreshUI();
+                }
+            }
+		}
 		if (id > 8 && id < 13)
 			laserHelper.createLaser(id - 9, inventory.getStackInSlot(id));
 		else if (id == 1)
@@ -285,14 +299,14 @@ public class TileEntityAssembler extends TileEntityInventory implements IDiskDri
 	@Override
 	public void setDisk(ItemStack stack) {
 		inventory.setStackInSlot(0, stack);
-		if (!worldObj.isRemote)
-			CommonProxy.networkWrapper.sendToDimension(new PacketAssemblerStart(pos.getX(), pos.getY(), pos.getZ(), queue),
-					worldObj.provider.getDimension());
+		if (!worldObj.isRemote) {
+            CommonProxy.networkWrapper.sendToDimension(new PacketAssemblerStart(pos.getX(), pos.getY(), pos.getZ(), queue),
+                    worldObj.provider.getDimension());
+            CommonProxy.networkWrapper.sendToDimension(new PacketFloppyDisk(getPos().getX(), getPos().getY(), getPos().getZ(), stack),
+                    worldObj.provider.getDimension());
+        }
+        getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
 		loadMatrixFromDisk();
-		if (worldObj.isRemote && Minecraft.getMinecraft().currentScreen instanceof GuiAssembler) {
-			cdata.calculateCost();
-			((GuiAssembler) Minecraft.getMinecraft().currentScreen).refreshUI();
-		}
 	}
 
 	@Override
