@@ -93,5 +93,7 @@ public final class Content {
 
 		Item itemBlockPCBLayout = Item.getItemFromBlock(Content.blockPCBLayout);
 		ModelLoader.setCustomModelResourceLocation(itemBlockPCBLayout, 0, new ModelResourceLocation(Content.blockPCBLayout.getRegistryName(), "inventory"));
+		Item itemBlockAssembler = Item.getItemFromBlock(Content.blockAssembler);
+		ModelLoader.setCustomModelResourceLocation(itemBlockAssembler, 0, new ModelResourceLocation(Content.blockAssembler.getRegistryName(), "inventory"));
 	}
 }

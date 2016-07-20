@@ -1,7 +1,22 @@
 {
   "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "north": "integratedcircuits:blocks/assembler_front_off",
+      "east": "integratedcircuits:blocks/assembler_side",
+      "west": "integratedcircuits:blocks/assembler_side",
+      "south": "integratedcircuits:blocks/assembler_back",
+      "up_in": "integratedcircuits:blocks/assembler_bottom",
+      "up": "integratedcircuits:blocks/assembler_top",
+      "down": "integratedcircuits:blocks/assembler_bottom",
+      "particle": "integratedcircuits:blocks/assembler_side",
+      "sign": "integratedcircuits:blocks/assembler_safety"
+    },
+    "model": "integratedcircuits:assembler",
+    "uvlock": false
+  },
   "variants": {
-    "normal": { "model": "integratedcircuits:integratedcircuits_null" },
-    "inventory": [{}]
+    "inventory": [{}],
+    "normal": [{}]
   }
 }

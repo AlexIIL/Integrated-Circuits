@@ -10,7 +10,7 @@
       "down": "integratedcircuits:blocks/cad_side",
       "particle": "integratedcircuits:blocks/cad_side"
     },
-    "model": "integratedcircuits:cube",
+    "model": "integratedcircuits:pcblayoutcad",
     "uvlock": false
   },
   "variants": {
