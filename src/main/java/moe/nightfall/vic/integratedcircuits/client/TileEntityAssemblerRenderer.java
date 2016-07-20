@@ -1,30 +1,14 @@
 package moe.nightfall.vic.integratedcircuits.client;
 
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
 import moe.nightfall.vic.integratedcircuits.DiskDrive;
-//import moe.nightfall.vic.integratedcircuits.DiskDrive.ModelFloppy;
-import moe.nightfall.vic.integratedcircuits.LaserHelper;
-import moe.nightfall.vic.integratedcircuits.LaserHelper.Laser;
-import moe.nightfall.vic.integratedcircuits.client.TextureRenderer.Entry;
-import moe.nightfall.vic.integratedcircuits.client.model.ModelLaser;
-import moe.nightfall.vic.integratedcircuits.cp.CircuitPartRenderer;
-import moe.nightfall.vic.integratedcircuits.cp.CircuitPartRenderer.CircuitRenderWrapper;
-import moe.nightfall.vic.integratedcircuits.misc.RenderUtils;
-import moe.nightfall.vic.integratedcircuits.proxy.ClientProxy;
 import moe.nightfall.vic.integratedcircuits.tile.TileEntityAssembler;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.tileentity.TileEntity;
-/*
-public class TileEntityAssemblerRenderer extends TileEntitySemiTransparentRenderer {
-	private static ModelFloppy model = new ModelFloppy(-7, -7, -9, 12, 2, 1);
+public class TileEntityAssemblerRenderer extends TileEntitySpecialRenderer<TileEntityAssembler> {
 
 	public void renderTileEntityAt(TileEntityAssembler te, double x, double y, double z, float partialTicks) {
-		if (getCurrentRenderPass() == 0)
-			DiskDrive.renderFloppy(te, model, x, y, z, partialTicks, te.rotation);
-
+        DiskDrive.renderFloppy(te, x, y, z, partialTicks, te.rotation);
+/*
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
@@ -136,11 +120,11 @@ public class TileEntityAssemblerRenderer extends TileEntitySemiTransparentRender
 		GL11.glPopMatrix();
 		if (getCurrentRenderPass() == 0)
 			addToRenderQueue(te.xCoord, te.yCoord, te.zCoord);
-		GL11.glPopMatrix();
+		GL11.glPopMatrix();*/
 	}
 
-	private Random rand = new Random();
-
+	//private Random rand = new Random();
+/*
 	private void renderLaser(float scale, float aZ, float aY, float length, TileEntityAssembler te, float partialTicks) {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -174,15 +158,15 @@ public class TileEntityAssemblerRenderer extends TileEntitySemiTransparentRender
 		GL11.glPopMatrix();
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-	}
+	}*/
 
-	@Override
-	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float partialTicks) {
+    @Override
+    public void renderTileEntityAt(TileEntityAssembler te, double x, double y, double z, float partialTicks, int destroyStage) {
 		this.renderTileEntityAt((TileEntityAssembler) te, x, y, z, partialTicks);
 	}
-
+/*
 	public static void scheduleFramebuffer(final TileEntityAssembler te) {
-		
+
 		if (te.texture == null) te.texture = new Entry() {
 			@Override
 			public void render(float partial) {
@@ -205,8 +189,7 @@ public class TileEntityAssemblerRenderer extends TileEntitySemiTransparentRender
 				}
 			}
 			};
-		
+
 		ClientProxy.textureRenderer.schedule(te.texture);
-	}
+	}*/
 }
-*/

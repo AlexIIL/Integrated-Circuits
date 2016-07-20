@@ -17,6 +17,31 @@
   },
   "variants": {
     "inventory": [{}],
-    "normal": [{}]
+    "facing": {
+      "east": {
+        "y": 90
+      },
+      "north": {
+        "y": 0
+      },
+      "south": {
+        "y": 180
+      },
+      "west": {
+        "y": 270
+      }
+    },
+    "has_disk" : {
+      "false": {
+
+      },
+      "true": {
+        "submodel": {
+          "disk": {
+            "model": "integratedcircuits:disk"
+          }
+        }
+      }
+    }
   }
 }

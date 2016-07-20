@@ -6,6 +6,9 @@ import moe.nightfall.vic.integratedcircuits.client.Resources;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,12 +25,41 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockAssembler extends Block {
+	public static final PropertyDirection facing = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	public static final PropertyBool hasDisk = PropertyBool.create("has_disk");
+
 	public BlockAssembler() {
 		super(Material.IRON);
 		setUnlocalizedName(Constants.MOD_ID + ".assembler");
 		//setRegistryName("assembler");
 		setCreativeTab(IntegratedCircuits.creativeTab);
 		setHardness(2F);
+		setDefaultState(blockState.getBaseState().withProperty(facing, EnumFacing.NORTH).withProperty(hasDisk, false));
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState();
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return 0;
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+		TileEntityAssembler te = (TileEntityAssembler)worldIn.getTileEntity(pos);
+		if (te != null) {
+			state = state.withProperty(facing, te.rotation);
+			state = state.withProperty(hasDisk, te.getDisk() != null);
+		}
+		return state;
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, facing, hasDisk);
 	}
 
 	@Override
@@ -89,10 +121,12 @@ public class BlockAssembler extends Block {
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
-		int rotation = MathHelper.floor_double((double) (entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-		TileEntityAssembler te = (TileEntityAssembler) world.getTileEntity(pos);
-		if (te != null)
-			te.rotation = EnumFacing.NORTH;
+        BlockPos diff = entity.getPosition().subtract(pos);
+        EnumFacing rotation = EnumFacing.getFacingFromVector(diff.getX(), diff.getY(), diff.getZ());
+        TileEntityAssembler te = (TileEntityAssembler) world.getTileEntity(pos);
+        if (te != null) {
+            te.rotation = rotation;
+        }
 	}
 
 	@Override

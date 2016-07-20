@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import moe.nightfall.vic.integratedcircuits.client.TileEntityPCBLayoutRenderer;
+import moe.nightfall.vic.integratedcircuits.client.*;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.RenderEnderman;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -42,10 +42,7 @@ import moe.nightfall.vic.integratedcircuits.api.gate.ISocket;
 //import moe.nightfall.vic.integratedcircuits.client.GateCircuitRenderer;
 //import moe.nightfall.vic.integratedcircuits.client.ItemLaserRenderer;
 //import moe.nightfall.vic.integratedcircuits.client.ItemPCBPrintRenderer;
-import moe.nightfall.vic.integratedcircuits.client.Resources;
 //import moe.nightfall.vic.integratedcircuits.client.SemiTransparentRenderer;
-import moe.nightfall.vic.integratedcircuits.client.ShaderHelper;
-import moe.nightfall.vic.integratedcircuits.client.TextureRenderer;
 //import moe.nightfall.vic.integratedcircuits.client.TileEntityAssemblerRenderer;
 //import moe.nightfall.vic.integratedcircuits.client.TileEntityGateRenderer;
 //import moe.nightfall.vic.integratedcircuits.client.TileEntityPCBLayoutRenderer;
@@ -116,6 +113,7 @@ public class ClientProxy extends CommonProxy {
 		ShaderHelper.loadShaders();
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCAD.class, new TileEntityPCBLayoutRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAssembler.class, new TileEntityAssemblerRenderer());
 
 		//Constants.GATE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 		//Constants.PRINTER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
@@ -127,7 +125,7 @@ public class ClientProxy extends CommonProxy {
 		//RenderingRegistry.registerBlockHandler(Constants.PRINTER_RENDER_ID, printerRenderer);
 
 		/*
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAssembler.class, new TileEntityAssemblerRenderer());
+
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySocket.class, gateRenderer);
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, printerRenderer);
 
